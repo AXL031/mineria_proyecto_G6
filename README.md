@@ -1,0 +1,1 @@
+# mineria_proyecto_G6
