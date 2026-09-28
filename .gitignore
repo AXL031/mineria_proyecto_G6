@@ -1,0 +1,19 @@
+# Fuentes y salidas locales
+data/
+artifacts/
+
+# Python y entorno local
+__pycache__/
+*.py[cod]
+.venv/
+.env
+.env.*
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# SO y editores
+.DS_Store
+Thumbs.db
+.vscode/
