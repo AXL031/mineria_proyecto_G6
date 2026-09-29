@@ -1,9 +1,12 @@
-# Fuentes y salidas locales; solo se versionan las guías y marcadores
+# Datos derivados locales; los tres CSV de Bronze se versionan con Git LFS
 /data/**
 !/data/
 !/data/**/
 !/data/**/.gitkeep
 !/data/README.md
+!/data/bronze/transactions/PS_20174392719_1491204439457_log.csv
+!/data/bronze/credit/credit_risk_dataset.csv
+!/data/bronze/complaints/consumer_complaints.csv
 /artifacts/**
 !/artifacts/
 !/artifacts/**/

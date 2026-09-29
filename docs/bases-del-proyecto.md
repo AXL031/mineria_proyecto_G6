@@ -58,7 +58,7 @@ El esquema en estrella se diseñará a partir de las claves observadas. La prime
 
 ```text
 docs/                  decisiones, inventario y metodología
-data/bronze/           originales locales por dominio, fuera de Git
+data/bronze/           originales por dominio, los tres CSV iniciales en Git LFS
 data/silver/           datos limpios generados, fuera de Git
 data/gold/             marts generados, fuera de Git
 src/bankshield/        ingesta, transformaciones, variables, modelos y servicios
@@ -71,7 +71,7 @@ scripts/               comandos reproducibles
 notebooks/             exploración, fuera del recorrido final
 ```
 
-La estructura de carpetas ya está creada. El repositorio versionará scripts, configuración sin secretos y documentación; los datasets completos y artefactos entrenados permanecerán fuera de Git.
+La estructura de carpetas ya está creada. El repositorio versionará scripts, configuración sin secretos y documentación; los tres CSV iniciales se almacenarán con Git LFS, mientras que los datos derivados y artefactos entrenados permanecerán fuera de Git.
 
 ## Reparto del equipo (6 integrantes)
 

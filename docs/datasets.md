@@ -1,6 +1,6 @@
 # Inventario de datasets locales
 
-Estos archivos fueron aportados por el equipo y se guardan en `data/bronze/` sin modificar su contenido. **No están versionados en Git.** La procedencia exacta, versión y condiciones de uso de cada copia deben confirmarse antes de publicar muestras o resultados.
+Estos archivos fueron aportados por el equipo y se guardan en `data/bronze/` sin modificar su contenido. **Se versionan mediante Git LFS**, que almacena referencias pequeñas en Git y el contenido en el almacenamiento LFS del remoto. La procedencia exacta, versión y condiciones de uso de cada copia deben confirmarse antes de publicar resultados.
 
 | Dominio | Archivo local | Tamaño (bytes) | SHA-256 |
 | --- | --- | ---: | --- |
@@ -33,4 +33,5 @@ El archivo incluye una columna de texto, pero la primera fila observada la tiene
 1. Mantener los originales inmutables en Bronze. Cualquier limpieza va a Silver.
 2. Registrar la URL o institución de origen, fecha de obtención y licencia de cada archivo en esta página cuando se confirmen.
 3. Usar las huellas SHA-256 para verificar que todos procesan la misma versión.
-4. Compartir los CSV mediante un medio acordado por el equipo. Un clon de Git contiene la estructura, no los datos.
+4. Instalar Git LFS antes de clonar. Si el clon solo muestra referencias LFS, ejecutar `git lfs pull` para descargar los CSV completos.
+5. Evitar reemplazar los CSV por versiones editadas: cada versión nueva cuenta como un archivo completo para el almacenamiento LFS.
