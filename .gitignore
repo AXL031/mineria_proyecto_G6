@@ -1,6 +1,14 @@
-# Fuentes y salidas locales
-data/
-artifacts/
+# Fuentes y salidas locales; solo se versionan las guías y marcadores
+/data/**
+!/data/
+!/data/**/
+!/data/**/.gitkeep
+!/data/README.md
+/artifacts/**
+!/artifacts/
+!/artifacts/**/
+!/artifacts/**/.gitkeep
+!/artifacts/README.md
 
 # Python y entorno local
 __pycache__/

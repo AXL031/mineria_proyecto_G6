@@ -29,16 +29,15 @@ La recomendación de límite de crédito queda como investigación posterior: un
 
 ## Decisión sobre datos
 
-Los datasets de la propuesta representan entidades distintas. **No existe una llave de cliente compartida demostrada** entre IEEE-CIS, Home Credit y CFPB. No se unirán por posición de fila, nombres de campo parecidos ni identificadores inventados. El warehouse tendrá marts separados por fuente; cualquier vista integrada será un ejemplo sintético o una agregación explícitamente marcada.
+Los tres archivos aportados representan entidades distintas. **No existe una llave de cliente compartida demostrada** entre las transacciones, el crédito y los reclamos. No se unirán por posición de fila, nombres de campo parecidos ni identificadores inventados. El warehouse tendrá marts separados por fuente; cualquier vista integrada será un ejemplo sintético o una agregación explícitamente marcada. El [inventario local](datasets.md) documenta los archivos disponibles.
 
 | Dominio | Fuente candidata | Uso posible | Límite que condiciona el diseño |
 | --- | --- | --- | --- |
-| Fraude de pagos | IEEE-CIS Fraud Detection | Clasificación de transacciones; unión interna de `transaction` e `identity` por `TransactionID`. | `TransactionDT` es un desplazamiento desde una referencia, no una fecha calendario; no ofrece de forma directa una red emisor → receptor. |
-| Fraude y grafos | PaySim (alternativa a evaluar) | Transferencias con cuentas de origen y destino; exploración de grafos y clasificación. | Datos sintéticos; el tiempo se expresa en pasos de simulación. Sus resultados no representan desempeño bancario real. |
-| Riesgo crediticio | Home Credit Default Risk | Modelo independiente de impago por solicitud. | Sus identificadores pertenecen a esa fuente y no enlazan con las transacciones anteriores. |
-| Reclamos | CFPB Consumer Complaint Database | Frecuencia de asuntos y, cuando esté disponible, análisis de narrativas. | El identificador es del reclamo, no una llave para unir con clientes de las otras fuentes; la disponibilidad de texto debe comprobarse. |
+| Fraude y grafos | `PS_20174392719_1491204439457_log.csv` (esquema PaySim) | Clasificación de transacciones y relaciones origen → destino. | Datos de simulación; `step` no es una fecha calendario. |
+| Riesgo crediticio | `credit_risk_dataset.csv` | Modelo independiente con etiqueta candidata `loan_status`. | No es Home Credit; no trae identificador de cliente ni fecha en su cabecera. La semántica de la etiqueta debe confirmarse. |
+| Reclamos | `consumer_complaints.csv` | Frecuencia de asuntos y análisis de narrativas disponibles. | `complaint_id` no une reclamos con las otras fuentes; debe medirse la cobertura del texto. |
 
-**Selección pendiente del primer incremento:** elegir IEEE-CIS si se prioriza clasificación de fraude tabular, o PaySim si los grafos de cuentas son prioritarios. Antes de descargar, verificar licencia, tamaño, columnas, etiquetas y acceso. El contrato canónico se definirá tras inspeccionar una muestra real; los nombres de la propuesta original (`user_id`, `receiver_id`, `timestamp`, etc.) son requisitos conceptuales, no columnas garantizadas.
+**Selección para el primer incremento:** trabajar con el CSV transaccional aportado, cuyo esquema corresponde a PaySim. Falta confirmar la procedencia y licencia de esta copia. El contrato canónico se definirá tras perfilar sus valores; los nombres de la propuesta original (`user_id`, `receiver_id`, `timestamp`, etc.) son requisitos conceptuales, no columnas del archivo.
 
 ## Arquitectura mínima propuesta
 
@@ -58,18 +57,21 @@ El esquema en estrella se diseñará a partir de las claves observadas. La prime
 ### Organización prevista
 
 ```text
-docs/                  decisiones, diccionario y metodología
-data/bronze/           archivos originales locales, fuera de Git
+docs/                  decisiones, inventario y metodología
+data/bronze/           originales locales por dominio, fuera de Git
 data/silver/           datos limpios generados, fuera de Git
 data/gold/             marts generados, fuera de Git
-src/bankshield/        ingesta, validación, transformaciones y modelos
+src/bankshield/        ingesta, transformaciones, variables, modelos y servicios
 api/                   endpoints de demostración
 dashboard/             panel analítico
 tests/                 pruebas de contratos y lógica crítica
 artifacts/             modelos y reportes generados, fuera de Git
+configs/               configuración versionable sin secretos
+scripts/               comandos reproducibles
+notebooks/             exploración, fuera del recorrido final
 ```
 
-Las carpetas de código se crearán con la implementación. El repositorio versionará scripts, configuración sin secretos y documentación; los datasets completos y artefactos entrenados permanecerán fuera de Git.
+La estructura de carpetas ya está creada. El repositorio versionará scripts, configuración sin secretos y documentación; los datasets completos y artefactos entrenados permanecerán fuera de Git.
 
 ## Reparto del equipo (6 integrantes)
 
@@ -78,8 +80,8 @@ La unidad de trabajo de cada integrante es un **módulo vertical**: perfilar su 
 | Integrante | Módulo principal y entregable verificable | Aporte al primer recorrido y a la integración |
 | --- | --- | --- |
 | **Cueva** | **Fraude supervisado y patrones:** variables disponibles al momento de la transacción, línea base y clasificador, umbral, PR-AUC y errores; reglas de asociación simples si los campos las permiten; vista de predicción y patrones. | Perfilar la fuente transaccional y definir el contrato de entrada junto con Taco. Integra el modelo de fraude, sin asumir la integración de todos los módulos. |
-| **Sevan** | **Riesgo crediticio:** pipeline independiente de Home Credit, modelo de `default`, calibración y explicaciones de casos; vista de riesgo. Documenta por qué una probabilidad no basta para fijar un límite de crédito. | Definir junto con Gerardo la plantilla común de evaluación, registro de experimentos y comprobación de fuga de información; aplicarla al fraude inicial. |
-| **Rhamses** | **Grafos de transacciones:** construir aristas cuenta → cuenta cuando existan, calcular indicadores de red y evaluar casos sospechosos; visualización de subgrafos. Si se elige IEEE-CIS, usar PaySim rotulado como sintético para este módulo. | Definir junto con Angel el contrato de respuesta de la API y conectar la primera consulta del mart transaccional. |
+| **Sevan** | **Riesgo crediticio:** pipeline independiente del CSV de crédito aportado, interpretación documentada de `loan_status`, modelo, calibración y explicaciones de casos; vista de riesgo. Documenta por qué una probabilidad no basta para fijar un límite de crédito. | Definir junto con Gerardo la plantilla común de evaluación, registro de experimentos y comprobación de fuga de información; aplicarla al fraude inicial. |
+| **Rhamses** | **Grafos de transacciones:** construir aristas cuenta → cuenta a partir de `nameOrig` y `nameDest`, calcular indicadores de red y evaluar casos sospechosos; visualización de subgrafos. Los resultados se rotularán como simulados. | Definir junto con Angel el contrato de respuesta de la API y conectar la primera consulta del mart transaccional. |
 | **Taco** | **Segmentación:** variables de comportamiento calculadas solo cuando las identidades sean fiables, agrupación comparada con una línea base y perfiles interpretables; vista de segmentos. | Implementar el recorrido Bronze → Silver → Gold de transacciones con controles de calidad, junto con Cueva en el contrato. Establecer el patrón reutilizable para otras fuentes. |
 | **Gerardo** | **Pronósticos y monitoreo:** serie agregada, línea base temporal, evaluación retrospectiva y panel de pronóstico; comparación de distribuciones entre lotes cuando existan datos posteriores. Los horizontes dependerán de la cobertura real. | Preparar junto con Sevan la plantilla de métricas y artefactos; documentar el comando reproducible y el empaquetado local cuando el flujo funcione. |
 | **Angel** | **Reclamos y NLP:** pipeline independiente de CFPB, cobertura del texto, categorías o tópicos interpretables y evaluación con revisión de ejemplos; vista de reclamos. | Crear junto con Rhamses el esqueleto del panel y el contrato API → interfaz; cada integrante agregará su propia página, evitando que Angel implemente todas las vistas. |
@@ -98,7 +100,7 @@ La unidad de trabajo de cada integrante es un **módulo vertical**: perfilar su 
 | --- | --- |
 | Cueva | Perfil de columnas, etiqueta y riesgos de fuga de la fuente transaccional elegida. |
 | Sevan | Protocolo de separación de datos y métricas de fraude que se ejecutará sobre la primera línea base. |
-| Rhamses | Prueba de viabilidad de aristas de cuentas y esquema de respuesta de una consulta de red; indicar si requiere PaySim. |
+| Rhamses | Prueba de viabilidad de aristas de cuentas con el CSV aportado y esquema de respuesta de una consulta de red. |
 | Taco | Ingesta Bronze/Silver, validaciones y primer mart de transacciones. |
 | Gerardo | Agregados temporales disponibles, comando de reproducción y registro de resultados de la línea base. |
 | Angel | Esqueleto del panel, contrato con la API y primera vista de calidad/métricas reales. |
@@ -117,22 +119,19 @@ La primera demostración se considera integrada cuando estas seis entregas funci
 
 ## Secuencia inmediata
 
-1. Acordar si la primera demostración prioriza **clasificación de fraude (IEEE-CIS)** o **fraude con redes de cuentas (PaySim)**.
-2. Obtener una muestra permitida, perfilar columnas y completar un diccionario de datos con ejemplos y unidades.
+1. Confirmar procedencia y condiciones de uso de los tres CSV aportados.
+2. Perfilar los archivos locales y completar un diccionario de datos con ejemplos y unidades.
 3. Fijar el contrato del primer mart y las pruebas de calidad sobre la fuente elegida.
 4. Implementar el recorrido Bronze → Silver → Gold y documentar un comando de reproducción.
 5. Entrenar la línea base, registrar evaluación y después construir API y panel sobre resultados reales.
 
 ## Decisiones abiertas
 
-- Fuente transaccional inicial y prioridad académica entre fraude tabular y grafos.
+- Procedencia exacta, versión y licencia de los tres CSV.
 - Tiempo, tamaño máximo de datos y recursos de cómputo disponibles para el equipo.
 - Requisitos de entrega del curso: módulos obligatorios, fecha, formato de demostración y criterios de evaluación.
 - Disponibilidad y experiencia de cada integrante para ajustar el reparto sin perder equilibrio.
 
-## Referencias de fuentes candidatas
+## Archivo de referencia
 
-- [IEEE-CIS Fraud Detection — descripción de datos](https://www.kaggle.com/competitions/ieee-fraud-detection/data)
-- [PaySim — Synthetic Financial Datasets For Fraud Detection](https://www.kaggle.com/datasets/ealaxi/paysim1)
-- [Home Credit Default Risk — datos](https://www.kaggle.com/competitions/home-credit-default-risk/data)
-- [CFPB — diccionario de campos y API](https://cfpb.github.io/api/ccdb/fields.html)
+La propuesta original mencionó IEEE-CIS y Home Credit como posibles fuentes. El desarrollo actual parte de los tres archivos inventariados en [datasets.md](datasets.md), cuyos esquemas son distintos. Cualquier cambio de fuente deberá actualizar contratos, métricas y esta documentación.
