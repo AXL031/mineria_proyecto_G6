@@ -22,6 +22,16 @@ graph = [
     "pandas>=2.2,<4",
     "networkx>=3.3,<4",
 ]
+api = [
+    "fastapi>=0.115,<1",
+    "uvicorn>=0.30,<1",
+    "pydantic>=2.7,<3",
+]
+dashboard = [
+    "streamlit>=1.40,<2",
+    "pyvis>=0.3.2,<1",
+    "requests>=2.32,<3",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]
