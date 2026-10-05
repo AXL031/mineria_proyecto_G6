@@ -1,0 +1,14 @@
+{
+  "train_end_step": 323,
+  "validation_end_step": 378,
+  "chunksize": 200000,
+  "random_state": 42,
+  "max_iter": 80,
+  "max_leaf_nodes": 15,
+  "learning_rate": 0.1,
+  "min_samples_leaf": 20,
+  "l2_regularization": 1.0,
+  "false_positive_cost": 1.0,
+  "false_negative_cost": 20.0,
+  "threads": 4
+}

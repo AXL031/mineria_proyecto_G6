@@ -8,6 +8,10 @@ La [base del proyecto](docs/bases-del-proyecto.md) define el alcance inicial, lo
 
 El [plan de desarrollo](docs/plan-desarrollo.md) detalla las cinco etapas, las tareas de cada integrante, las responsabilidades compartidas y las primeras entregas.
 
+La primera entrega de Cueva incluye [perfilado y contrato de variables de fraude](docs/fraude/contrato-variables.md), con comandos reproducibles y controles de información disponible antes de la operación.
+
+El [entrenamiento de fraude](docs/fraude/entrenamiento.md) añade separación temporal, línea base, clasificador, selección de umbral y scoring local, con instrucciones para reproducir los resultados.
+
 Los tres CSV aportados están organizados en `data/bronze/` y se versionan mediante **Git LFS**. El [inventario de datos](docs/datasets.md) registra sus columnas, tamaños y huellas SHA-256. Los datos derivados y artefactos generados siguen excluidos de Git. Cada integrante necesita Git LFS instalado para recibir el contenido completo de los CSV al clonar o hacer pull.
 
 **Primer incremento propuesto:** cargar transacciones, aplicar controles de calidad, construir un mart analítico, entrenar un detector de fraude de referencia y mostrar sus resultados en un panel local. El mismo recorrido servirá como patrón para los módulos posteriores.
@@ -19,10 +23,10 @@ Los tres CSV aportados están organizados en `data/bronze/` y se versionan media
 - [ ] Procedencia y licencia de los tres archivos confirmadas.
 - [ ] Contrato de datos y muestra exploratoria validados.
 - [ ] Pipeline Bronze → Silver → Gold reproducible.
-- [ ] Modelo de referencia y evaluación.
+- [x] Línea base y clasificador de fraude evaluados temporalmente.
 - [ ] API y panel de demostración.
 
-Todavía no hay modelos ni servicios implementados.
+Fraude tiene un modelo entrenado y un servicio de scoring local. La API y el panel integrados siguen pendientes. Los [resultados del entrenamiento](docs/fraude/resultados-entrenamiento.md) documentan métricas y límites de esta versión.
 
 ## Estructura
 
