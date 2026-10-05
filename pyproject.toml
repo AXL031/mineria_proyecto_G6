@@ -17,6 +17,11 @@ fraud = [
     "scikit-learn>=1.6,<2",
     "joblib>=1.4,<2",
 ]
+graph = [
+    "numpy>=1.26,<3",
+    "pandas>=2.2,<4",
+    "networkx>=3.3,<4",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]
