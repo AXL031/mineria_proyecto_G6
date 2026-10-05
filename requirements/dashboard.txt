@@ -1,0 +1,6 @@
+# Dependencias del panel interactivo (Dashboard)
+streamlit>=1.40,<2.0
+pyvis>=0.3.2,<1.0
+requests>=2.32,<3.0
+pandas>=2.2,<4.0
+networkx>=3.3,<4.0

@@ -1,0 +1,12 @@
+{
+  "sample_limit": 500000,
+  "chunksize": 200000,
+  "fanout_percentile": 95,
+  "fanin_percentile": 95,
+  "flow_percentile": 95,
+  "high_value_percentile": 99,
+  "max_cycle_length": 4,
+  "max_cycles_reported": 50,
+  "subgraph_depth": 1,
+  "top_accounts": 20
+}

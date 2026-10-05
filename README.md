@@ -24,9 +24,10 @@ Los tres CSV aportados están organizados en `data/bronze/` y se versionan media
 - [ ] Contrato de datos y muestra exploratoria validados.
 - [ ] Pipeline Bronze → Silver → Gold reproducible.
 - [x] Línea base y clasificador de fraude evaluados temporalmente.
+- [x] Ingesta, grafo dirigido, métricas de red y detección de patrones de transacciones implementados.
 - [ ] API y panel de demostración.
 
-Fraude tiene un modelo entrenado y un servicio de scoring local. La API y el panel integrados siguen pendientes. Los [resultados del entrenamiento](docs/fraude/resultados-entrenamiento.md) documentan métricas y límites de esta versión.
+Fraude tiene un modelo entrenado y un servicio de scoring local. El módulo de grafos cuenta con perfilado de red, extracción de subgrafos, indicadores de sospecha y servicios de consulta (ver [contrato de variables de grafos](docs/grafos/contrato-variables.md) y [perfil de red](docs/grafos/perfil-red.md)). La API y el panel integrados siguen pendientes.
 
 ## Estructura
 
