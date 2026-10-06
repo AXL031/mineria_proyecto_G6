@@ -22,6 +22,10 @@ graph = [
     "pandas>=2.2,<4",
     "networkx>=3.3,<4",
 ]
+forecast = [
+    "numpy>=1.26,<3",
+    "pandas>=2.2,<4",
+]
 api = [
     "fastapi>=0.115,<1",
     "uvicorn>=0.30,<1",
