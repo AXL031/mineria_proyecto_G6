@@ -1,0 +1,8 @@
+{
+  "input": "data/bronze/transactions/PS_20174392719_1491204439457_log.csv",
+  "expected_sha256": "16910F90577B0D981BF8FF289714510BB89BC71BFF7D3F220F024E287E4EEA6B",
+  "output": "data/silver/transactions/transactions.parquet",
+  "quality_json": "artifacts/reports/transactions_silver.json",
+  "quality_markdown": "docs/transacciones/calidad-silver.md",
+  "chunksize": 500000
+}
