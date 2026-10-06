@@ -28,6 +28,7 @@ Los tres CSV aportados están organizados en `data/bronze/` y se versionan media
 - [x] Línea base y clasificador de fraude evaluados temporalmente.
 - [x] Ingesta, grafo dirigido, métricas de red y detección de patrones de transacciones implementados.
 - [x] Perfilado de reclamos y análisis de cobertura de narrativas de texto (NLP) completado.
+- [x] Ingesta transaccional con controles de calidad y capa Silver en Parquet (ver [contrato Silver](docs/transacciones/contrato-silver.md)).
 - [ ] API y panel de demostración integrados.
 
 Fraude tiene un modelo entrenado y un servicio de scoring local. El módulo de grafos cuenta con perfilado de red, extracción de subgrafos, indicadores de sospecha y servicios de consulta (ver [contrato de variables de grafos](docs/grafos/contrato-variables.md) y [perfil de red](docs/grafos/perfil-red.md)). El módulo de reclamos cuenta con perfilado de las 555,957 quejas y métricas de narrativas (ver [perfil de reclamos](docs/reclamos/perfil-complaints.md) y [propuesta del panel](docs/reclamos/propuesta-panel.md)). La API y el panel integrados siguen pendientes.
