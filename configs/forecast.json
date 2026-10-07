@@ -2,5 +2,9 @@
   "input": "data/silver/transactions/transactions.parquet",
   "output": "data/gold/forecast/transactions_hourly.parquet",
   "quality_json": "artifacts/reports/forecast_gold.json",
-  "quality_markdown": "docs/pronosticos/calidad-gold.md"
+  "quality_markdown": "docs/pronosticos/calidad-gold.md",
+  "analysis_json": "artifacts/reports/forecast_series_analysis.json",
+  "analysis_markdown": "docs/pronosticos/exploracion-serie.md",
+  "plots_dir": "artifacts/plots/forecast",
+  "seasonal_period": 24
 }

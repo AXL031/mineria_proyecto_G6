@@ -71,3 +71,16 @@ Entradas y salidas predeterminadas (definidas en `configs/forecast.json`):
 
 El esquema, las fórmulas y los controles se describen en el
 [contrato Gold temporal](../docs/pronosticos/contrato-gold.md).
+
+## Exploración de la serie temporal
+
+`analyze_forecast_series.py` calcula estadísticas del periodo operativo,
+autocorrelaciones y gráficos de cantidad, monto y ciclo simulado de 24 horas.
+
+```powershell
+python -m pip install -e ".[forecast]"
+python scripts/analyze_forecast_series.py
+```
+
+El reporte se escribe en `docs/pronosticos/exploracion-serie.md`; los gráficos
+y el JSON reproducible permanecen localmente dentro de `artifacts/`.
