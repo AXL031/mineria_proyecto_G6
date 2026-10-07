@@ -1,6 +1,5 @@
-# Versiones usadas en el perfilado temporal inicial, con Python 3.12.
-numpy==2.5.3
-pandas==3.0.6
-python-dateutil==2.9.0.post0
-six==1.17.0
-tzdata==2026.4
+# Dependencias del módulo temporal, compatibles con Python 3.11 o posterior.
+numpy>=1.26,<3
+pandas>=2.2,<4
+pyarrow>=17,<30
+matplotlib>=3.8,<4
