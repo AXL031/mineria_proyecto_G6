@@ -1,0 +1,6 @@
+{
+  "input": "data/silver/transactions/transactions.parquet",
+  "output": "data/gold/forecast/transactions_hourly.parquet",
+  "quality_json": "artifacts/reports/forecast_gold.json",
+  "quality_markdown": "docs/pronosticos/calidad-gold.md"
+}

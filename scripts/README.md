@@ -51,3 +51,23 @@ El tamaño de bloque se puede ajustar:
 ```powershell
 python scripts/profile_transactions.py --chunksize 250000
 ```
+
+## Construcción de Gold temporal
+
+`build_forecast_gold.py` consume el Parquet Silver y genera una serie regular
+con una fila por `step`, sin modificar las capas de entrada.
+
+```powershell
+python -m pip install -e ".[forecast]"
+python scripts/build_forecast_gold.py
+```
+
+Entradas y salidas predeterminadas (definidas en `configs/forecast.json`):
+
+- Entrada: `data/silver/transactions/transactions.parquet`.
+- Gold: `data/gold/forecast/transactions_hourly.parquet`.
+- Reporte JSON: `artifacts/reports/forecast_gold.json`.
+- Resumen: `docs/pronosticos/calidad-gold.md`.
+
+El esquema, las fórmulas y los controles se describen en el
+[contrato Gold temporal](../docs/pronosticos/contrato-gold.md).
