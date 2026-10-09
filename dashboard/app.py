@@ -69,7 +69,7 @@ with col1:
         """
         - 🌐 **Redes y Grafos de Transacciones** (*Disponible*): Topología de relaciones `nameOrig → nameDest`,
           detección de comunidades/patrones atípicos y visualización interactiva de subgrafos.
-        - 🕵️ **Detección de Fraude Supervisado** (*Modelo local*): Clasificación de operaciones basada en variables pre-transacción.
+        - 🕵️ **Detección de Fraude Supervisado** (*Disponible mediante API*): Formulario de predicción, umbral y métricas del modelo cargado.
         - 💳 **Riesgo Crediticio y Explicabilidad** (*En desarrollo*): Scoring y calibración de probabilidad de impago.
         - 🗣️ **Reclamos y NLP** (*En desarrollo*): Análisis semántico de quejas de clientes CFPB.
         - 📈 **Pronósticos de Flujo** (*En desarrollo*): Proyección de volúmenes transaccionales temporales.
@@ -80,7 +80,9 @@ with col2:
     st.markdown("### 🧭 Cómo Navegar")
     st.markdown(
         """
-        Utiliza el menú lateral para acceder a la **Página de Redes y Grafos**:
+        Utiliza el menú lateral para acceder a **Fraude** y **Redes y Grafos**.
+        En Fraude puedes evaluar una operación y consultar las métricas del modelo mediante la API.
+        En Redes y Grafos encontrarás:
         
         1. **Métricas Topológicas:** KPIs globales de conectividad y volumen operado.
         2. **Explorador Interactivo de Subgrafos:** Búsqueda por cuenta y renderizado con física en tiempo real.

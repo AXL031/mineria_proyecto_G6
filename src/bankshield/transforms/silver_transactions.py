@@ -291,6 +291,7 @@ def build_silver(
         },
         "output": {
             "path": display(output_path),
+            "sha256": file_sha256(output_path),
             "format": "parquet",
             "compression": "snappy",
             "rows": silver_rows,

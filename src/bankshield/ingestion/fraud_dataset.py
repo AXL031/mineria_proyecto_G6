@@ -1,4 +1,4 @@
-"""Adaptador Bronze para fraude; sustituible por un lector Silver."""
+"""Adaptadores Bronze CSV y Silver Parquet con el mismo contrato temporal."""
 
 import csv
 from dataclasses import dataclass
@@ -42,7 +42,7 @@ def derive_split_steps(step_counts, train_fraction=0.70, validation_fraction=0.1
 
 
 def read_fraud_dataset(path: Path, train_end_step: int, validation_end_step: int,
-                       chunksize=200_000, account_sample_modulus=100):
+                       chunksize=200_000, account_sample_modulus=100, input_format="csv"):
     """Lee todas las filas, valida y asigna particiones exclusivamente por step.
 
     Audita una muestra determinista de cuentas (1/modulus) sin usarlas como
@@ -53,19 +53,31 @@ def read_fraud_dataset(path: Path, train_end_step: int, validation_end_step: int
     if chunksize < 1 or account_sample_modulus < 1:
         raise ValueError("Tamaño de bloque y módulo de muestreo deben ser positivos")
     path = Path(path)
-    with path.open(encoding="utf-8-sig", newline="") as handle:
-        header = next(csv.reader(handle), [])
-    if header and header[0].startswith("version https://git-lfs.github.com"):
-        raise ValueError("Se requiere el CSV completo, no una referencia Git LFS")
-    if len(header) != len(FIELDS) or set(header) != set(FIELDS):
-        raise ValueError("Cabecera PaySim inesperada")
+    if input_format not in ("csv", "silver"):
+        raise ValueError("Formato de fraude desconocido")
+    if input_format == "csv":
+        with path.open(encoding="utf-8-sig", newline="") as handle:
+            header = next(csv.reader(handle), [])
+        if header and header[0].startswith("version https://git-lfs.github.com"):
+            raise ValueError("Se requiere el CSV completo, no una referencia Git LFS")
+        if len(header) != len(FIELDS) or set(header) != set(FIELDS):
+            raise ValueError("Cabecera PaySim inesperada")
     names = ("train", "validation", "test")
     blocks = {name: [] for name in names}
     accounts = {name: {role: set() for role in ("nameOrig", "nameDest")} for name in names}
     dtypes = {field: "float64" for field in FIELDS if field not in ("type", "nameOrig", "nameDest")}
     dtypes.update({field: "string" for field in ("type", "nameOrig", "nameDest")})
     total = 0
-    for raw in pd.read_csv(path, dtype=dtypes, chunksize=chunksize, encoding="utf-8-sig"):
+    if input_format == "csv":
+        reader = pd.read_csv(path, dtype=dtypes, chunksize=chunksize, encoding="utf-8-sig")
+    else:
+        import pyarrow.parquet as pq
+        parquet = pq.ParquetFile(path)
+        if len(parquet.schema.names) != len(FIELDS) or set(parquet.schema.names) != set(FIELDS):
+            raise ValueError("Esquema Silver PaySim inesperado")
+        # Normalizar tipos para conservar hashes de muestreo y variables de Bronze.
+        reader = (batch.to_pandas().astype(dtypes) for batch in parquet.iter_batches(batch_size=chunksize))
+    for raw in reader:
         if raw.isna().any().any():
             raise ValueError("Se encontraron valores ausentes; revisar calidad antes de entrenar")
         if not np.isfinite(raw["step"]).all() or (raw["step"] < 0).any() or (raw["step"] % 1 != 0).any():

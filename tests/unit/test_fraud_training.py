@@ -15,6 +15,8 @@ from bankshield.ingestion.fraud_dataset import derive_split_steps, read_fraud_da
 from bankshield.ingestion.paysim_profile import FIELDS, profile_paysim, write_reports
 from bankshield.models.fraud import FraudConfig, evaluate_scores, select_threshold, train_fraud
 from bankshield.services.fraud import FraudScorer
+from bankshield.transforms.silver_transactions import build_silver
+from scripts.analyze_fraud_errors import analyze
 
 
 class FraudTrainingTests(unittest.TestCase):
@@ -116,6 +118,48 @@ class FraudTrainingTests(unittest.TestCase):
         source.write_text(source.read_text(encoding="utf-8") + "\n", encoding="utf-8")
         with self.assertRaisesRegex(ValueError, "cambió"):
             train_fraud(source, config, profile, output)
+
+    def test_silver_equivalence_training_and_provenance_rejections(self):
+        source = self.source()
+        profile = self.workdir / "profile.json"
+        bronze_profile = profile_paysim(source)
+        write_reports(bronze_profile, profile)
+        silver = self.workdir / "silver.parquet"
+        quality = self.workdir / "quality.json"
+        build_silver(source, silver, quality_json=quality,
+                     expected_sha256=bronze_profile["source"]["sha256"], chunksize=17)
+        bronze_parts, bronze_overlap = read_fraud_dataset(source, 1, 2, chunksize=17)
+        silver_parts, silver_overlap = read_fraud_dataset(silver, 1, 2, chunksize=19, input_format="silver")
+        self.assertEqual(bronze_overlap, silver_overlap)
+        for name in bronze_parts:
+            pd.testing.assert_frame_equal(bronze_parts[name].features, silver_parts[name].features)
+            np.testing.assert_array_equal(bronze_parts[name].labels, silver_parts[name].labels)
+            np.testing.assert_array_equal(bronze_parts[name].steps, silver_parts[name].steps)
+        config = FraudConfig(train_end_step=1, validation_end_step=2, max_iter=3,
+                             min_samples_leaf=2, chunksize=50, threads=1)
+        output = self.workdir / "model"
+        report = train_fraud(silver, config, profile, output, input_format="silver", silver_quality_path=quality)
+        self.assertEqual(report["training_input"]["format"], "silver")
+        self.assertIn("silver_quality", report)
+        examples = analyze(silver, output / "model.joblib", self.workdir / "examples.json", examples=2)
+        self.assertEqual(examples["confusion"], report["test"]["classifier_selected"]["confusion"])
+        self.assertTrue(all(len(cases) <= 2 for cases in examples["examples"].values()))
+        original = quality.read_text(encoding="utf-8")
+        data = json.loads(original)
+        modifications = [
+            {**data, "scope": "first_rows_sample"},
+            {**data, "counts": {**data["counts"], "rejected_rows": 1}},
+            {**data, "source": {**data["source"], "sha256": "other"}},
+            {**data, "output": {**data["output"], "sha256": "other"}},
+        ]
+        for bad in modifications:
+            quality.write_text(json.dumps(bad), encoding="utf-8")
+            with self.subTest(bad=bad), self.assertRaises(ValueError):
+                train_fraud(silver, config, profile, output, input_format="silver", silver_quality_path=quality)
+        quality.write_text(original, encoding="utf-8")
+        silver.write_bytes(silver.read_bytes() + b"changed")
+        with self.assertRaisesRegex(ValueError, "Parquet cambió"):
+            train_fraud(silver, config, profile, output, input_format="silver", silver_quality_path=quality)
 
 
 if __name__ == "__main__":
