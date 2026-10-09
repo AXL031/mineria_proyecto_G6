@@ -42,7 +42,7 @@ Se audita una muestra determinista aproximada del 1 % de cuentas por rol, sin us
 | nameOrig | 18 | 27 | 10 |
 | nameDest | 2651 | 2357 | 2232 |
 
-Los resultados describen la simulación PaySim. No validan una política bancaria real ni desempeño para cuentas completamente nuevas. Los scores no están calibrados como probabilidades de riesgo reales. La auditoría de duplicados exactos y el contrato definitivo Silver siguen pendientes. Las métricas de prueba se obtuvieron después de congelar modelo y umbral; no deben usarse para ajustar esta versión.
+Los resultados describen la simulación PaySim. No validan una política bancaria real ni desempeño para cuentas completamente nuevas. Los scores no están calibrados como probabilidades de riesgo reales. La ejecución Silver posterior ya documenta un contrato y cero duplicados exactos detectados para la misma fuente; falta revisar esa evidencia con Taco e incorporarla a la auditoría de fraude. Las métricas de prueba se obtuvieron después de congelar modelo y umbral; no deben usarse para ajustar esta versión.
 
 ## Artefactos
 

@@ -86,8 +86,10 @@ se conectará posteriormente al contrato de API de Rhamses y al panel.
 
 La lectura registra intersecciones de una muestra determinista aproximada del 1 %
 de cuentas por rol. Esto detecta coincidencias, pero no sustituye una auditoría
-completa de entidades ni comprueba duplicados exactos. Se mantienen pendientes
-el contrato definitivo Silver, la disponibilidad real del saldo anterior,
+completa de entidades ni comprueba duplicados exactos. El contrato Silver y su
+reporte de duplicados ya están implementados por Taco; falta revisar juntos
+su integración con fraude y actualizar la auditoría de este experimento.
+Se mantienen pendientes la disponibilidad real del saldo anterior,
 las explicaciones de casos y la conexión del endpoint y página de fraude.
 Las reglas de asociación se incorporarán después de integrar el clasificador.
 

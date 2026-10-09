@@ -1,0 +1,3 @@
+# Entorno conjunto del equipo; ejecutar desde la raíz del repositorio.
+# Los rangos se mantienen en pyproject.toml. No es un lock de versiones exactas.
+-e .[fraud,graph,forecast,transactions,api,dashboard,complaints,test]

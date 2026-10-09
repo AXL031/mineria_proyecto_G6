@@ -2,6 +2,35 @@
 
 Este documento concreta las etapas y entregas de los seis integrantes. Complementa las [bases del proyecto](bases-del-proyecto.md) y el [inventario de datasets](datasets.md). Las fechas se acordarán cuando el equipo confirme su disponibilidad y los requisitos del curso.
 
+## Revisión del avance — 9 de octubre de 2026
+
+Estado basado en el código, reportes y referencias Git disponibles en esta copia local. No incluye trabajo sin subir ni cambios remotos posteriores al último fetch. Las responsabilidades siguientes se mantienen; esta sección registra qué entregas ya existen y cuál es el próximo paso verificable. Los reportes históricos no equivalen a una ejecución nueva validada.
+
+| Integrante | Avance verificable | Pendientes y siguiente entrega |
+| --- | --- | --- |
+| Cueva | Perfil PaySim, contrato de predictores, separación temporal, línea base, clasificador, umbral en validación y scoring local. Modelo y métricas presentes localmente. El reporte de prueba registra AP 0.961840, precisión 0.796634 y recall 0.992511. | Endpoint y página de fraude, ejemplos de predicción y explicaciones. Revisar con Taco el consumo de Silver y actualizar la auditoría con sus controles. Integrar el clasificador antes de añadir asociaciones. |
+| Sevan | CSV crediticio disponible. No se encontró código, reporte ni entrega específica de crédito en las referencias Git locales revisadas. | Primera entrega: perfil, semántica de `loan_status`, contrato de variables y estrategia de partición. Después: Silver, línea base, modelo, calibración, explicaciones, servicio y página. Revisar disponibilidad de `loan_grade` y `loan_int_rate` al decidir. |
+| Rhamses | Ingesta de aristas, grafo dirigido, métricas, patrones, servicios, endpoints FastAPI y página Streamlit. Reporte sobre muestra de 50,000 transacciones. | Evaluar alertas con casos y etiquetas; revisar escala y límites de subgrafos. La página usa servicios directamente: falta conexión API → panel. Corregir caché de API: una vez cargada, ignora cambios de `limit`. |
+| Taco | Bronze → Silver con tipos, controles, configuración, pruebas y reporte completo de 6,362,620 filas, sin rechazos ni duplicados exactos detectados. | Regenerar Silver en esta copia; definir mart y variables de segmentación, línea base, agrupamiento evaluado, servicio y página. Revisar la utilidad de las cuentas: 6,353,307 orígenes únicos para 6,362,620 transacciones limitan el historial por origen. Gold temporal de Gerardo ya existe en código; no equivale al mart de segmentación. |
+| Gerardo | Perfilado temporal, construcción Gold por `step`, controles de conservación, exploración, autocorrelación y generación de gráficos. Reporte de 743 pasos; tramo final solo fraude desde 719. | Regenerar Gold y gráficos; definir periodo y horizonte. Comparar ingenuo y estacional de 24 pasos mediante evaluación retrospectiva; añadir método principal, monitoreo, servicio y página. Preparar reproducción y Docker cuando funcione el recorrido local. |
+| Angel | Perfil de 555,957 reclamos, 66,806 narrativas (12.02%), anonimización, distribución y propuesta de panel. | Corregir fechas: actualmente se comparan cadenas MM/DD/YYYY y el rango contradice los conteos anuales. Primera entrega siguiente: Silver estructurado y limpieza de texto. Después: línea base NLP, análisis principal evaluado, servicio y página; completar navegación y conexión API con Rhamses. |
+
+### Prioridades compartidas
+
+1. Cueva–Taco: acordar contrato Silver → variables de fraude y cerrar predicción desde datos procesados hasta pantalla. El entrenamiento actual lee Bronze; la conexión con Silver sigue pendiente.
+2. Rhamses–Angel: cerrar contrato API → panel, conectar redes y definir respuestas reutilizables para nuevas páginas.
+3. Sevan–Gerardo: acordar plantilla de métricas, configuración, versiones y artefactos; aplicarla a crédito y pronósticos.
+4. Todos: ejecutar pruebas de sus módulos y una demostración desde un entorno limpio antes de ampliar el alcance.
+
+### Estado de integración y reproducción
+
+- Existe API de grafos y página de redes; los demás dominios todavía no tienen endpoints ni páginas.
+- Silver y Gold tienen scripts y reportes completos versionados, pero sus Parquet no están presentes en esta copia. Deben regenerarse; están excluidos de Git.
+- El modelo de fraude, sus métricas y el perfil JSON sí están presentes localmente, pero otro clon debe reconstruirlos.
+- Falta un entorno común documentado y una prueba de integración del recorrido real con muestras pequeñas. Las pruebas de API usan un grafo preparado en memoria, por lo que no validan la carga del CSV real.
+- Procedencia y licencia de los tres CSV siguen pendientes. No hay llave compartida demostrada entre fuentes.
+- La guía de ejecución, dependencias, comprobaciones y criterios de aceptación está en [pruebas y reproducción](pruebas-reproduccion.md).
+
 ## Etapas de desarrollo
 
 | Etapa | Qué desarrollar | Criterio de finalización |
