@@ -124,18 +124,43 @@ def make_classifier(config):
     return Pipeline([("features", encoder), ("classifier", model)])
 
 
-def train_fraud(input_path, config, profile_path, output_dir, markdown_path=None):
+def train_fraud(input_path, config, profile_path, output_dir, markdown_path=None,
+                input_format="csv", silver_quality_path=None):
     """Verifica la fuente y congela el modelo/umbral antes de evaluar prueba."""
     input_path, output_dir = Path(input_path), Path(output_dir)
     profile = json.loads(Path(profile_path).read_text(encoding="utf-8"))
     source_hash = _sha256(input_path)
     if profile.get("scope") != "complete_file" or profile.get("invalid_rows") != 0:
         raise ValueError("Se requiere un perfil completo sin registros inválidos")
-    if profile["source"]["sha256"] != source_hash:
-        raise ValueError("El CSV cambió respecto al perfil; volver a perfilar")
+    silver_quality = None
+    if input_format == "csv":
+        if profile["source"]["sha256"].lower() != source_hash.lower():
+            raise ValueError("El CSV cambió respecto al perfil; volver a perfilar")
+    elif input_format == "silver":
+        if silver_quality_path is None:
+            raise ValueError("Se requiere el reporte de calidad Silver")
+        silver_quality = json.loads(Path(silver_quality_path).read_text(encoding="utf-8"))
+        counts = silver_quality.get("counts", {})
+        checks = silver_quality.get("quality_checks", {})
+        required_checks = {"expected_header", "source_sha256_matches", "no_rejected_rows",
+                           "no_exact_duplicate_rows", "steps_are_contiguous"}
+        if (silver_quality.get("scope") != "complete_file"
+                or counts.get("rejected_rows") != 0
+                or counts.get("bronze_rows") != profile["rows"]
+                or counts.get("silver_rows") != profile["rows"]
+                or not required_checks.issubset(checks)
+                or any(value is not True for value in checks.values())):
+            raise ValueError("Se requiere Silver completo, sin rechazos y con controles aprobados")
+        if silver_quality.get("source", {}).get("sha256", "").lower() != profile["source"]["sha256"].lower():
+            raise ValueError("La fuente Bronze de Silver no coincide con el perfil de fraude")
+        if silver_quality.get("output", {}).get("sha256", "").lower() != source_hash.lower():
+            raise ValueError("El Parquet cambió o no tiene huella en el reporte; reconstruir Silver")
+    else:
+        raise ValueError("Formato de fraude desconocido")
     print("Fuente verificada. Leyendo particiones...", flush=True)
     partitions, overlap = read_fraud_dataset(
-        input_path, config.train_end_step, config.validation_end_step, config.chunksize)
+        input_path, config.train_end_step, config.validation_end_step, config.chunksize,
+        input_format=input_format)
     if sum(len(part.labels) for part in partitions.values()) != profile["rows"]:
         raise ValueError("Los recuentos de entrenamiento no coinciden con el perfil")
     train, validation, test = (partitions[name] for name in ("train", "validation", "test"))
@@ -172,6 +197,8 @@ def train_fraud(input_path, config, profile_path, output_dir, markdown_path=None
         default_cuts = None
     report = {
         "schema_version": 1, "source": profile["source"], "config": asdict(config),
+        "training_input": {"format": input_format, "file": input_path.name,
+                           "sha256": source_hash},
         "versions": versions, "code_sha256": code_hashes,
         "split_protocol": "chronological_whole_steps_fixed_in_config",
         "matches_70_15_15_row_cuts": (config.train_end_step, config.validation_end_step) == default_cuts,
@@ -182,9 +209,14 @@ def train_fraud(input_path, config, profile_path, output_dir, markdown_path=None
         "account_overlap_sample": overlap, "threshold_selection": chosen,
         "validation": validations, "test": tests,
         "limitations": ["synthetic_source", "uncalibrated_model_scores", "academic_error_costs",
-                        "account_overlap_audit_is_sampled", "exact_duplicates_not_audited",
-                        "silver_contract_pending"],
+                        "account_overlap_audit_is_sampled"] +
+                        (["exact_duplicates_not_audited_by_training", "bronze_training_input"]
+                         if silver_quality is None else ["silver_contract_peer_review_pending"]),
     }
+    if silver_quality is not None:
+        report["silver_quality"] = {"report_sha256": _sha256(Path(silver_quality_path)),
+                                   "quality_checks": silver_quality["quality_checks"],
+                                   "duplicates": silver_quality.get("duplicates")}
     output_dir.mkdir(parents=True, exist_ok=True)
     joblib.dump({"artifact_version": 1, "pipeline": classifier, "threshold": chosen["threshold"],
                  "feature_columns": list(MODEL_FEATURES), "metadata": report},
@@ -199,7 +231,9 @@ def train_fraud(input_path, config, profile_path, output_dir, markdown_path=None
 def write_training_markdown(report, path):
     lines = ["# Entrenamiento inicial de fraude — Cueva", "",
              "Resultados de una ejecución completa, reproducible desde `scripts/train_fraud.py`.", "",
-             f"Fuente SHA-256: `{report['source']['sha256']}`.", "",
+             f"Fuente Bronze SHA-256: `{report['source']['sha256']}`.", "",
+             f"Entrada de entrenamiento: `{report['training_input']['format']}`; "
+             f"SHA-256: `{report['training_input']['sha256']}`.", "",
              "## Separación temporal", "",
              ("Los cortes coinciden con el volumen acumulado objetivo 70/15/15, sin fraccionar pasos ni elegirlos por etiquetas. "
               if report["matches_70_15_15_row_cuts"] else "Los cortes son límites personalizados fijados en la configuración. ")
@@ -232,7 +266,8 @@ def write_training_markdown(report, path):
         lines.append(f"| {role} | {overlaps['train_validation']} | {overlaps['train_test']} | {overlaps['validation_test']} |")
     lines += ["", "Los resultados describen la simulación PaySim. No validan una política bancaria real "
               "ni desempeño para cuentas completamente nuevas. Los scores no están calibrados como probabilidades "
-              "de riesgo reales. La auditoría de duplicados exactos y el contrato definitivo Silver siguen pendientes. "
+              "de riesgo reales. Los controles Silver se incorporan al reporte cuando se entrena desde Parquet; "
+              "la revisión compartida del contrato y una auditoría completa de entidades siguen pendientes. "
               "Las métricas de prueba se obtuvieron después de congelar modelo y umbral; no deben usarse para ajustar esta versión.", "",
               "## Artefactos", "",
               "`artifacts/models/fraud/model.joblib` contiene el pipeline, el umbral, las variables y los metadatos. "
