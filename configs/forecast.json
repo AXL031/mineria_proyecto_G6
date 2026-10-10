@@ -6,5 +6,66 @@
   "analysis_json": "artifacts/reports/forecast_series_analysis.json",
   "analysis_markdown": "docs/pronosticos/exploracion-serie.md",
   "plots_dir": "artifacts/plots/forecast",
-  "seasonal_period": 24
+  "seasonal_period": 24,
+  "evaluation": {
+    "experiment_id": "forecast-baselines-v1",
+    "targets": [
+      "transaction_count",
+      "total_amount"
+    ],
+    "operational_period": {
+      "start_step": 1,
+      "end_step": 718
+    },
+    "monitoring_period": {
+      "start_step": 719,
+      "end_step": 743
+    },
+    "horizon": 24,
+    "backtest_windows": [
+      {
+        "id": "W01",
+        "train_start_step": 1,
+        "train_end_step": 622,
+        "test_start_step": 623,
+        "test_end_step": 646
+      },
+      {
+        "id": "W02",
+        "train_start_step": 1,
+        "train_end_step": 646,
+        "test_start_step": 647,
+        "test_end_step": 670
+      },
+      {
+        "id": "W03",
+        "train_start_step": 1,
+        "train_end_step": 670,
+        "test_start_step": 671,
+        "test_end_step": 694
+      },
+      {
+        "id": "W04",
+        "train_start_step": 1,
+        "train_end_step": 694,
+        "test_start_step": 695,
+        "test_end_step": 718
+      }
+    ],
+    "models": {
+      "naive": {},
+      "seasonal_naive": {
+        "lag": 24
+      }
+    },
+    "metrics": {
+      "primary": "mae",
+      "secondary": [
+        "rmse",
+        "smape"
+      ]
+    },
+    "report_json": "artifacts/reports/forecast_baselines.json",
+    "results_markdown": "docs/pronosticos/resultados-baselines.md"
+  }
 }
