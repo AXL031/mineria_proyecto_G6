@@ -1,11 +1,18 @@
 """Ventanas temporales y métricas para evaluar pronósticos."""
 
+import hashlib
+import json
+import platform
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from numbers import Integral
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
+
+from bankshield.models.forecast import naive_forecast, seasonal_naive_forecast
 
 
 def _positive_integer(name: str, value: object) -> int:
@@ -297,3 +304,185 @@ def calculate_forecast_metrics(
         "rmse": float(np.sqrt(np.mean(np.square(actual_array - predicted_array)))),
         "smape": float(np.mean(smape_terms)),
     }
+
+
+def _configured_targets(evaluation_config: Mapping[str, object]) -> tuple[str, ...]:
+    targets = evaluation_config.get("targets")
+    if not isinstance(targets, Sequence) or isinstance(targets, (str, bytes)):
+        raise ValueError("targets debe ser una lista")
+    if not targets or any(not isinstance(target, str) or not target for target in targets):
+        raise ValueError("Los objetivos deben ser nombres no vacíos")
+    if len(targets) != len(set(targets)):
+        raise ValueError("Los objetivos no pueden repetirse")
+    return tuple(targets)
+
+
+def _configured_models(
+    evaluation_config: Mapping[str, object],
+) -> tuple[tuple[str, ...], int]:
+    models = evaluation_config.get("models")
+    if not isinstance(models, Mapping):
+        raise ValueError("models debe ser un objeto")
+    expected = {"naive", "seasonal_naive"}
+    if set(models) != expected:
+        raise ValueError("El experimento requiere naive y seasonal_naive")
+    seasonal = models["seasonal_naive"]
+    if not isinstance(seasonal, Mapping) or "lag" not in seasonal:
+        raise ValueError("seasonal_naive requiere el parámetro lag")
+    lag = _positive_integer("seasonal_naive.lag", seasonal["lag"])
+    return tuple(models), lag
+
+
+def evaluate_forecast_baselines(
+    series: pd.DataFrame,
+    evaluation_config: Mapping[str, object],
+) -> dict[str, object]:
+    """Ejecuta ambos modelos sobre las mismas ventanas y agrega sus métricas."""
+
+    if not isinstance(series, pd.DataFrame):
+        raise TypeError("La serie debe ser un DataFrame")
+    targets = _configured_targets(evaluation_config)
+    missing_targets = [target for target in targets if target not in series.columns]
+    if missing_targets:
+        raise ValueError("Faltan objetivos en Gold: " + ", ".join(missing_targets))
+
+    windows = backtest_windows_from_config(evaluation_config)
+    model_names, seasonal_lag = _configured_models(evaluation_config)
+    metrics_config = evaluation_config.get("metrics")
+    if not isinstance(metrics_config, Mapping):
+        raise ValueError("metrics debe ser un objeto")
+
+    window_reports = []
+    for window in windows:
+        train, test = split_backtest_window(series, window)
+        results = {}
+        for target in targets:
+            history = train[target].to_numpy()
+            actual = test[target].to_numpy()
+            predictions = {
+                "naive": naive_forecast(history, window.horizon),
+                "seasonal_naive": seasonal_naive_forecast(
+                    history,
+                    window.horizon,
+                    seasonal_period=seasonal_lag,
+                ),
+            }
+            results[target] = {
+                model: {
+                    "metrics": calculate_forecast_metrics(actual, predictions[model])
+                }
+                for model in model_names
+            }
+
+        window_reports.append(
+            {
+                "id": window.id,
+                "train": {
+                    "start_step": window.train_start_step,
+                    "end_step": window.train_end_step,
+                    "rows": int(len(train)),
+                },
+                "test": {
+                    "start_step": window.test_start_step,
+                    "end_step": window.test_end_step,
+                    "rows": int(len(test)),
+                },
+                "results": results,
+            }
+        )
+
+    aggregates = {}
+    for target in targets:
+        aggregates[target] = {}
+        for model in model_names:
+            aggregates[target][model] = {
+                metric: float(
+                    np.mean(
+                        [
+                            window["results"][target][model]["metrics"][metric]
+                            for window in window_reports
+                        ]
+                    )
+                )
+                for metric in ("mae", "rmse", "smape")
+            }
+            aggregates[target][model]["window_count"] = len(window_reports)
+
+    numeric_steps = pd.to_numeric(series["step"], errors="coerce")
+    return {
+        "schema_version": 1,
+        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "experiment_id": evaluation_config.get("experiment_id"),
+        "versions": {
+            "python": platform.python_version(),
+            "numpy": np.__version__,
+            "pandas": pd.__version__,
+        },
+        "series_coverage": {
+            "rows": int(len(series)),
+            "min_step": int(numeric_steps.min()),
+            "max_step": int(numeric_steps.max()),
+        },
+        "protocol": {
+            "targets": list(targets),
+            "horizon": evaluation_config.get("horizon"),
+            "operational_period": dict(evaluation_config["operational_period"]),
+            "monitoring_period": dict(evaluation_config.get("monitoring_period", {})),
+            "models": dict(evaluation_config["models"]),
+            "metrics": dict(metrics_config),
+        },
+        "windows": window_reports,
+        "aggregates": aggregates,
+    }
+
+
+def _file_sha256(path: Path, block_size: int = 8 * 1024 * 1024) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(block_size), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def _display_path(path: Path, base_dir: Path | None) -> str:
+    if base_dir is not None:
+        try:
+            return str(path.resolve().relative_to(Path(base_dir).resolve()))
+        except ValueError:
+            pass
+    return str(path)
+
+
+def run_forecast_baseline_evaluation(
+    input_path: Path,
+    output_path: Path,
+    evaluation_config: Mapping[str, object],
+    *,
+    base_dir: Path | None = None,
+) -> dict[str, object]:
+    """Lee Gold, ejecuta el backtesting y escribe el reporte JSON."""
+
+    input_path = Path(input_path)
+    output_path = Path(output_path)
+    if not input_path.exists():
+        raise ValueError(f"No existe la tabla Gold temporal: {input_path}")
+
+    targets = _configured_targets(evaluation_config)
+    series = pd.read_parquet(input_path, columns=["step", *targets])
+    report = evaluate_forecast_baselines(series, evaluation_config)
+    report["source"] = {
+        "path": _display_path(input_path, base_dir),
+        "format": "parquet",
+        "sha256": _file_sha256(input_path),
+    }
+    report["output"] = {
+        "path": _display_path(output_path, base_dir),
+        "format": "json",
+    }
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(
+        json.dumps(report, indent=2, ensure_ascii=False, allow_nan=False) + "\n",
+        encoding="utf-8",
+    )
+    return report

@@ -84,3 +84,21 @@ python scripts/analyze_forecast_series.py
 
 El reporte se escribe en `docs/pronosticos/exploracion-serie.md`; los gráficos
 y el JSON reproducible permanecen localmente dentro de `artifacts/`.
+
+## Evaluación de líneas base de pronóstico
+
+`evaluate_forecast_baselines.py` compara Naive y Naive estacional sobre las
+cuatro ventanas temporales definidas en `configs/forecast.json`. Ambos modelos
+usan exactamente los mismos periodos y se evalúan con MAE, RMSE y sMAPE para
+cantidad de transacciones y monto total.
+
+```powershell
+python -m pip install -e ".[forecast]"
+python scripts/evaluate_forecast_baselines.py
+```
+
+La entrada predeterminada es
+`data/gold/forecast/transactions_hourly.parquet`. El reporte reproducible se
+guarda en `artifacts/reports/forecast_baselines.json` y permanece fuera de Git.
+La definición completa del experimento se encuentra en
+`docs/pronosticos/protocolo-evaluacion.md`.
