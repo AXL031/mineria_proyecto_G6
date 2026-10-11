@@ -266,6 +266,14 @@ def extract_subgraph(
         nodes.update(next_frontier)
         frontier = next_frontier
 
+    MAX_SUBGRAPH_NODES = 500
+    if len(nodes) > MAX_SUBGRAPH_NODES:
+        raise ValueError(
+            f"El subgrafo solicitado contiene {len(nodes):,} nodos, "
+            f"lo que excede el límite de {MAX_SUBGRAPH_NODES:,}. "
+            f"Reduce la profundidad o selecciona una cuenta menos conectada."
+        )
+
     subgraph = G.subgraph(nodes).copy()
     # Marcar el nodo central
     if account_id in subgraph:

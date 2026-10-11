@@ -1,32 +1,20 @@
-"""Vista analítica interactiva del módulo de Grafos de Transacciones."""
+"""Vista analítica interactiva del módulo de Grafos de Transacciones.
 
-import json
+Conecta con la API de BankShield para obtener datos de red en lugar de
+llamar servicios internos directamente.
+"""
+
+import os
 from pathlib import Path
 
-import networkx as nx
 import pandas as pd
 from pyvis.network import Network
+import requests
 import streamlit as st
 import streamlit.components.v1 as components
 
-from bankshield.features.graph import (
-    build_transaction_graph,
-    compute_graph_summary,
-    compute_node_metrics,
-)
-from bankshield.features.graph_patterns import (
-    combine_suspicion_indicators,
-    detect_circular_transactions,
-    detect_high_fanin,
-    detect_high_fanout,
-    detect_high_value_edges,
-)
-from bankshield.ingestion.graph_dataset import read_transaction_edges, summarize_edges
-from bankshield.services.graph import (
-    query_account,
-    query_subgraph,
-    query_top_accounts,
-)
+API_URL = os.environ.get("BANKSHIELD_API_URL", "http://127.0.0.1:8000").rstrip("/")
+ROOT = Path(__file__).resolve().parents[2]
 
 st.set_page_config(
     page_title="Redes de Transacciones | BankShield",
@@ -78,19 +66,37 @@ st.markdown(
 )
 st.markdown('<span class="badge-sim">ℹ️ Datos Simulados — Esquema PaySim</span>', unsafe_allow_html=True)
 
-ROOT = Path(__file__).resolve().parents[2]
-DATA_PATH = ROOT / "data/bronze/transactions/PS_20174392719_1491204439457_log.csv"
 
+# ---------------------------------------------------------------
+# Funciones auxiliares de comunicación con la API
+# ---------------------------------------------------------------
 
-@st.cache_data(show_spinner="Procesando topología de aristas en memoria...")
-def load_graph_data(sample_limit: int):
-    """Carga y construye el grafo de transacciones con cache."""
-    edges = read_transaction_edges(DATA_PATH, limit=sample_limit)
-    G = build_transaction_graph(edges)
-    summary = compute_graph_summary(G)
-    edge_summary = summarize_edges(edges)
-    node_metrics = compute_node_metrics(G)
-    return G, summary, edge_summary, node_metrics
+def _call_api(endpoint: str, params: dict | None = None) -> dict | None:
+    """Llama a un endpoint GET de la API de grafos y devuelve el JSON."""
+    try:
+        url = f"{API_URL}/api/graphs/{endpoint}"
+        response = requests.get(url, params=params, timeout=60)
+        if response.status_code == 404:
+            st.warning("Recurso no encontrado en la API.")
+            return None
+        if response.status_code == 400:
+            st.error(f"Parámetro inválido: {response.json().get('detail', '')}")
+            return None
+        response.raise_for_status()
+        return response.json()
+    except requests.ConnectionError:
+        st.error(
+            "No se pudo conectar con la API. "
+            "Comprueba que el servidor esté iniciado en "
+            f"`{API_URL}` e inténtalo de nuevo."
+        )
+        return None
+    except requests.Timeout:
+        st.error("La solicitud a la API excedió el tiempo de espera.")
+        return None
+    except (requests.RequestException, ValueError) as exc:
+        st.error(f"Error al consultar la API: {exc}")
+        return None
 
 
 # Barra lateral de configuración y filtros
@@ -104,11 +110,15 @@ with st.sidebar:
     )
     st.caption("Carga particiones acotadas para mantener fluidez en el navegador.")
 
-try:
-    G, summary, edge_summary, node_metrics = load_graph_data(sample_size)
-except Exception as e:
-    st.error(f"Error al cargar datos transaccionales: {e}")
+# ---------------------------------------------------------------
+# Carga del resumen global desde la API
+# ---------------------------------------------------------------
+api_summary = _call_api("summary", {"limit": sample_size})
+if api_summary is None:
     st.stop()
+
+summary = api_summary["graph_summary"]
+edge_summary = api_summary["edges_summary"]
 
 # -------------------------------------------------------------
 # SECCIÓN 1: KPIs GLOBALES DE LA RED
@@ -141,8 +151,13 @@ with tab_subgraph:
 
     sub_col1, sub_col2, sub_col3 = st.columns([2, 1, 1])
 
-    # Sugerir cuentas interesantes (top PageRank o cuentas con fraude)
-    top_candidates = node_metrics.head(10).index.tolist()
+    # Obtener cuentas sugeridas del ranking para el placeholder
+    top_for_suggest = _call_api("top", {"metric": "pagerank", "top_n": 10})
+    top_candidates = (
+        [r["account"] for r in top_for_suggest["results"]]
+        if top_for_suggest and top_for_suggest.get("results")
+        else []
+    )
     default_acc = top_candidates[0] if top_candidates else ""
 
     with sub_col1:
@@ -158,78 +173,81 @@ with tab_subgraph:
         btn_search = st.button("Buscar y Graficar", type="primary")
 
     if account_input:
-        if account_input not in G:
-            st.warning(f"La cuenta `{account_input}` no fue encontrada en la muestra de {sample_size:,} transacciones.")
-        else:
-            try:
-                acc_info = query_account(G, account_input)
-                sub_data = query_subgraph(G, account_input, depth=depth_input)
+        # Consultar detalle de la cuenta a la API
+        acc_data = _call_api(f"account/{account_input}")
+        sub_data_resp = _call_api(f"subgraph/{account_input}", {"depth": depth_input})
 
-                # Tarjetas de resumen de la cuenta
-                mcol1, mcol2, mcol3, mcol4 = st.columns(4)
-                mcol1.metric("Tipo de Cuenta", acc_info["account_type"].capitalize())
-                mcol2.metric("Monto Enviado", f"${acc_info['total_amount_sent']:,.2f}")
-                mcol3.metric("Monto Recibido", f"${acc_info['total_amount_received']:,.2f}")
-                mcol4.metric("Flujo Neto", f"${acc_info['net_flow']:,.2f}")
+        if (
+            acc_data is not None
+            and "data" in acc_data
+            and sub_data_resp is not None
+            and "data" in sub_data_resp
+        ):
+            acc_info = acc_data["data"]
+            sub_data = sub_data_resp["data"]
 
-                # Generar grafo Pyvis interactivo
-                net = Network(height="520px", width="100%", directed=True, bgcolor="#ffffff", font_color="#1e293b")
-                net.force_atlas_2based(gravity=-60, central_gravity=0.01, spring_length=120)
+            # Tarjetas de resumen de la cuenta
+            mcol1, mcol2, mcol3, mcol4 = st.columns(4)
+            mcol1.metric("Tipo de Cuenta", acc_info["account_type"].capitalize())
+            mcol2.metric("Monto Enviado", f"${acc_info['total_amount_sent']:,.2f}")
+            mcol3.metric("Monto Recibido", f"${acc_info['total_amount_received']:,.2f}")
+            mcol4.metric("Flujo Neto", f"${acc_info['net_flow']:,.2f}")
 
-                # Nodos
-                for n in sub_data["nodes"]:
-                    node_id = n["id"]
-                    is_center = n.get("is_center", False)
-                    acc_type = n.get("account_type", "cliente")
+            # Generar grafo Pyvis interactivo
+            net = Network(height="520px", width="100%", directed=True, bgcolor="#ffffff", font_color="#1e293b")
+            net.force_atlas_2based(gravity=-60, central_gravity=0.01, spring_length=120)
 
-                    if is_center:
-                        color = "#EF4444"  # Rojo para el centro
-                        size = 28
-                    elif acc_type == "comercio":
-                        color = "#10B981"  # Verde para comercios
-                        size = 18
+            # Nodos
+            for n in sub_data["nodes"]:
+                node_id = n["id"]
+                is_center = n.get("is_center", False)
+                acc_type = n.get("account_type", "cliente")
+
+                if is_center:
+                    color = "#EF4444"  # Rojo para el centro
+                    size = 28
+                elif acc_type == "comercio":
+                    color = "#10B981"  # Verde para comercios
+                    size = 18
+                else:
+                    color = "#3B82F6"  # Azul para clientes
+                    size = 18
+
+                label = f"{node_id}\n({acc_type})"
+                title = f"Cuenta: {node_id}<br>Tipo: {acc_type}<br>Enviadas: {n.get('transactions_sent')}<br>Recibidas: {n.get('transactions_received')}"
+                net.add_node(node_id, label=label, title=title, color=color, size=size)
+
+            # Aristas
+            for e in sub_data["edges"]:
+                u, v = e["source"], e["target"]
+                amt = e.get("total_amount", 0.0)
+                frauds = e.get("fraud_count", 0)
+                edge_color = "#DC2626" if frauds > 0 else "#94A3B8"
+                title = f"Monto: ${amt:,.2f}<br>Transacciones: {e.get('weight')}<br>Fraudes: {frauds}"
+                net.add_edge(u, v, title=title, value=max(1, int(e.get("weight", 1))), color=edge_color)
+
+            # Renderizar HTML del canvas interactivo
+            html_path = ROOT / "artifacts/reports/graph/subgraph_view.html"
+            html_path.parent.mkdir(parents=True, exist_ok=True)
+            net.save_graph(str(html_path))
+            html_content = html_path.read_text(encoding="utf-8")
+            components.html(html_content, height=550)
+
+            # Tablas con detalle de transacciones
+            with st.expander("📄 Ver detalle tabular de conexiones"):
+                c_out, c_in = st.columns(2)
+                with c_out:
+                    st.markdown("**Destinos (Envíos)**")
+                    if acc_info["outgoing_connections"]:
+                        st.dataframe(pd.DataFrame(acc_info["outgoing_connections"]), use_container_width=True)
                     else:
-                        color = "#3B82F6"  # Azul para clientes
-                        size = 18
-
-                    label = f"{node_id}\n({acc_type})"
-                    title = f"Cuenta: {node_id}<br>Tipo: {acc_type}<br>Enviadas: {n.get('transactions_sent')}<br>Recibidas: {n.get('transactions_received')}"
-                    net.add_node(node_id, label=label, title=title, color=color, size=size)
-
-                # Aristas
-                for e in sub_data["edges"]:
-                    u, v = e["source"], e["target"]
-                    amt = e.get("total_amount", 0.0)
-                    frauds = e.get("fraud_count", 0)
-                    edge_color = "#DC2626" if frauds > 0 else "#94A3B8"
-                    title = f"Monto: ${amt:,.2f}<br>Transacciones: {e.get('weight')}<br>Fraudes: {frauds}"
-                    net.add_edge(u, v, title=title, value=max(1, int(e.get("weight", 1))), color=edge_color)
-
-                # Renderizar HTML del canvas interactivo
-                html_path = ROOT / "artifacts/reports/graph/subgraph_view.html"
-                html_path.parent.mkdir(parents=True, exist_ok=True)
-                net.save_graph(str(html_path))
-                html_content = html_path.read_text(encoding="utf-8")
-                components.html(html_content, height=550)
-
-                # Tablas con detalle de transacciones
-                with st.expander("📄 Ver detalle tabular de conexiones"):
-                    c_out, c_in = st.columns(2)
-                    with c_out:
-                        st.markdown("**Destinos (Envíos)**")
-                        if acc_info["outgoing_connections"]:
-                            st.dataframe(pd.DataFrame(acc_info["outgoing_connections"]), use_container_width=True)
-                        else:
-                            st.caption("Sin transacciones salientes registradas.")
-                    with c_in:
-                        st.markdown("**Orígenes (Recepciones)**")
-                        if acc_info["incoming_connections"]:
-                            st.dataframe(pd.DataFrame(acc_info["incoming_connections"]), use_container_width=True)
-                        else:
-                            st.caption("Sin transacciones entrantes registradas.")
-
-            except Exception as exc:
-                st.error(f"Error al procesar subgrafo: {exc}")
+                        st.caption("Sin transacciones salientes registradas.")
+                with c_in:
+                    st.markdown("**Orígenes (Recepciones)**")
+                    if acc_info["incoming_connections"]:
+                        st.dataframe(pd.DataFrame(acc_info["incoming_connections"]), use_container_width=True)
+                    else:
+                        st.caption("Sin transacciones entrantes registradas.")
 
 # -------------------------------------------------------------
 # TAB 2: DETECCIÓN DE PATRONES SOSPECHOSOS
@@ -249,30 +267,36 @@ with tab_patterns:
     with pat_col2:
         fanin_p = st.slider("Percentil para Alto Fan-in (Concentración)", 90.0, 99.9, 95.0, 0.5)
 
-    suspicious_df = combine_suspicion_indicators(
-        G, node_metrics, fanout_percentile=fanout_p, fanin_percentile=fanin_p
+    patterns_resp = _call_api(
+        "patterns/suspicious",
+        {"fanout_pct": fanout_p, "fanin_pct": fanin_p},
     )
 
-    st.markdown(f"**Cuentas con Alertas Activas Detectadas:** `{len(suspicious_df):,}`")
+    if patterns_resp is not None:
+        total_detected = patterns_resp.get("total_detected", 0)
+        results = patterns_resp.get("results", [])
 
-    if not suspicious_df.empty:
-        # Formatear lista de patrones para visualización
-        display_df = suspicious_df.copy()
-        display_df["patterns"] = display_df["patterns"].apply(lambda pts: " • ".join(pts))
-        st.dataframe(
-            display_df.head(50),
-            use_container_width=True,
-            column_config={
-                "account": st.column_config.TextColumn("Cuenta"),
-                "account_type": st.column_config.TextColumn("Tipo"),
-                "patterns": st.column_config.TextColumn("Patrones Activos"),
-                "pattern_count": st.column_config.NumberColumn("Nº Alertas"),
-                "fraud_count": st.column_config.NumberColumn("Fraudes Asociados"),
-                "pagerank": st.column_config.NumberColumn("PageRank", format="%.6f"),
-            },
-        )
-    else:
-        st.info("No se registraron cuentas que superen los umbrales seleccionados.")
+        st.markdown(f"**Cuentas con Alertas Activas Detectadas:** `{total_detected:,}`")
+
+        if results:
+            display_df = pd.DataFrame(results)
+            display_df["patterns"] = display_df["patterns"].apply(
+                lambda pts: " • ".join(pts) if isinstance(pts, list) else str(pts)
+            )
+            st.dataframe(
+                display_df.head(50),
+                use_container_width=True,
+                column_config={
+                    "account": st.column_config.TextColumn("Cuenta"),
+                    "account_type": st.column_config.TextColumn("Tipo"),
+                    "patterns": st.column_config.TextColumn("Patrones Activos"),
+                    "pattern_count": st.column_config.NumberColumn("Nº Alertas"),
+                    "fraud_count": st.column_config.NumberColumn("Fraudes Asociados"),
+                    "pagerank": st.column_config.NumberColumn("PageRank", format="%.6f"),
+                },
+            )
+        else:
+            st.info("No se registraron cuentas que superen los umbrales seleccionados.")
 
 # -------------------------------------------------------------
 # TAB 3: RANKING DE CENTRALIDAD
@@ -297,8 +321,9 @@ with tab_ranking:
     with r_col2:
         n_top = st.slider("Cantidad de Nodos a Mostrar", 5, 50, 20)
 
-    top_data = query_top_accounts(G, metric=metric_choice, top_n=n_top)
-    st.dataframe(pd.DataFrame(top_data), use_container_width=True)
+    top_resp = _call_api("top", {"metric": metric_choice, "top_n": n_top})
+    if top_resp is not None:
+        st.dataframe(pd.DataFrame(top_resp["results"]), use_container_width=True)
 
 # -------------------------------------------------------------
 # TAB 4: METODOLOGÍA Y CONTRATO DE VARIABLES
@@ -315,5 +340,7 @@ with tab_theory:
           sesgos temporales y fugas de información.
         - **Límites:** El dataset PaySim es un entorno simulado de dinero móvil; las métricas demuestran capacidades
           analíticas de grafos y no deben extrapolarse como comportamiento verificado de clientes financieros reales.
+        - **Conexión:** Esta página consume la API REST de BankShield. Los datos se cargan bajo demanda;
+          el tamaño de muestra controla la carga en el servidor.
         """
     )
