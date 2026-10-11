@@ -1,0 +1,7 @@
+{
+  "input": "data/silver/transactions/transactions.parquet",
+  "output": "data/gold/transactions/transactions_mart.parquet",
+  "quality_json": "artifacts/reports/transactions_gold.json",
+  "quality_markdown": "docs/transacciones/calidad-gold.md",
+  "chunksize": 500000
+}
