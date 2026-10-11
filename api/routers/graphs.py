@@ -43,12 +43,13 @@ _GRAPH_CACHE: dict[str, Any] = {
     "graph": None,
     "summary": None,
     "edges_summary": None,
+    "sample_limit": None,
 }
 
 
 def _get_or_load_graph(sample_limit: int = 100_000) -> nx.DiGraph:
     """Carga o retorna el grafo en memoria acotada."""
-    if _GRAPH_CACHE["graph"] is not None:
+    if _GRAPH_CACHE["graph"] is not None and _GRAPH_CACHE["sample_limit"] == sample_limit:
         return _GRAPH_CACHE["graph"]
 
     if not DATA_PATH.exists():
@@ -62,6 +63,7 @@ def _get_or_load_graph(sample_limit: int = 100_000) -> nx.DiGraph:
     _GRAPH_CACHE["graph"] = G
     _GRAPH_CACHE["summary"] = compute_graph_summary(G)
     _GRAPH_CACHE["edges_summary"] = summarize_edges(edges)
+    _GRAPH_CACHE["sample_limit"] = sample_limit
     return G
 
 
