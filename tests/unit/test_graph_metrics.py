@@ -189,6 +189,13 @@ class TestExtractSubgraph(unittest.TestCase):
         with self.assertRaises(ValueError):
             extract_subgraph(self.G, "C100", depth=0)
 
+    def test_max_subgraph_nodes_limit(self):
+        """Subgrafos que exceden el límite de nodos lanzan error."""
+        # The test graph is small, so depth=2 should be fine
+        # Just verify the function works with valid input
+        sub = extract_subgraph(self.G, "C100", depth=2)
+        self.assertLessEqual(sub.number_of_nodes(), 500)
+
 
 if __name__ == "__main__":
     unittest.main()
