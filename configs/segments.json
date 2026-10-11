@@ -1,0 +1,13 @@
+{
+  "input": "data/gold/transactions/transactions_mart.parquet",
+  "output": "data/gold/segments/account_segments.parquet",
+  "report_json": "artifacts/reports/segments.json",
+  "report_markdown": "docs/transacciones/segmentacion.md",
+  "min_transactions": 10,
+  "k_min": 2,
+  "k_max": 7,
+  "seed": 42,
+  "silhouette_sample": 10000,
+  "stability_iterations": 3,
+  "stability_fraction": 0.5
+}
