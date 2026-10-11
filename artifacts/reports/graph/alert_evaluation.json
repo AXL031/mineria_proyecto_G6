@@ -1,0 +1,247 @@
+{
+  "schema_version": 1,
+  "scope": "muestra",
+  "row_limit": 50000,
+  "edge_summary": {
+    "total_aristas": 50000,
+    "cuentas_origen_unicas": 50000,
+    "cuentas_destino_unicas": 28499,
+    "cuentas_totales_unicas": 78499,
+    "pasos_distintos": 9,
+    "rango_pasos": [
+      1,
+      9
+    ],
+    "monto_total": 7813225537.54,
+    "monto_medio": 156264.5107508,
+    "monto_maximo": 10000000.0,
+    "aristas_fraudulentas": 100,
+    "tasa_fraude": 0.002,
+    "por_tipo": {
+      "CASH_IN": {
+        "transacciones": 8992,
+        "monto_total": 1512628147,
+        "monto_medio": 168219.3224621886,
+        "fraudes": 0
+      },
+      "CASH_OUT": {
+        "transacciones": 13756,
+        "monto_total": 2521983704,
+        "monto_medio": 183336.9950734225,
+        "fraudes": 51
+      },
+      "DEBIT": {
+        "transacciones": 640,
+        "monto_total": 2388349,
+        "monto_medio": 3731.795609375,
+        "fraudes": 0
+      },
+      "PAYMENT": {
+        "transacciones": 21912,
+        "monto_total": 213150878,
+        "monto_medio": 9727.586634720701,
+        "fraudes": 0
+      },
+      "TRANSFER": {
+        "transacciones": 4700,
+        "monto_total": 3563074458,
+        "monto_medio": 758100.9485531915,
+        "fraudes": 49
+      }
+    }
+  },
+  "pattern_evaluations": [
+    {
+      "pattern": "high_fanout",
+      "flagged_accounts": 0,
+      "flagged_with_fraud": 0,
+      "fraud_txns_involving_flagged": 0,
+      "total_fraud_txns": 100,
+      "coverage_fraud": 0.0,
+      "precision_at_account": 0.0,
+      "precision_at_txn": 0.0,
+      "note": "Ninguna cuenta superó el umbral."
+    },
+    {
+      "pattern": "high_fanin",
+      "flagged_accounts": 3107,
+      "flagged_with_fraud": 65,
+      "precision_at_account": 0.020921,
+      "fraud_txns_involving_flagged": 66,
+      "total_txns_involving_flagged": 23448,
+      "precision_at_txn": 0.002815,
+      "total_fraud_txns": 100,
+      "coverage_fraud": 0.66,
+      "note": "Cobertura = fraudes que involucran al menos una cuenta flagged / total fraudes.  Precisión a nivel de cuenta = cuentas flagged con al menos un fraude / total flagged."
+    },
+    {
+      "pattern": "net_flow_anomaly",
+      "flagged_accounts": 7850,
+      "flagged_with_fraud": 89,
+      "precision_at_account": 0.011338,
+      "fraud_txns_involving_flagged": 71,
+      "total_txns_involving_flagged": 24350,
+      "precision_at_txn": 0.002916,
+      "total_fraud_txns": 100,
+      "coverage_fraud": 0.71,
+      "note": "Cobertura = fraudes que involucran al menos una cuenta flagged / total fraudes.  Precisión a nivel de cuenta = cuentas flagged con al menos un fraude / total flagged."
+    },
+    {
+      "pattern": "high_value_edge",
+      "flagged_accounts": 870,
+      "flagged_with_fraud": 23,
+      "precision_at_account": 0.026437,
+      "fraud_txns_involving_flagged": 15,
+      "total_txns_involving_flagged": 4882,
+      "precision_at_txn": 0.003073,
+      "total_fraud_txns": 100,
+      "coverage_fraud": 0.15,
+      "note": "Cobertura = fraudes que involucran al menos una cuenta flagged / total fraudes.  Precisión a nivel de cuenta = cuentas flagged con al menos un fraude / total flagged."
+    }
+  ],
+  "combined_evaluation": {
+    "total_fraud_txns": 100,
+    "by_min_patterns": [
+      {
+        "min_patterns": 1,
+        "flagged_accounts": 8065,
+        "flagged_with_fraud": 97,
+        "precision_account": 0.012027,
+        "fraud_txns_covered": 79,
+        "coverage_fraud": 0.79,
+        "precision_txn": 0.00315
+      },
+      {
+        "min_patterns": 2,
+        "flagged_accounts": 2892,
+        "flagged_with_fraud": 57,
+        "precision_account": 0.01971,
+        "fraud_txns_covered": 58,
+        "coverage_fraud": 0.58,
+        "precision_txn": 0.002553
+      }
+    ]
+  },
+  "example_cases": [
+    {
+      "account": "C803116137",
+      "account_type": "cliente",
+      "patterns": [
+        "high_fanin",
+        "net_flow_anomaly"
+      ],
+      "pattern_count": 2,
+      "fraud_as_origin": 0,
+      "fraud_as_destination": 1,
+      "category": "verdadero_positivo"
+    },
+    {
+      "account": "C932583850",
+      "account_type": "cliente",
+      "patterns": [
+        "high_fanin",
+        "net_flow_anomaly"
+      ],
+      "pattern_count": 2,
+      "fraud_as_origin": 0,
+      "fraud_as_destination": 1,
+      "category": "verdadero_positivo"
+    },
+    {
+      "account": "C716083600",
+      "account_type": "cliente",
+      "patterns": [
+        "high_fanin",
+        "net_flow_anomaly"
+      ],
+      "pattern_count": 2,
+      "fraud_as_origin": 0,
+      "fraud_as_destination": 1,
+      "category": "verdadero_positivo"
+    },
+    {
+      "account": "C766681183",
+      "account_type": "cliente",
+      "patterns": [
+        "high_fanin",
+        "net_flow_anomaly"
+      ],
+      "pattern_count": 2,
+      "fraud_as_origin": 0,
+      "fraud_as_destination": 1,
+      "category": "verdadero_positivo"
+    },
+    {
+      "account": "C991505714",
+      "account_type": "cliente",
+      "patterns": [
+        "high_fanin",
+        "net_flow_anomaly"
+      ],
+      "pattern_count": 2,
+      "fraud_as_origin": 0,
+      "fraud_as_destination": 1,
+      "category": "verdadero_positivo"
+    },
+    {
+      "account": "C1223591088",
+      "account_type": "cliente",
+      "patterns": [
+        "high_fanin",
+        "net_flow_anomaly"
+      ],
+      "pattern_count": 2,
+      "fraud_as_origin": 0,
+      "fraud_as_destination": 0,
+      "category": "falso_positivo"
+    },
+    {
+      "account": "C755355682",
+      "account_type": "cliente",
+      "patterns": [
+        "high_fanin",
+        "net_flow_anomaly"
+      ],
+      "pattern_count": 2,
+      "fraud_as_origin": 0,
+      "fraud_as_destination": 0,
+      "category": "falso_positivo"
+    },
+    {
+      "account": "C1916720513",
+      "account_type": "cliente",
+      "patterns": [
+        "high_fanin",
+        "net_flow_anomaly"
+      ],
+      "pattern_count": 2,
+      "fraud_as_origin": 0,
+      "fraud_as_destination": 0,
+      "category": "falso_positivo"
+    },
+    {
+      "account": "C1721246982",
+      "account_type": "cliente",
+      "patterns": [
+        "high_fanin",
+        "net_flow_anomaly"
+      ],
+      "pattern_count": 2,
+      "fraud_as_origin": 0,
+      "fraud_as_destination": 0,
+      "category": "falso_positivo"
+    },
+    {
+      "account": "C1674899618",
+      "account_type": "cliente",
+      "patterns": [
+        "high_fanin",
+        "net_flow_anomaly"
+      ],
+      "pattern_count": 2,
+      "fraud_as_origin": 0,
+      "fraud_as_destination": 0,
+      "category": "falso_positivo"
+    }
+  ]
+}
