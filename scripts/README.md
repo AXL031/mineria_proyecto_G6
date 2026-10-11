@@ -72,6 +72,26 @@ Entradas y salidas predeterminadas (definidas en `configs/forecast.json`):
 El esquema, las fórmulas y los controles se describen en el
 [contrato Gold temporal](../docs/pronosticos/contrato-gold.md).
 
+## Construcción del mart transaccional Gold
+
+`build_gold_transactions.py` consume el Parquet Silver y genera el mart
+analítico con una fila por transacción, sin modificar las capas de entrada. Es
+distinto del Gold temporal: no agrega por `step`.
+
+```powershell
+.venv-pruebas/Scripts/python.exe scripts/build_gold_transactions.py
+```
+
+Entradas y salidas predeterminadas (definidas en `configs/transactions_gold.json`):
+
+- Entrada: `data/silver/transactions/transactions.parquet`.
+- Gold: `data/gold/transactions/transactions_mart.parquet`.
+- Reporte JSON: `artifacts/reports/transactions_gold.json`.
+- Resumen: `docs/transacciones/calidad-gold.md`.
+
+El esquema, los roles de columna y los controles se describen en el
+[contrato del mart transaccional](../docs/transacciones/contrato-gold.md).
+
 ## Exploración de la serie temporal
 
 `analyze_forecast_series.py` calcula estadísticas del periodo operativo,
