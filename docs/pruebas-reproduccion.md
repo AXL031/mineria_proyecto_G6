@@ -11,7 +11,7 @@ Revisión del 9 de octubre de 2026. Complementa el [plan de desarrollo](plan-des
 | Transacciones | Pruebas de Silver y construcción desde CSV. | Parquet local ausente; requiere regeneración. Segmentación pendiente. |
 | Temporal | Pruebas de agregación y exploración; construcción Gold y gráficos. | Parquet local ausente; pronóstico y backtesting pendientes. |
 | Reclamos | Pruebas y perfilado del CSV. | Rango temporal incorrecto por comparación de cadenas; sin Silver, modelo ni página. |
-| Crédito | CSV original disponible. | Sin pipeline ni pruebas propias encontradas. |
+| Crédito | Perfil, Silver, entrenamiento, scoring, API, página y pruebas con datos sintéticos. | Artefactos locales excluidos de Git; semántica de `loan_status` sin confirmar. |
 
 ## Bloqueos y responsables
 
@@ -25,7 +25,7 @@ Revisión del 9 de octubre de 2026. Complementa el [plan de desarrollo](plan-des
 | P1 | No existe endpoint ni página de fraude. | Cueva implementa ambos y acuerda con Taco el uso de Silver. |
 | P1 | Caché de grafos ignora cambios de `limit` tras la primera carga. | Rhamses define caché por muestra o rechaza cambios explícitamente; añade prueba que cambie el límite. |
 | P1 | Rango de fechas de reclamos incorrecto. | Angel parsea fechas antes de compararlas, prueba cruce de años y regenera el reporte completo. |
-| P2 | Modelos/análisis de crédito, segmentación, pronósticos y NLP incompletos. | Cada responsable completa su siguiente entrega según el plan; todavía no se pueden demostrar los seis módulos finales. |
+| P2 | Segmentación, pronósticos y NLP incompletos. | Cada responsable completa su siguiente entrega según el plan; todavía no se pueden demostrar los seis módulos finales. |
 | P2 | Procedencia/licencia, comando único, Docker y reproducción desde clon limpio pendientes. | Equipo confirma fuentes; Gerardo coordina reproducción y empaquetado después de validar el recorrido local. |
 
 ## 1. Preparar el entorno

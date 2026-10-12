@@ -6,6 +6,8 @@ Servicio web backend construido con **FastAPI** que expone endpoints analíticos
 
 - `api/main.py`: Punto de entrada de la aplicación FastAPI, configuración de middleware CORS y registro de routers.
 - `api/routers/graphs.py`: Endpoints del módulo de grafos de transacciones (`/api/graphs/*`).
+- `api/routers/fraud.py`: Predicción y métricas de fraude (`/api/fraud/*`).
+- `api/routers/credit.py`: Riesgo crediticio (`/api/credit/*`).
 
 ## Endpoints Disponibles (Grafos)
 
@@ -35,3 +37,12 @@ La documentación Swagger interactiva queda accesible en:
 ```powershell
 python -m unittest tests/unit/test_api_graphs.py -v
 ```
+
+## Endpoints de Crédito
+
+| Método | Endpoint | Descripción |
+|---|---|---|
+| `POST` | `/api/credit/predict` | Probabilidad calibrada de impago asumido, clasificación frente al umbral y hasta cinco factores por oclusión. Solo acepta variables de la solicitud; rechaza `loan_grade`, `loan_int_rate` y campos extra. No recomienda montos. |
+| `GET` | `/api/credit/model` | Métricas, particiones, versiones y límites embebidos en el artefacto. |
+
+El modelo se indica con `BANKSHIELD_CREDIT_MODEL` (por defecto `artifacts/models/credit/model.joblib`). Si falta o es incompatible, responde 503 sin afectar a los demás módulos. Ver el [contrato de variables](../docs/credito/contrato-variables.md).

@@ -9,7 +9,7 @@ Estado basado en el código, reportes y referencias Git disponibles en esta copi
 | Integrante | Avance verificable | Pendientes y siguiente entrega |
 | --- | --- | --- |
 | Cueva | Perfil, variables, entrenamiento temporal desde Bronze o Silver, scoring, API de predicción/evaluación y página conectada a la API. Entrenamiento completo desde Silver reproducido: AP 0.961840, precisión 0.796634 y recall 0.992511. Ejemplos TP/FP/FN/TN y condiciones descriptivas disponibles. | Revisión compartida con Taco del contrato Silver y con Rhamses–Angel de API/navegación. Explicaciones de atribución del modelo y asociaciones quedan como ampliaciones posteriores; las condiciones mostradas no son explicaciones causales. |
-| Sevan | CSV crediticio disponible. No se encontró código, reporte ni entrega específica de crédito en las referencias Git locales revisadas. | Primera entrega: perfil, semántica de `loan_status`, contrato de variables y estrategia de partición. Después: Silver, línea base, modelo, calibración, explicaciones, servicio y página. Revisar disponibilidad de `loan_grade` y `loan_int_rate` al decidir. |
+| Sevan | Perfil, semántica asumida de `loan_status`, contrato de variables y partición (11 de octubre de 2026). Silver con 32,409 filas (7 rechazadas, 165 duplicados). Línea base trivial y logística; modelo principal de boosting sin `loan_grade` ni `loan_int_rate`; calibración sigmoide y umbral por coste. Prueba: ROC-AUC 0.8886, AP 0.7968, Brier 0.0871, ECE 0.0118. Explicación por oclusión, `POST /api/credit/predict`, `GET /api/credit/model` y página `02_credito.py`. 17 pruebas nuevas; suite completa de 157 aprobadas en un entorno Python 3.13. | Una copia en OpenML respalda 0 = sin impago y 1 = impago; falta confirmarlo con la fuente original, junto con procedencia y licencia del CSV. Revisión de Gerardo de la plantilla de métricas y artefactos. Revisión de Rhamses–Angel de la API y navegación. Partición aleatoria sin fecha ni cliente: puede sobreestimar el desempeño. `person_age` es sensible: revisar antes de cualquier uso real. No se recomienda monto de crédito: se documentan los datos que faltarían. |
 | Rhamses | Ingesta de aristas, grafo dirigido, métricas, patrones, servicios, endpoints FastAPI y página Streamlit conectada a la API. Reporte sobre muestra de 50,000 transacciones y evaluación de alertas contra etiquetas de fraude (`artifacts/reports/graph/evaluacion-alertas.md`). Límites de subgrafos acotados (500 nodos máx.), caché de API corregida respetando `sample_limit` y recorrido real validado contra backend. | Revisar con Angel contratos reutilizables para nuevas páginas y navegación integral del panel. Ampliación a detección de comunidades y evaluación temporal cuando se defina partición de red. |
 | Taco | Bronze → Silver con tipos, controles, configuración, pruebas y reporte completo de 6,362,620 filas, sin rechazos ni duplicados exactos detectados. Silver ya regenerado en esta copia; el reporte incorpora huella del Parquet para vincularlo al entrenamiento. | Revisar con Cueva la integración implementada; definir mart y variables de segmentación, línea base, agrupamiento evaluado, servicio y página. Revisar la utilidad de las cuentas: 6,353,307 orígenes únicos para 6,362,620 transacciones limitan el historial por origen. Gold temporal de Gerardo no equivale al mart de segmentación. |
 | Gerardo | Perfilado temporal, construcción Gold por `step`, controles de conservación, exploración, autocorrelación y generación de gráficos. Reporte de 743 pasos; tramo final solo fraude desde 719. | Regenerar Gold y gráficos; definir periodo y horizonte. Comparar ingenuo y estacional de 24 pasos mediante evaluación retrospectiva; añadir método principal, monitoreo, servicio y página. Preparar reproducción y Docker cuando funcione el recorrido local. |
@@ -24,7 +24,7 @@ Estado basado en el código, reportes y referencias Git disponibles en esta copi
 
 ### Estado de integración y reproducción
 
-- Existen API y página de fraude conectadas entre sí, además de API de grafos y página de redes. Redes todavía consulta servicios directamente; crédito, segmentos, temporal y reclamos no tienen vistas finales.
+- Existen API y página de fraude y de crédito conectadas entre sí, además de API de grafos y página de redes. Redes todavía consulta servicios directamente; segmentos, temporal y reclamos no tienen vistas finales.
 - Silver está regenerado con 6,362,620 filas y controles aprobados. Gold temporal sigue sin regenerarse en esta copia. Los derivados están excluidos de Git.
 - Modelo anterior en `artifacts/models/fraud/` y experimento Silver en `artifacts/models/fraud-silver/`, ambos locales. Otro clon debe reconstruirlos.
 - Entorno común instalado con Python 3.12.14 y `pip check` aprobado. Suite completa: **111 pruebas aprobadas**, incluidas API, equivalencia Bronze/Silver e interacciones de Streamlit. Las pruebas de grafos aún usan un grafo en memoria y no validan su carga completa del CSV.
@@ -156,6 +156,25 @@ busca el modelo anterior en `artifacts/models/fraud/model.joblib`.
 4. Evaluar discriminación y calibración de las probabilidades; explicar casos individuales.
 5. Implementar el servicio y la página de riesgo crediticio.
 6. Documentar las limitaciones para recomendar un monto de crédito: la probabilidad de impago por sí sola no determina un límite óptimo.
+
+#### Incremento implementado — 11 de octubre de 2026
+
+- Documentos: [perfil](credito/perfil-credito.md), [calidad Silver](credito/calidad-silver.md), [contrato de variables](credito/contrato-variables.md) y [resultados](credito/resultados-modelo.md).
+- Código: `src/bankshield/{ingestion/credit_profile,transforms/silver_credit,features/credit,models/credit,services/credit}.py`, `api/routers/credit.py`, `dashboard/pages/02_credito.py` y `configs/credit.json`.
+- `loan_grade` y `loan_int_rate` se excluyen del modelo principal porque las fija el prestamista tras evaluar el riesgo; una variante comparativa muestra cuánto mejoran (ROC-AUC 0.9388) sin recomendarla para decidir.
+- La página se comprobó en un navegador contra la API real y el modelo entrenado (11 de octubre). Las pruebas usan artefactos entrenados con datos sintéticos; las métricas citadas provienen de una ejecución local completa sobre el CSV, cuyo modelo no se sube a Git.
+
+Reproducir, con el entorno común:
+
+```powershell
+.venv-pruebas/Scripts/python.exe scripts/profile_credit.py
+.venv-pruebas/Scripts/python.exe scripts/build_silver_credit.py
+.venv-pruebas/Scripts/python.exe scripts/train_credit.py
+.venv-pruebas/Scripts/python.exe -m uvicorn api.main:app --host 127.0.0.1 --port 8000
+.venv-pruebas/Scripts/python.exe -m streamlit run dashboard/app.py
+```
+
+Pendientes: confirmar con la fuente original la semántica de `loan_status` (respaldada solo por una copia en OpenML), cerrar con Gerardo la plantilla de métricas, revisar con Rhamses–Angel la navegación y definir, si el curso lo exige, una regla de límite de crédito con datos de pérdida y costos.
 
 **Entrega final:** pipeline de crédito, modelo evaluado, explicaciones y página de riesgo.
 

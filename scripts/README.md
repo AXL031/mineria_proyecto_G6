@@ -122,3 +122,19 @@ La entrada predeterminada es
 guarda en `artifacts/reports/forecast_baselines.json` y permanece fuera de Git.
 La definición completa del experimento se encuentra en
 `docs/pronosticos/protocolo-evaluacion.md`.
+
+## Pipeline de crédito
+
+Los tres scripts usan los valores predeterminados de `configs/credit.json` y no modifican Bronze.
+
+```powershell
+.venv-pruebas/Scripts/python.exe scripts/profile_credit.py
+.venv-pruebas/Scripts/python.exe scripts/build_silver_credit.py
+.venv-pruebas/Scripts/python.exe scripts/train_credit.py
+```
+
+- `profile_credit.py`: lee `data/bronze/credit/credit_risk_dataset.csv`; escribe `artifacts/reports/credit/credit_profile.json` y `docs/credito/perfil-credito.md`.
+- `build_silver_credit.py`: rechaza valores imposibles, elimina duplicados exactos y recalcula `loan_percent_income`; escribe `data/silver/credit/credit.parquet`, `artifacts/reports/credit/silver_quality.json` y `docs/credito/calidad-silver.md`.
+- `train_credit.py`: verifica el Parquet contra su reporte, entrena, calibra, elige el umbral en validación y evalúa la prueba una sola vez; escribe `artifacts/models/credit/` y `docs/credito/resultados-modelo.md`.
+
+El esquema y las decisiones están en el [contrato de variables](../docs/credito/contrato-variables.md).
