@@ -8,6 +8,7 @@ from fastapi.responses import JSONResponse
 from api.routers.graphs import router as graphs_router
 from api.routers.fraud import router as fraud_router
 from api.routers.credit import router as credit_router
+from api.routers.forecast import router as forecast_router
 
 app = FastAPI(
     title="BankShield Analytics API",
@@ -31,6 +32,7 @@ app.add_middleware(
 app.include_router(graphs_router, prefix="/api")
 app.include_router(fraud_router, prefix="/api")
 app.include_router(credit_router, prefix="/api")
+app.include_router(forecast_router, prefix="/api")
 
 
 @app.exception_handler(RequestValidationError)
@@ -49,7 +51,8 @@ def health_check():
         "status": "online",
         "service": "BankShield Analytics API",
         "version": "0.1.0",
-        "modules": ["graphs", "fraud", "credit"],
+        "modules": ["graphs", "fraud", "credit", "forecast"],
         "fraud_model_status": "consultar /api/fraud/model",
         "credit_model_status": "consultar /api/credit/model",
+        "forecast_status": "consultar /api/forecast/projection",
     }

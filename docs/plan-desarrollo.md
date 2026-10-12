@@ -16,8 +16,10 @@ las mismas cuatro ventanas, sin usar el tramo 719–743. Ninguna configuración
 ajustada mejora el MAE de Naive; por ello Naive se mantiene como selección para
 cantidad y monto. El [monitoreo histórico](pronosticos/resultados-monitoreo.md)
 compara los steps 694–718 con 719–743 y detecta cambios en los seis indicadores
-configurados. El siguiente incremento es implementar el servicio y la página
-temporal usando el modelo seleccionado y mostrando estas limitaciones.
+configurados. `GET /api/forecast/projection`, `GET /api/forecast/monitoring` y
+la página `04_pronosticos.py` integran la proyección Naive y el monitoreo sin
+ocultar sus limitaciones. El siguiente incremento es cerrar la reproducción
+integral y revisar visualmente el recorrido API–panel.
 
 La [verificación del avance](revision-avance-2026-10-12.md) contrasta las responsabilidades siguientes con el código de `c588482`, la suite de 157 pruebas aprobadas y comprobaciones de datos/API locales. Registra avances nuevos de Gold, segmentación y backtesting, pendientes por responsable y dos problemas reproducidos: uso de la etiqueta de fraude en el agrupamiento y comparación no cronológica de fechas de reclamos. El resumen histórico siguiente contiene estados que quedaron desactualizados; consultar la verificación vigente para decidir el próximo trabajo.
 

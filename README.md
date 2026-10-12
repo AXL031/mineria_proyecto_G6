@@ -14,7 +14,8 @@ El [plan de desarrollo](docs/plan-desarrollo.md) mantiene el alcance y el repart
 y [tres configuraciones Holt-Winters](docs/pronosticos/resultados-holt-winters.md)
 se evaluaron sobre las mismas cuatro ventanas. Naive se mantiene seleccionado;
 el [monitoreo histórico](docs/pronosticos/resultados-monitoreo.md) detecta el
-cambio del tramo 719–743. Servicio y página temporal continúan pendientes.
+cambio del tramo 719–743. El servicio y la página temporal exponen la proyección
+Naive, incertidumbre descriptiva y los indicadores de cambio mediante la API.
 
 ## Punto de partida
 
