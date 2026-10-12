@@ -2,13 +2,19 @@
 
 Proyecto académico de minería de datos y analítica financiera. La visión incluye detección de fraude, riesgo crediticio, análisis de reclamos, pronósticos y explicabilidad sobre una arquitectura Bronze → Silver → Gold.
 
+## Guía vigente para continuar el desarrollo
+
+**Antes de elegir o implementar una tarea, cada integrante debe consultar la [verificación del avance — 12 de octubre de 2026](docs/revision-avance-2026-10-12.md).** Allí están los avances verificados, los pendientes y la siguiente entrega de cada responsable, las tareas compartidas y los criterios de aceptación.
+
+El [plan de desarrollo](docs/plan-desarrollo.md) mantiene el alcance y el reparto de responsabilidades. Para decidir qué hacer ahora, guiarse por la verificación vigente: sus pendientes actualizados reemplazan los estados históricos que contradigan el código. Al completar una entrega, registrar su evidencia y actualizar ambos documentos para mantener esta guía al día.
+
 ## Punto de partida
 
 La [base del proyecto](docs/bases-del-proyecto.md) define el alcance inicial, los límites de las fuentes públicas, la arquitectura propuesta, los criterios de evaluación, el reparto entre los seis integrantes y el orden de trabajo. Es una propuesta de ejecución para discutir con el equipo antes de implementar los módulos.
 
 El [plan de desarrollo](docs/plan-desarrollo.md) detalla las cinco etapas, las tareas de cada integrante, las responsabilidades compartidas y las primeras entregas.
 
-La revisión del **9 de octubre de 2026** en ese plan registra el avance verificable y la siguiente entrega de cada integrante. La [guía de pruebas y reproducción](docs/pruebas-reproduccion.md) reúne dependencias, bloqueos, comandos y criterios para probar los componentes existentes y cerrar el MVP integrado.
+La revisión vigente del **12 de octubre de 2026** está enlazada al inicio de ese plan. La [guía de pruebas y reproducción](docs/pruebas-reproduccion.md) reúne dependencias, comandos y criterios de ejecución; sus bloqueos históricos deben contrastarse con la verificación vigente.
 
 La primera entrega de Cueva incluye [perfilado y contrato de variables de fraude](docs/fraude/contrato-variables.md), con comandos reproducibles y controles de información disponible antes de la operación.
 
@@ -20,7 +26,9 @@ Los tres CSV aportados están organizados en `data/bronze/` y se versionan media
 
 **Primer incremento propuesto:** cargar transacciones, aplicar controles de calidad, construir un mart analítico, entrenar un detector de fraude de referencia y mostrar sus resultados en un panel local. El mismo recorrido servirá como patrón para los módulos posteriores.
 
-## Estado
+## Estado histórico
+
+Esta lista conserva el estado anterior a la verificación del 12 de octubre y contiene pendientes ya implementados. Para el estado actual y las próximas tareas, consultar la [verificación vigente](docs/revision-avance-2026-10-12.md).
 
 - [x] Contexto y bases documentados.
 - [x] Fuente transaccional de trabajo elegida: archivo con esquema PaySim.
