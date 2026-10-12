@@ -1,0 +1,13 @@
+{
+  "random_state": 42,
+  "validation_fraction": 0.15,
+  "test_fraction": 0.15,
+  "max_iter": 200,
+  "max_leaf_nodes": 15,
+  "learning_rate": 0.05,
+  "min_samples_leaf": 40,
+  "l2_regularization": 1.0,
+  "approve_bad_cost": 5.0,
+  "reject_good_cost": 1.0,
+  "calibration_bins": 10
+}

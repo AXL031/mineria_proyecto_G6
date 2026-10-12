@@ -20,7 +20,7 @@ La estructura coincide con el formato conocido como PaySim y permite explorar tr
 
 `person_age`, `person_income`, `person_home_ownership`, `person_emp_length`, `loan_intent`, `loan_grade`, `loan_amnt`, `loan_int_rate`, `loan_status`, `loan_percent_income`, `cb_person_default_on_file`, `cb_person_cred_hist_length`.
 
-Este archivo **no tiene el esquema de Home Credit**. Tampoco contiene una clave de cliente o fecha en su cabecera. Hay que confirmar el significado de `loan_status` y revisar si variables como `loan_grade` o `loan_int_rate` están disponibles en el momento en que se pretende predecir.
+Este archivo **no tiene el esquema de Home Credit**. El [perfil](credito/perfil-credito.md) y el [contrato de variables](credito/contrato-variables.md) documentan su uso. Tampoco contiene una clave de cliente o fecha en su cabecera. Una copia en OpenML respalda `loan_status` = 1 como impago, pero falta confirmarlo con la fuente original, junto con procedencia y licencia. `loan_grade` y `loan_int_rate` las fija el prestamista tras evaluar el riesgo, por lo que el modelo principal las excluye.
 
 ### Reclamos
 

@@ -33,9 +33,10 @@ Los tres CSV aportados están organizados en `data/bronze/` y se versionan media
 - [x] Perfilado de reclamos y análisis de cobertura de narrativas de texto (NLP) completado.
 - [x] Ingesta transaccional con controles de calidad y capa Silver en Parquet (ver [contrato Silver](docs/transacciones/contrato-silver.md)).
 - [x] API de grafos y página de redes implementadas como componentes separados.
+- [x] Riesgo crediticio: Silver, modelo calibrado, explicación por oclusión, endpoints y página (ver [contrato](docs/credito/contrato-variables.md) y [resultados](docs/credito/resultados-modelo.md)).
 - [ ] Conexión API → panel y página/endpoint de fraude integrados.
 
-Fraude tiene un modelo entrenado y un servicio de scoring local. Grafos tiene perfilado, métricas, patrones, servicios, endpoints y página de redes (ver [contrato](docs/grafos/contrato-variables.md) y [perfil](docs/grafos/perfil-red.md)); la página llama directamente a servicios y falta conectarla a la API. Reclamos tiene perfilado de 555,957 quejas y propuesta del panel; su rango temporal requiere corrección. Transacciones tiene Silver y controles; pronósticos tiene Gold por `step` y exploración, pero aún no un pronóstico evaluado. Crédito, segmentación y modelado NLP siguen pendientes. Los Parquet y modelos se regeneran localmente y quedan fuera de Git.
+Fraude tiene un modelo entrenado y un servicio de scoring local. Grafos tiene perfilado, métricas, patrones, servicios, endpoints y página de redes (ver [contrato](docs/grafos/contrato-variables.md) y [perfil](docs/grafos/perfil-red.md)); la página llama directamente a servicios y falta conectarla a la API. Reclamos tiene perfilado de 555,957 quejas y propuesta del panel; su rango temporal requiere corrección. Transacciones tiene Silver y controles; pronósticos tiene Gold por `step` y exploración, pero aún no un pronóstico evaluado. Crédito tiene perfil, Silver, modelo calibrado, API y página; falta confirmar con la fuente original el significado de `loan_status`. Segmentación y modelado NLP siguen pendientes. Los Parquet y modelos se regeneran localmente y quedan fuera de Git.
 
 ## Preparación común del equipo
 

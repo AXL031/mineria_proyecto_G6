@@ -13,7 +13,7 @@ dashboard/
 ├── app.py                     # Portal de bienvenida, aviso de compliance y resumen de módulos
 └── pages/
     ├── 01_fraude.py           # Detección supervisada y scoring en vivo (Cueva)
-    ├── 02_riesgo.py           # Riesgo crediticio y explicabilidad (Sevan)
+    ├── 02_credito.py          # Riesgo crediticio y explicabilidad (Sevan) [Implementado]
     ├── 03_redes.py            # Topología de red y subgrafos interactivos (Rhamses) [Implementado]
     ├── 04_reclamos.py         # Análisis de quejas, NLP y tópicos (Angel)
     └── 05_pronosticos.py      # Series de tiempo y monitoreo de deriva (Gerardo)
