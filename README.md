@@ -13,7 +13,8 @@ El [plan de desarrollo](docs/plan-desarrollo.md) mantiene el alcance y el repart
 **Pronósticos — Gerardo:** las [líneas base](docs/pronosticos/resultados-baselines.md)
 y [tres configuraciones Holt-Winters](docs/pronosticos/resultados-holt-winters.md)
 se evaluaron sobre las mismas cuatro ventanas. Naive se mantiene seleccionado;
-monitoreo, servicio y página temporal continúan pendientes.
+el [monitoreo histórico](docs/pronosticos/resultados-monitoreo.md) detecta el
+cambio del tramo 719–743. Servicio y página temporal continúan pendientes.
 
 ## Punto de partida
 

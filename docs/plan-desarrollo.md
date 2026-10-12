@@ -14,8 +14,10 @@ La [comparación de Holt-Winters](pronosticos/resultados-holt-winters.md)
 evalúa tres configuraciones aditivas junto con Naive y Naive estacional sobre
 las mismas cuatro ventanas, sin usar el tramo 719–743. Ninguna configuración
 ajustada mejora el MAE de Naive; por ello Naive se mantiene como selección para
-cantidad y monto. El siguiente incremento es analizar errores e implementar la
-comparación histórica de distribuciones antes del servicio y la página.
+cantidad y monto. El [monitoreo histórico](pronosticos/resultados-monitoreo.md)
+compara los steps 694–718 con 719–743 y detecta cambios en los seis indicadores
+configurados. El siguiente incremento es implementar el servicio y la página
+temporal usando el modelo seleccionado y mostrando estas limitaciones.
 
 La [verificación del avance](revision-avance-2026-10-12.md) contrasta las responsabilidades siguientes con el código de `c588482`, la suite de 157 pruebas aprobadas y comprobaciones de datos/API locales. Registra avances nuevos de Gold, segmentación y backtesting, pendientes por responsable y dos problemas reproducidos: uso de la etiqueta de fraude en el agrupamiento y comparación no cronológica de fechas de reclamos. El resumen histórico siguiente contiene estados que quedaron desactualizados; consultar la verificación vigente para decidir el próximo trabajo.
 

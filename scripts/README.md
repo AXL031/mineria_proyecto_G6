@@ -146,6 +146,22 @@ El reporte estructurado se guarda en
 la selección final están en
 `docs/pronosticos/resultados-holt-winters.md`.
 
+## Monitoreo histórico de la serie transaccional
+
+`monitor_forecast_shift.py` compara los 25 steps operativos recientes (694–718)
+con el tramo reservado 719–743. Mide volumen, monto, distribución de montos,
+mezcla de tipos y tasa de fraude usando umbrales versionados.
+
+```powershell
+python -m pip install -e ".[forecast]"
+python scripts/monitor_forecast_shift.py
+```
+
+El JSON reproducible se guarda en
+`artifacts/reports/forecast_monitoring.json`. El resumen versionado se genera
+en `docs/pronosticos/resultados-monitoreo.md`. Es una demostración histórica
+sobre PaySim, no un monitor conectado a datos futuros.
+
 ## Pipeline de crédito
 
 Los tres scripts usan los valores predeterminados de `configs/credit.json` y no modifican Bronze.

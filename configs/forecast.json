@@ -99,5 +99,26 @@
     },
     "report_json": "artifacts/reports/forecast_holt_winters.json",
     "results_markdown": "docs/pronosticos/resultados-holt-winters.md"
+  },
+  "monitoring": {
+    "experiment_id": "forecast-historical-monitoring-v1",
+    "reference_period": {
+      "start_step": 694,
+      "end_step": 718
+    },
+    "observed_period": {
+      "start_step": 719,
+      "end_step": 743
+    },
+    "thresholds": {
+      "transaction_count_relative_change": 0.5,
+      "total_amount_relative_change": 0.5,
+      "average_amount_relative_change": 0.5,
+      "amount_distribution_tvd": 0.2,
+      "type_mix_tvd": 0.2,
+      "fraud_rate_absolute_change": 0.2
+    },
+    "report_json": "artifacts/reports/forecast_monitoring.json",
+    "results_markdown": "docs/pronosticos/resultados-monitoreo.md"
   }
 }
