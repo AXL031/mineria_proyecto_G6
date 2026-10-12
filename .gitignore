@@ -26,6 +26,9 @@ __pycache__/
 .ipynb_checkpoints/
 *.egg-info/
 
+# Copia aislada de verificación; incluye entorno, Bronze y derivados locales.
+/artifacts/reports/fraud-clean-reproduction/
+
 # SO y editores
 .DS_Store
 Thumbs.db

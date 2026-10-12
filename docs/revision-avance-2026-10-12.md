@@ -8,6 +8,8 @@ Revisión del código y documentación de `c588482`, commit que comparten `main`
 
 El proyecto tiene tres de seis módulos con servicio, API y página: fraude, crédito y grafos. Segmentación tiene pipeline y análisis, pero un problema metodológico bloquea la aceptación de sus resultados. Pronósticos tiene líneas base evaluadas; reclamos permanece en perfilado. La entrega integral todavía está pendiente.
 
+**Actualización posterior de Cueva, 12 de octubre:** se implementaron asociaciones sencillas, endpoint/página de patrones, revisión técnica de Silver desde fraude y comandos de reproducción/verificación. Consultar el [cierre de entrega](fraude/cierre-entrega.md) para la evidencia más reciente del módulo; el resto de esta revisión conserva el diagnóstico inicial.
+
 ## Estado de las etapas
 
 | Etapa del plan | Estado contrastado | Qué falta para cerrarla | Responsables |
@@ -27,9 +29,9 @@ El proyecto tiene tres de seis módulos con servicio, API y página: fraude, cr�
 | Línea base y clasificador | Implementado: `models/fraud.py`, `scripts/train_fraud.py`; DummyClassifier y HistGradientBoostingClassifier. |
 | Umbral y evaluación temporal | Implementado/reportado: cortes 323/378; AP 0.961840, precisión 0.796634, recall 0.992511; ejemplos TP/FP/FN/TN en `scripts/analyze_fraud_errors.py`. No se reentrenó el CSV completo hoy. |
 | Servicio y página | Implementado: `services/fraud.py`, `api/routers/fraud.py`, `dashboard/pages/01_fraude.py`; predicción y métricas por HTTP. |
-| Asociaciones y explicaciones | Parcial: condiciones descriptivas y errores; no hay reglas de asociación adicionales ni atribuciones del modelo. Son ampliaciones posteriores según el plan. |
+| Asociaciones y explicaciones | Asociaciones sencillas implementadas posteriormente: seis antecedentes fijos evaluados por partición, endpoint y consulta en página. Condiciones/errores disponibles; atribuciones individuales siguen como ampliación. Ver cierre de entrega. |
 
-**Siguiente entrega:** cerrar explícitamente la revisión Silver–fraude con Taco; revisar API/navegación con Rhamses–Angel y demostrar desde otro clon. La revisión transaccional ya está documentada, pero `docs/transacciones/contrato-silver.md` indica que falta confirmación de Cueva. Documentar disponibilidad del saldo anterior en el escenario objetivo. Añadir asociaciones/atribuciones después del cierre del recorrido básico si lo exige el alcance.
+**Estado posterior:** revisión técnica de Silver desde fraude realizada a solicitud de Cueva; disponibilidad del saldo anterior y reproducción documentadas; asociaciones y página comprobadas. Falta registrar aceptación humana cruzada del equipo y confirmar fuente/licencia. La reproducción aislada y sus límites se detallan en el cierre de entrega.
 
 ## Sevan — riesgo crediticio y explicabilidad
 

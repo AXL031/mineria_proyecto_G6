@@ -91,6 +91,17 @@ class FraudAPITests(unittest.TestCase):
         client = TestClient(app, raise_server_exceptions=False)
         self.assertEqual(client.post("/api/fraud/predict", json=self.record).status_code, 500)
 
+    def test_missing_or_unrelated_patterns_do_not_disable_prediction(self):
+        path = self.model.with_name("patterns.json")
+        for content in (None, [], {"schema_version": 1, "model_id": "another_model"}):
+            if content is not None:
+                path.write_text(json.dumps(content), encoding="utf-8")
+            with self.subTest(content=content), self.assertLogs("api.routers.fraud", level="WARNING"):
+                response = self.client.get("/api/fraud/patterns")
+            self.assertEqual(response.status_code, 503)
+            self.assertNotIn(str(path), response.text)
+            self.assertEqual(self.client.post("/api/fraud/predict", json=self.record).status_code, 200)
+
 
 if __name__ == "__main__":
     unittest.main()

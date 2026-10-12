@@ -4,6 +4,8 @@
 
 El primer modelo estimará riesgo **antes de ejecutar la transacción**. Sus datos de entrada deben existir en ese momento. El CSV de PaySim es una simulación; su capacidad predictiva no demuestra desempeño en una entidad bancaria.
 
+El saldo anterior debe obtenerse del sistema de origen antes de ejecutar la operación. Si no está disponible, este modelo no es aplicable: no reemplazarlo por el saldo posterior ni imputar un valor inventado. Cambiar esa disponibilidad requiere redefinir variables y reentrenar.
+
 | Campo | Uso inicial | Motivo |
 | --- | --- | --- |
 | `type` | Predictor categórico | Tipo de operación solicitado. |
@@ -46,6 +48,8 @@ Para una comprobación rápida se puede añadir `--limit 10000`; ese informe se 
 El [entrenamiento y scoring](entrenamiento.md) usa este contrato, con particiones
 temporales, una línea base y un clasificador. La versión vectorizada del constructor
 se comprueba contra la versión de un registro y conserva las mismas exclusiones.
+
+El [cierre de entrega](cierre-entrega.md) documenta la revisión técnica Silver–fraude, API/página, reproducción y asociaciones sencillas. Los [patrones descriptivos](patrones-descriptivos.md) tienen antecedentes basados solo en tipo/monto/saldo anterior; `isFraud` se utiliza como consecuente para medir asociaciones por partición, sin modificar el clasificador ni ajustar reglas sobre prueba.
 
 ## Secuencia de modelado
 

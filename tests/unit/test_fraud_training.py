@@ -17,6 +17,7 @@ from bankshield.models.fraud import FraudConfig, evaluate_scores, select_thresho
 from bankshield.services.fraud import FraudScorer
 from bankshield.transforms.silver_transactions import build_silver
 from scripts.analyze_fraud_errors import analyze
+from scripts.analyze_fraud_patterns import analyze as analyze_patterns
 
 
 class FraudTrainingTests(unittest.TestCase):
@@ -144,6 +145,20 @@ class FraudTrainingTests(unittest.TestCase):
         examples = analyze(silver, output / "model.joblib", self.workdir / "examples.json", examples=2)
         self.assertEqual(examples["confusion"], report["test"]["classifier_selected"]["confusion"])
         self.assertTrue(all(len(cases) <= 2 for cases in examples["examples"].values()))
+        patterns_path = output / "patterns.json"
+        patterns = analyze_patterns(silver, output / "model.joblib", patterns_path)
+        scorer = FraudScorer(output / "model.joblib")
+        self.assertEqual(scorer.patterns(), patterns)
+        self.assertEqual(patterns["partitions"]["test"]["rows"], 40)
+        self.assertFalse(patterns["rules_selected_using_test"])
+        patterns_path.write_text(json.dumps({**patterns, "model_id": "another_model"}), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "incompatible"):
+            scorer.patterns()
+        patterns_path.write_text(json.dumps(patterns), encoding="utf-8")
+        patterns["partitions"]["test"]["rules"][0]["confidence"] = 999
+        patterns_path.write_text(json.dumps(patterns), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "inconsistentes"):
+            scorer.patterns()
         original = quality.read_text(encoding="utf-8")
         data = json.loads(original)
         modifications = [

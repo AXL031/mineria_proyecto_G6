@@ -2,6 +2,12 @@
 
 Comandos reproducibles de ingesta, transformación, entrenamiento y evaluación. Cada comando deberá indicar entradas, salidas y forma de ejecución.
 
+## Entrega completa de fraude
+
+`powershell -ExecutionPolicy Bypass -File scripts/reproduce_fraud.ps1` prepara el entorno y reconstruye perfil, Silver, modelo, errores, asociaciones y comprobación HTTP/página. Guarda una ejecución separada en `artifacts/reports/fraud-reproduction/`. Ver [alcance, evidencia y demostración](../docs/fraude/cierre-entrega.md).
+
+`analyze_fraud_patterns.py` analiza seis reglas descriptivas predefinidas, por partición temporal, sobre el Silver exacto registrado en el modelo. `verify_fraud_delivery.py --model ruta/model.joblib` comprueba predicciones, métricas y patrones en la página contra una API HTTP temporal y los errores de modelo ausente/conexión. Ninguno cambia el umbral ni entrena el clasificador.
+
 ## Construcción de Silver transaccional
 
 `build_silver.py` lee el CSV PaySim de Bronze en bloques, aplica los controles
