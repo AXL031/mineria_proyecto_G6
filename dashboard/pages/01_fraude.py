@@ -11,13 +11,17 @@ st.set_page_config(page_title="Fraude | BankShield", page_icon="🛡️", layout
 st.title("Detección de fraude")
 st.caption("Demostración sobre transacciones simuladas de PaySim.")
 st.info("El score no es una probabilidad calibrada. La alerta usa el umbral elegido en validación; los montos no tienen una moneda verificada.")
+st.caption("El saldo anterior debe estar disponible antes de ejecutar la operación. Si no se dispone de él, este modelo no aplica; no sustituirlo por el saldo posterior ni inventar un valor.")
 
 
 def call_api(method, endpoint, **kwargs):
     try:
         response = requests.request(method, f"{API_URL}/api/fraud/{endpoint}", timeout=20, **kwargs)
         if response.status_code == 503:
-            st.error("El modelo no está disponible. Revisa su generación y las versiones del entorno del servidor.")
+            if endpoint == "patterns":
+                st.error("Los patrones no están disponibles. Genera el reporte para el modelo vigente y revisa que el modelo pueda cargarse.")
+            else:
+                st.error("El modelo no está disponible. Revisa su generación y las versiones del entorno del servidor.")
             return None
         if response.status_code == 422:
             st.error("Los datos enviados no cumplen el contrato de la transacción.")
@@ -75,3 +79,24 @@ if st.button("Consultar métricas y versión"):
             st.warning("El artefacto no incluye métricas de prueba.")
         st.json({key: evaluation.get(key) for key in
                  ("source", "training_input", "partitions", "versions", "threshold_selection", "limitations")})
+
+st.subheader("Patrones descriptivos")
+st.caption("Asociaciones históricas entre condiciones de entrada y la etiqueta de fraude. No son causas, atribuciones del modelo ni reglas de decisión bancaria.")
+if st.button("Consultar patrones históricos"):
+    patterns = call_api("GET", "patterns")
+    if patterns is not None:
+        st.caption(f"Modelo: {patterns['model_id']}")
+        if prediction and patterns["model_id"] != prediction["result"]["model_id"]:
+            st.warning("El modelo cambió desde la predicción mostrada. Vuelve a evaluar para comparar.")
+        for name, title in (("train", "Entrenamiento"), ("validation", "Validación"), ("test", "Prueba")):
+            part = patterns["partitions"][name]
+            with st.expander(f"{title}: {part['rows']:,} operaciones", expanded=name == "test"):
+                st.write(f"Prevalencia de fraude: {part['prevalence']:.4%}")
+                st.dataframe(pd.DataFrame([
+                    {"Regla": row["description"], "Coincidencias": row["matches"],
+                     "Fraudes": row["fraud_matches"], "Soporte": f"{row['support']:.2%}",
+                     "Confianza": f"{row['confidence']:.2%}" if row["confidence"] is not None else "N/D",
+                     "Lift": f"{row['lift']:.2f}" if row["lift"] is not None else "N/D",
+                     "Cobertura": f"{row['fraud_coverage']:.2%}" if row["fraud_coverage"] is not None else "N/D"} for row in part["rules"]
+                ]), hide_index=True)
+        st.caption("Soporte: fracción de operaciones que cumplen la regla. Confianza: proporción de fraude entre coincidencias. Lift: confianza / prevalencia. Cobertura: fracción de fraudes cubiertos. Las reglas se solapan y no se suman. Se definieron sin seleccionar por resultados en prueba.")

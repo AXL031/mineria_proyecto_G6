@@ -57,3 +57,12 @@ def predict(transaction: FraudRequest, scorer: FraudScorer = Depends(get_scorer)
 @router.get("/model")
 def model_evaluation(scorer: FraudScorer = Depends(get_scorer)):
     return scorer.evaluation()
+
+
+@router.get("/patterns")
+def descriptive_patterns(scorer: FraudScorer = Depends(get_scorer)):
+    try:
+        return scorer.patterns(os.environ.get("BANKSHIELD_FRAUD_PATTERNS"))
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        logger.warning("Reporte de patrones no disponible: %s", type(exc).__name__)
+        raise HTTPException(503, "Patrones no disponibles; regenerar el reporte para el modelo vigente.") from exc

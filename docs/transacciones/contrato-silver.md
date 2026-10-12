@@ -68,9 +68,12 @@ de entrenar, que el reporte cumpla el contrato:
 
 La ejecución completa reproducida en `train_fraud` desde Silver (AP 0.961840,
 precisión 0.796634, recall 0.992511) es la evidencia del lado de fraude.
-Revisión verificada desde el lado transaccional contra la implementación; la
-confirmación explícita de Axel (Cueva) queda pendiente para cerrar el punto
-1 de prioridades del plan.
+Revisión verificada desde el lado transaccional contra la implementación. El
+12 de octubre, Codex realizó la revisión técnica del lado de fraude a solicitud
+de Cueva: equivalencia Bronze/Silver, predictores, política de duplicados,
+controles, recuentos y huellas. La evidencia está en el
+[cierre de la entrega de fraude](../fraude/cierre-entrega.md). No sustituye la
+revisión humana cruzada del PR requerida por el equipo.
 
 ## Decisiones acordadas
 

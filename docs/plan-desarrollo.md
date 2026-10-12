@@ -2,7 +2,15 @@
 
 Este documento concreta las etapas y entregas de los seis integrantes. Complementa las [bases del proyecto](bases-del-proyecto.md) y el [inventario de datasets](datasets.md). Las fechas se acordarán cuando el equipo confirme su disponibilidad y los requisitos del curso.
 
-## Revisión del avance — 9 de octubre de 2026
+## Verificación vigente — 12 de octubre de 2026
+
+### Cierre técnico de Cueva — fraude y patrones
+
+La [entrega de fraude](fraude/cierre-entrega.md) añade asociaciones descriptivas, `GET /api/fraud/patterns`, consulta desde la página y comandos de reproducción/verificación HTTP. Se revisó técnicamente el contrato Silver del lado de fraude a solicitud de Cueva y se comprobó la interfaz en navegador. La reconstrucción completa desde Bronze en una copia aislada y un entorno nuevo terminó correctamente, reprodujo las métricas y pasó 14 comprobaciones HTTP/página; la suite tiene 160 pruebas aprobadas. El módulo puede avanzar independientemente de las entregas pendientes de otros dominios. La revisión humana cruzada del PR y las decisiones de procedencia/licencia siguen a cargo del equipo; no se declaran realizadas por estas comprobaciones.
+
+La [verificación del avance](revision-avance-2026-10-12.md) contrasta las responsabilidades siguientes con el código de `c588482`, la suite de 157 pruebas aprobadas y comprobaciones de datos/API locales. Registra avances nuevos de Gold, segmentación y backtesting, pendientes por responsable y dos problemas reproducidos: uso de la etiqueta de fraude en el agrupamiento y comparación no cronológica de fechas de reclamos. El resumen histórico siguiente contiene estados que quedaron desactualizados; consultar la verificación vigente para decidir el próximo trabajo.
+
+## Revisión histórica del avance — 9 de octubre de 2026
 
 Estado basado en el código, reportes y referencias Git disponibles en esta copia local. No incluye trabajo sin subir ni cambios remotos posteriores al último fetch. Las responsabilidades siguientes se mantienen; esta sección registra qué entregas ya existen y cuál es el próximo paso verificable. Los reportes históricos no equivalen a una ejecución nueva validada.
 
@@ -129,15 +137,18 @@ busca el modelo anterior en `artifacts/models/fraud/model.joblib`.
 
 #### Pendientes de Cueva
 
-1. Revisar con Taco el contrato, las políticas de duplicados y los controles
-   nuevos de procedencia; la implementación no acredita revisión de la pareja.
-2. Revisar con Rhamses–Angel el contrato HTTP y navegación; comprobar la
-   apariencia en navegador y el recorrido desde otro clon.
-3. Documentar disponibilidad real del saldo anterior si cambia el sistema
-   objetivo. La demostración actual continúa limitada a PaySim.
-4. Ampliar explicaciones con atribuciones del modelo o asociaciones sencillas
-   cuando exista una pregunta analítica útil. Las condiciones descriptivas y
-   los ejemplos de errores ya están; no se implementaron asociaciones adicionales.
+El [cierre de entrega del 12 de octubre](fraude/cierre-entrega.md) contiene la
+evidencia vigente y reemplaza los pendientes técnicos históricos: revisión
+Silver desde fraude, comprobación visual y asociaciones sencillas ya tienen
+implementación/evidencia. La reproducción aislada se registra allí.
+
+1. Registrar la revisión humana cruzada de la entrega y la aceptación del
+   contrato/navegación con Taco y Rhamses–Angel; no confundirla con pruebas.
+2. Participar en la confirmación de procedencia/licencia y requisitos del curso.
+3. Si cambia el sistema objetivo, confirmar saldo anterior antes de la operación;
+   sin ese dato se requiere un contrato/modelo nuevo. El límite ya está documentado.
+4. Atribuciones del modelo y asociaciones aprendidas adicionales quedan como
+   ampliaciones posteriores; las asociaciones descriptivas fijas ya existen.
 
 1. Perfilar PaySim junto con Taco y revisar la distribución de `isFraud`.
 2. Definir variables disponibles al momento de predecir; comprobar posibles fugas de información, especialmente datos posteriores a la operación.

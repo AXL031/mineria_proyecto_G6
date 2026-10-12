@@ -38,6 +38,16 @@ La documentación Swagger interactiva queda accesible en:
 python -m unittest tests/unit/test_api_graphs.py -v
 ```
 
+## Endpoints de Fraude
+
+| Método | Endpoint | Descripción |
+| --- | --- | --- |
+| `POST` | `/api/fraud/predict` | Score no calibrado, alerta, umbral e identidad del modelo; solo acepta `type`, `amount` y `oldbalanceOrg`. |
+| `GET` | `/api/fraud/model` | Métricas y metadatos embebidos en el modelo que predice. |
+| `GET` | `/api/fraud/patterns` | Asociaciones descriptivas por partición, vinculadas a la identidad del modelo y su Silver. |
+
+`BANKSHIELD_FRAUD_MODEL` indica el modelo; por defecto se usa `artifacts/models/fraud/model.joblib`. Los patrones se leen de `patterns.json` junto al modelo o de `BANKSHIELD_FRAUD_PATTERNS`. Un reporte ausente, de otro modelo o inconsistente devuelve 503 y no deshabilita la predicción. Ver [entrega y reproducción](../docs/fraude/cierre-entrega.md).
+
 ## Endpoints de Crédito
 
 | Método | Endpoint | Descripción |
