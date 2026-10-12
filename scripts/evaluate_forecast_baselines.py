@@ -59,7 +59,7 @@ def main() -> None:
             f"{model}: MAE={metrics['mae']:.4f}"
             for model, metrics in models.items()
         )
-        print(f"{target} — {summary}")
+        print(f"{target}: {summary}")
     print(f"Reporte JSON: {output_path}")
 
 

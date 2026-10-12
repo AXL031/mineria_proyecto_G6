@@ -8,6 +8,15 @@ Este documento concreta las etapas y entregas de los seis integrantes. Complemen
 
 La [entrega de fraude](fraude/cierre-entrega.md) añade asociaciones descriptivas, `GET /api/fraud/patterns`, consulta desde la página y comandos de reproducción/verificación HTTP. Se revisó técnicamente el contrato Silver del lado de fraude a solicitud de Cueva y se comprobó la interfaz en navegador. La reconstrucción completa desde Bronze en una copia aislada y un entorno nuevo terminó correctamente, reprodujo las métricas y pasó 14 comprobaciones HTTP/página; la suite tiene 160 pruebas aprobadas. El módulo puede avanzar independientemente de las entregas pendientes de otros dominios. La revisión humana cruzada del PR y las decisiones de procedencia/licencia siguen a cargo del equipo; no se declaran realizadas por estas comprobaciones.
 
+### Avance de Gerardo — modelo principal temporal
+
+La [comparación de Holt-Winters](pronosticos/resultados-holt-winters.md)
+evalúa tres configuraciones aditivas junto con Naive y Naive estacional sobre
+las mismas cuatro ventanas, sin usar el tramo 719–743. Ninguna configuración
+ajustada mejora el MAE de Naive; por ello Naive se mantiene como selección para
+cantidad y monto. El siguiente incremento es analizar errores e implementar la
+comparación histórica de distribuciones antes del servicio y la página.
+
 La [verificación del avance](revision-avance-2026-10-12.md) contrasta las responsabilidades siguientes con el código de `c588482`, la suite de 157 pruebas aprobadas y comprobaciones de datos/API locales. Registra avances nuevos de Gold, segmentación y backtesting, pendientes por responsable y dos problemas reproducidos: uso de la etiqueta de fraude en el agrupamiento y comparación no cronológica de fechas de reclamos. El resumen histórico siguiente contiene estados que quedaron desactualizados; consultar la verificación vigente para decidir el próximo trabajo.
 
 ## Revisión histórica del avance — 9 de octubre de 2026

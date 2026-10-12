@@ -142,3 +142,11 @@ sustentada. La elección no dependerá de que un modelo sea más complejo.
   implementa monitoreo en producción.
 - El tramo reservado permitirá demostrar detección de cambios históricos, pero
   no sustituye la llegada de lotes futuros para un monitoreo real.
+
+## Extensión con modelo principal
+
+El experimento posterior `forecast-holt-winters-v1` conserva sin cambios los
+objetivos, ventanas, horizonte y métricas de este protocolo. Solo amplía los
+modelos comparados con tres configuraciones Holt-Winters. Su configuración está
+en `model_evaluation` dentro de `configs/forecast.json` y sus resultados se
+documentan en [la comparación del modelo principal](resultados-holt-winters.md).

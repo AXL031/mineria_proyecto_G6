@@ -67,5 +67,37 @@
     },
     "report_json": "artifacts/reports/forecast_baselines.json",
     "results_markdown": "docs/pronosticos/resultados-baselines.md"
+  },
+  "model_evaluation": {
+    "experiment_id": "forecast-holt-winters-v1",
+    "models": {
+      "naive": {},
+      "seasonal_naive": {
+        "lag": 24
+      },
+      "holt_winters_level_seasonal": {
+        "trend": null,
+        "seasonal": "add",
+        "seasonal_periods": 24,
+        "damped_trend": false,
+        "clip_lower": 0.0
+      },
+      "holt_winters_additive": {
+        "trend": "add",
+        "seasonal": "add",
+        "seasonal_periods": 24,
+        "damped_trend": false,
+        "clip_lower": 0.0
+      },
+      "holt_winters_damped": {
+        "trend": "add",
+        "seasonal": "add",
+        "seasonal_periods": 24,
+        "damped_trend": true,
+        "clip_lower": 0.0
+      }
+    },
+    "report_json": "artifacts/reports/forecast_holt_winters.json",
+    "results_markdown": "docs/pronosticos/resultados-holt-winters.md"
   }
 }
