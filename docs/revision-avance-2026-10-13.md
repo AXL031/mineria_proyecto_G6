@@ -2,9 +2,9 @@
 
 ## Alcance y evidencia
 
-Estado del código integrado en `55d81d0`: incluye los PR #13 de Cueva y #14 de Angel, y la integración de los tres commits nuevos de Gerardo. La actualización de documentación se prepara sobre esa integración para publicarse directamente en `main` por indicación de Cueva. No se incluye trabajo de otros integrantes sin subir.
+Estado actualizado sobre `af8652a`, incorporando `origin/taco` en `2c28fec`: incluye los PR #13 de Cueva y #14 de Angel, la integración de Gerardo y los cinco commits nuevos de Taco. Se conservan simultáneamente pronósticos y segmentos en API, portada y navegación. Esta actualización se publica directamente en `main` por indicación de Cueva. No se incluye trabajo de otros integrantes sin subir.
 
-La suite de la integración pasó: **213 pruebas en 41.246 segundos**, con Python 3.12 y concurrencia numérica limitada a dos hilos. Log local excluido de Git: `artifacts/reports/integracion-gerardo-2026-10-13-tests.txt`. Se resolvió el conflicto en `docs/plan-desarrollo.md` conservando los avances de Angel y Gerardo. Las pruebas no sustituyen una demo completa con datos reales ni una reproducción de los seis módulos desde clon limpio.
+La integración de Taco pasó **230 pruebas en 20.814 segundos**, con Python 3.12 y concurrencia numérica limitada a dos hilos. Log local excluido de Git: `artifacts/reports/integracion-taco-2026-10-13-tests.txt`. Incluye independencia de etiquetas, servicio/API y AppTest de segmentos junto con los módulos anteriores. Se resolvieron conflictos en README, API central, portada y guía de reproducción conservando las entregas previas. La integración anterior de Gerardo pasó 213 pruebas (log `artifacts/reports/integracion-gerardo-2026-10-13-tests.txt`). Las pruebas no sustituyen una demo completa con datos reales ni una reproducción de los seis módulos desde clon limpio.
 
 ## Resumen actual
 
@@ -15,9 +15,9 @@ La suite de la integración pasó: **213 pruebas en 41.246 segundos**, con Pytho
 | Rhamses | 85% | Grafos, indicadores, patrones, evaluación de alertas, consultas API y página mediante HTTP. | Cerrar comparación con una referencia y navegación compartida; validar una demo acotada. |
 | Gerardo | 85% | Gold temporal, backtesting, Holt-Winters comparado, monitoreo histórico, servicio/API/página. | Reconstruir Gold/monitoreo aquí, validar visualmente y coordinar reproducción/Docker. |
 | Angel | 70% | Fechas corregidas, Silver/texto limpio, clasificador de producto y ejemplos de error. | Revisar ejemplos y entregar servicio/API/página de reclamos con navegación. |
-| Taco | 55% | Silver y mart Gold transaccional, variables por destino, cuantiles y KMeans evaluados. | Corregir el uso de etiqueta en agrupamiento, regenerar resultados y entregar servicio/API/página. |
+| Taco | 85% | Silver/mart Gold, segmentación sin etiqueta, reporte regenerado y servicio/API/página. | Reconstruir artefactos aquí, ensayar demo y registrar aceptación del contrato con Cueva. |
 
-**Estimación global orientativa: alrededor de 80%.** Es el promedio redondeado de las estimaciones individuales, con un margen aproximado de cinco puntos. Considera preparación de datos, análisis evaluado, aplicación y reproducción; no es una medición de horas, número de commits ni una rúbrica formal del curso. El cierre exige cumplir los criterios siguientes, aunque la estimación sea alta.
+**Estimación global orientativa: alrededor de 85%.** Es el promedio redondeado de las estimaciones individuales, con un margen aproximado de cinco puntos. Considera preparación de datos, análisis evaluado, aplicación y reproducción; no es una medición de horas, número de commits ni una rúbrica formal del curso. El cierre exige cumplir los criterios siguientes, aunque la estimación sea alta.
 
 ## Cueva — fraude y patrones
 
@@ -26,7 +26,7 @@ La suite de la integración pasó: **213 pruebas en 41.246 segundos**, con Pytho
 **Pendientes:**
 
 1. Registrar revisión humana cruzada y aceptación del contrato transaccional/API/navegación con Taco y Rhamses–Angel.
-2. Revisar con Taco que la segmentación use solo comportamiento, dejando fraude para descripción posterior.
+2. Registrar aceptación de la corrección de Taco: la matriz y los segmentos ya tienen una prueba de independencia de etiquetas; falta cerrar la revisión humana compartida.
 3. Aportar evidencia de procedencia/licencia de PaySim y participar en la demo integrada.
 
 **Aceptación:** revisión y decisiones registradas, contrato consistente y recorrido de fraude reproducible junto con los demás módulos. Atribuciones individuales y reglas aprendidas adicionales son ampliaciones; los patrones descriptivos ya están implementados.
@@ -53,7 +53,7 @@ La suite de la integración pasó: **213 pruebas en 41.246 segundos**, con Pytho
 1. Documentar una referencia comparable de alertas y contrastar cobertura, precisión y límites del método.
 2. Ensayar consultas y subgrafos con una muestra real acotada; registrar aceptación desde otro entorno.
 3. Cerrar con Angel contratos HTTP, navegación y estados de artefacto ausente para las páginas pendientes.
-4. Corregir con Angel la portada: evitar anunciar comunidades sin implementación y representar los seis módulos con su estado real.
+4. Cerrar con Angel la navegación de reclamos y la representación de los seis módulos. Esta integración ya añade Segmentos y retira el anuncio de comunidades sin implementación.
 
 **Aceptación:** comparación y limitaciones documentadas, consultas demostrables y navegación coherente. Comunidades y evaluación temporal de red son ampliaciones posteriores.
 
@@ -86,17 +86,18 @@ La suite de la integración pasó: **213 pruebas en 41.246 segundos**, con Pytho
 
 ## Taco — datos transaccionales y segmentación
 
-**Implementado:** Bronze → Silver con tipos y controles, reporte completo de 6,362,620 filas, mart Gold por transacción, variables de destinos con al menos diez operaciones, referencia de cuantiles, MiniBatchKMeans, selección por silueta y estabilidad ARI.
+**Implementado:** Bronze → Silver con tipos y controles, reporte completo de 6,362,620 filas, mart Gold por transacción, variables de destinos con al menos diez operaciones, referencia de cuantiles, MiniBatchKMeans, selección por silueta y estabilidad ARI. Los cinco commits nuevos excluyen `fraud_rate_received` de `CLUSTER_COLUMNS`, comprueban que cambiar solo `isFraud` conserva matriz y etiquetas, y añaden servicio, endpoints y página `06_segmentos.py` conectada mediante HTTP.
 
-**Bloqueo vigente:** `src/bankshield/models/segments.py` incluye `fraud_rate_received` en `CLUSTER_COLUMNS`. La etiqueta influye en los grupos; las métricas/perfiles actuales deben regenerarse antes de aceptar la segmentación.
+**Bloqueo de etiqueta resuelto:** fraude se conserva para describir grupos después del ajuste y queda fuera de la matriz. El [reporte regenerado](transacciones/segmentacion.md) documenta 146,629 cuentas, k=2, silueta 0.2305 y ARI medio 0.7280; reemplaza los resultados anteriores de k=5 y ARI 0.3883. Son resultados documentados por Taco; esta integración no repite el agrupamiento completo.
+
+**Consultas disponibles:** `/api/segments/summary`, `/api/segments/{segment_id}/accounts` con límite/offset, y `/api/segments/{segment_id}/account/{account_id}`. Manejo de artefacto ausente (503), segmento/cuenta desconocidos (404) y parámetros inválidos (422). La página muestra métricas, perfiles, referencia y cuentas.
 
 **Pendientes:**
 
-1. Excluir fraude y sus derivados de la matriz; conservarlos únicamente para describir los segmentos después del ajuste.
-2. Añadir una comprobación de que cambiar solo etiquetas no altera la matriz ni los segmentos, manteniendo comportamiento y semilla.
-3. Regenerar agrupamientos, métricas y perfiles; explicar su estabilidad y contrastar la referencia de cuantiles.
-4. Implementar servicio, endpoints y página para consultar cuentas y segmentos, con manejo de artefactos ausentes.
-5. Cerrar aceptación del contrato Silver/Gold con Cueva y reconstruir derivados para la demo.
+1. Reconstruir mart Gold, Parquet de cuentas y JSON de métricas en esta copia para la demo real; conservar configuración y trazabilidad.
+2. Ensayar resumen, paginación, consultas de cuentas y estados de error desde API/página con artefactos reconstruidos.
+3. Registrar aceptación humana del contrato Silver/Gold y de la corrección con Cueva; las pruebas automáticas no sustituyen esa aceptación.
+4. Explicar perfiles y estabilidad del reporte nuevo; conservar fraude solo como descripción posterior, sin presentar grupos como riesgo validado.
 
 **Aceptación:** agrupamiento independiente de etiquetas, evidencia regenerada y consulta real desde API/página. Los grupos no deben presentarse como categorías de riesgo validadas.
 
@@ -105,8 +106,7 @@ La suite de la integración pasó: **213 pruebas en 41.246 segundos**, con Pytho
 | Prioridad | Trabajo | Responsable y apoyo | Evidencia de cierre |
 | --- | --- | --- | --- |
 | 1 | Preparar crédito/pronósticos para demo y registrar aceptación de integración | Gerardo–Sevan; equipo revisa integración | Artefactos reconstruidos, recorrido visual y aceptación registrados. |
-| 1 | Corregir segmentación y regenerar evaluación | Taco; Cueva revisa contrato | Independencia de etiquetas comprobada y métricas/perfiles nuevos. |
-| 2 | Entregar API/página de segmentos | Taco; Rhamses–Angel revisan HTTP | Consulta por cuenta/segmento con datos reales y errores manejados. |
+| 1 | Preparar demo real de segmentos y cerrar revisión | Taco; Cueva revisa contrato y Rhamses–Angel HTTP | Artefactos reconstruidos, consultas/errores demostrados y aceptación humana registrada. |
 | 2 | Entregar API/página de reclamos y revisión humana | Angel; revisión de otra pareja | Predicción/análisis desde página y lectura de errores registrada. |
 | 2 | Cerrar referencia de grafos, portada y contratos | Rhamses–Angel; cada módulo participa | Evaluación comparable y navegación de seis módulos coherente. |
 | 3 | Reproducción, versiones, Docker y demo integral | Gerardo–Sevan coordinan; todos ejecutan su módulo | Clon limpio con LFS, seis recorridos, suite aprobada e instrucciones ejecutables. |
@@ -116,6 +116,6 @@ No se fijan fechas ni se cambia el reparto acordado. La prioridad refleja depend
 
 ## Disponibilidad local y límites de la revisión
 
-Hay cuatro páginas implementadas: fraude, crédito, redes y pronósticos. Segmentos y reclamos todavía no tienen servicio/API/página. En esta copia hay modelos de fraude y fraude-Silver; no se encontraron el modelo de crédito, el Gold temporal ni el JSON de monitoreo. Esa ausencia exige reconstrucción para la demo, no volver a implementar sus módulos. Los derivados/modelos quedan fuera de Git.
+Hay cinco páginas implementadas: fraude, crédito, redes, pronósticos y segmentos. Reclamos todavía no tiene servicio/API/página. En esta copia hay modelos de fraude y fraude-Silver; no se encontraron el modelo de crédito, el Gold temporal, el JSON de monitoreo ni los artefactos de segmentos. Esa ausencia exige reconstrucción para la demo, no volver a implementar sus módulos. Los derivados/modelos quedan fuera de Git.
 
-La suite aprobada comprueba contratos y lógica, con fixtures en varios módulos. No se reentrenaron todos los modelos, no se regeneraron todos los pipelines, no se verificó una demo visual de los cuatro módulos en esta revisión ni se comprobó el CI remoto. La [revisión del 12 de octubre](revision-avance-2026-10-12.md) se conserva como evidencia histórica; este documento reemplaza sus pendientes cuando contradicen las entregas actuales.
+La suite aprobada comprueba contratos y lógica, con fixtures en varios módulos. No se reentrenaron todos los modelos, no se regeneraron todos los pipelines, no se verificó una demo visual integral de los cinco módulos en esta revisión ni se comprobó el CI remoto. La [revisión del 12 de octubre](revision-avance-2026-10-12.md) se conserva como evidencia histórica; este documento reemplaza sus pendientes cuando contradicen las entregas actuales.

@@ -68,8 +68,10 @@ SHA-256 de Silver (`source.sha256`) y del mart (`output.sha256`).
 El mart es la base de la segmentación de cuentas de destino reincidentes: las
 columnas de identidad (`nameDest`, `nameOrig`, `step`) permiten agregar
 comportamiento por cuenta y los predictores y residuos aportan señales de monto
-y consistencia. La construcción de la segmentación es la siguiente entrega del
-módulo.
+y consistencia. La segmentación ya está implementada
+(`scripts/segment_transactions.py`): agrupa solo con variables de comportamiento
+y **no usa la etiqueta de fraude**, que se reserva para describir cada segmento
+ya formado. Ver el [reporte de segmentación](segmentacion.md).
 
 ## Limitaciones
 

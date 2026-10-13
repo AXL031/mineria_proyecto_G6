@@ -1,6 +1,6 @@
 # Pruebas y reproducción local
 
-Estado actualizado el 13 de octubre de 2026. Complementa el [plan de desarrollo](plan-desarrollo.md) y la [revisión vigente](revision-avance-2026-10-13.md). Los comandos se ejecutan en PowerShell desde la raíz del repositorio. La integración local en `55d81d0` pasó 213 pruebas; eso no certifica reproducción completa de los seis módulos desde clon limpio ni demo visual integral.
+Estado actualizado el 13 de octubre de 2026. Complementa el [plan de desarrollo](plan-desarrollo.md) y la [revisión vigente](revision-avance-2026-10-13.md). Los comandos se ejecutan en PowerShell desde la raíz del repositorio. La integración de Taco hasta `2c28fec`, conservando pronósticos, pasó 230 pruebas; eso no certifica reproducción completa de los seis módulos desde clon limpio ni demo visual integral.
 
 ## Qué se puede probar hoy
 
@@ -8,7 +8,7 @@ Estado actualizado el 13 de octubre de 2026. Complementa el [plan de desarrollo]
 | --- | --- | --- |
 | Fraude | Perfil, entrenamiento desde Bronze/Silver, scoring, patrones, API/página y comandos de reproducción/verificación. | Modelos locales presentes; aceptación humana cruzada y fuentes pendientes. Reproducción aislada documentada en el cierre de entrega. |
 | Grafos | Ingesta, métricas, patrones, servicios, API y página conectada mediante HTTP. | Demo con muestra acotada y referencia comparable por cerrar; no acredita la red completa. |
-| Transacciones | Silver, mart Gold, variables y segmentación con cuantiles/KMeans. | Silver local presente; regenerar Gold/segmentos después de corregir la influencia de `fraud_rate_received`. Sin servicio/API/página de segmentos. |
+| Transacciones | Silver, mart Gold, segmentación independiente de etiqueta, servicio/API/página y pruebas de consultas y errores. | Silver local presente; reconstruir Gold/segmentos/JSON para demo. Corrección de `fraud_rate_received` implementada y comprobada; aceptación cruzada pendiente. |
 | Temporal | Gold, exploración, backtesting, Holt-Winters comparado, monitoreo histórico y API/página. | Reconstruir Gold y reporte de monitoreo en esta copia; registrar demo visual. Naive sigue seleccionado por MAE. |
 | Reclamos | Pruebas, perfilado del CSV, Silver con limpieza de texto y clasificador de producto. | Modelo local excluido de Git (reconstruir con `train_complaints.py`); sin servicio ni página. |
 | Crédito | Perfil, Silver, entrenamiento, scoring, explicaciones, API/página y pruebas con datos sintéticos. | Reconstruir modelo para demo local; artefactos excluidos de Git y etiqueta/fuente original por confirmar. |
@@ -17,14 +17,14 @@ Estado actualizado el 13 de octubre de 2026. Complementa el [plan de desarrollo]
 
 | Prioridad | Falta o problema | Acción y responsable |
 | --- | --- | --- |
-| P1 | Segmentación usa una variable derivada de la etiqueta para agrupar. | Taco excluye fraude/derivados, comprueba independencia y regenera métricas/perfiles; Cueva revisa contrato. |
+| P1 | Faltan artefactos locales y aceptación humana de segmentos. | Taco reconstruye Gold/Parquet/JSON y ensaya consultas; Cueva registra aceptación de la corrección de etiqueta ya comprobada. |
 | P1 | Faltan artefactos de crédito y temporal para la demo local. | Sevan reconstruye Silver/modelo de crédito; Gerardo reconstruye Gold/monitoreo y ambos ensayan API/página. |
-| P2 | Segmentos y reclamos no tienen servicio/API/página. | Taco y Angel entregan sus vistas; Rhamses–Angel revisan contratos/navegación. |
+| P2 | Reclamos no tiene servicio/API/página. | Angel entrega su vista; Rhamses–Angel revisan contratos/navegación. Segmentos ya está implementado. |
 | P2 | Referencia de alertas de grafos y navegación integral pendientes. | Rhamses cierra comparación; Rhamses–Angel ajustan portada y registran demo acotada. |
 | P2 | Versiones fijadas por módulo y reproducción conjunta pendientes. | Sevan–Gerardo validan un entorno común desde clon limpio; los rangos de `requirements/common.txt` no son un lock exacto. |
 | Transversal | Fuentes/licencias, aceptación cruzada, comando integral y Docker pendientes. | Todos registran fuentes y revisiones; Gerardo–Sevan coordinan empaquetado cuando estén los seis recorridos. |
 
-Fraude/API/página, caché por muestra de grafos, fechas de reclamos, Silver/NLP y método/monitoreo temporal ya tienen implementación. No volver a asignarlos como tareas nuevas. Los detalles de aceptación por integrante están en la revisión vigente.
+Fraude/API/página, caché por muestra de grafos, fechas de reclamos, Silver/NLP, método/monitoreo temporal y corrección/API/página de segmentos ya tienen implementación. No volver a asignarlos como tareas nuevas. Los detalles de aceptación por integrante están en la revisión vigente.
 
 ## 1. Preparar el entorno
 
@@ -75,7 +75,18 @@ Después, ejecutar el recorrido completo. Estos comandos regeneran los reportes 
 .venv-pruebas/Scripts/python.exe scripts/analyze_forecast_series.py
 ```
 
-Aceptar cuando Silver conserva 6,362,620 filas para esta fuente, no hay rechazos y pasan sus controles; Gold tiene 743 filas, conserva cantidad/monto/fraudes y no tiene nulos. Comparar con los reportes versionados. No existe todavía un pronóstico evaluado.
+Aceptar cuando Silver conserva 6,362,620 filas para esta fuente, no hay rechazos y pasan sus controles; Gold temporal tiene 743 filas, conserva cantidad/monto/fraudes y no tiene nulos. Comparar con los reportes versionados. Los métodos temporales ya están evaluados; para reconstruir monitoreo y comparación, consultar `scripts/README.md`.
+
+El mart transaccional y la segmentación requieren Silver completo y se reconstruyen así:
+
+```powershell
+.venv-pruebas/Scripts/python.exe scripts/build_gold_transactions.py
+.venv-pruebas/Scripts/python.exe scripts/segment_transactions.py
+```
+
+Estos comandos regeneran reportes versionados: revisar el diff antes de guardar. La configuración está en `configs/segments.json`. Se generan `data/gold/segments/account_segments.parquet` y `artifacts/reports/segments.json`, excluidos de Git. El reporte nuevo documenta 146,629 cuentas, k=2, silueta 0.2305 y ARI 0.7280; fraude queda fuera de `CLUSTER_COLUMNS`.
+
+Con API y panel iniciados, consultar `/api/segments/summary`, `/api/segments/0/accounts?limit=50&offset=0` y una cuenta existente de la respuesta; comprobar perfiles y cuentas en Segmentos. Sin artefactos, la API devuelve 503; recursos desconocidos devuelven 404 y límites inválidos 422. `BANKSHIELD_SEGMENTS_PARQUET` y `BANKSHIELD_SEGMENTS_REPORT` permiten rutas alternativas.
 
 ## 4. Probar fraude local
 

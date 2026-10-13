@@ -68,9 +68,10 @@ with col1:
     st.markdown(
         """
         - 🌐 **Redes y Grafos de Transacciones** (*Disponible*): Topología de relaciones `nameOrig → nameDest`,
-          detección de comunidades/patrones atípicos y visualización interactiva de subgrafos.
+          patrones atípicos y visualización interactiva de subgrafos.
         - 🕵️ **Detección de Fraude Supervisado** (*Disponible mediante API*): Formulario de predicción, umbral y métricas del modelo cargado.
         - 💳 **Riesgo Crediticio y Explicabilidad** (*Disponible*): Scoring y calibración de probabilidad de impago.
+        - 🧩 **Segmentos de Cuentas** (*Disponible mediante API*): Agrupamiento de cuentas destino reincidentes sin usar la etiqueta de fraude.
         - 🗣️ **Reclamos y NLP** (*En desarrollo*): Análisis semántico de quejas de clientes CFPB.
         - 📈 **Pronósticos de Flujo** (*Disponible*): Proyección Naive de volumen o monto y monitoreo histórico de cambios.
         """
@@ -80,9 +81,10 @@ with col2:
     st.markdown("### 🧭 Cómo Navegar")
     st.markdown(
         """
-        Utiliza el menú lateral para acceder a **Fraude**, **Crédito**, **Redes** y **Pronósticos**.
+        Utiliza el menú lateral para acceder a **Fraude**, **Crédito**, **Redes**, **Pronósticos** y **Segmentos**.
         En Pronósticos puedes proyectar cantidad o monto y consultar el cambio histórico del tramo final.
         En Fraude puedes evaluar una operación y consultar las métricas del modelo mediante la API.
+        En Segmentos puedes revisar los perfiles, la línea base y las cuentas de cada grupo.
         En Redes y Grafos encontrarás:
         
         1. **Métricas Topológicas:** KPIs globales de conectividad y volumen operado.

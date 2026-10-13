@@ -73,13 +73,13 @@ def render_markdown(report: dict) -> str:
         "",
         "## Línea base (cuantiles de actividad)",
         "",
-        "| Segmento | Cuentas | n_received medio | total_received medio | fraud_rate medio |",
-        "| ---: | ---: | ---: | ---: | ---: |",
+        "| Segmento | Cuentas | n_received medio | total_received medio |",
+        "| ---: | ---: | ---: | ---: |",
     ]
     for row in baseline.itertuples(index=False):
         lines.append(
             f"| {int(row.segment)} | {int(row.size):,} | {row.mean_n_received:.2f} | "
-            f"{row.mean_total_received:,.0f} | {row.mean_fraud_rate:.4f} |"
+            f"{row.mean_total_received:,.0f} |"
         )
     lines += [
         "",

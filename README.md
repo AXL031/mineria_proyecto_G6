@@ -4,9 +4,11 @@ Proyecto académico de minería de datos y analítica financiera. La visión inc
 
 ## Guía vigente para continuar el desarrollo
 
-**Antes de elegir o implementar una tarea, cada integrante debe consultar el [avance y pendientes — 13 de octubre de 2026](docs/revision-avance-2026-10-13.md).** Allí están los cambios de los seis responsables, sus próximas entregas, las tareas compartidas y los criterios de aceptación. El estado incluye la integración de Gerardo en `55d81d0`, con 213 pruebas aprobadas.
+**Antes de elegir o implementar una tarea, cada integrante debe consultar el [avance y pendientes — 13 de octubre de 2026](docs/revision-avance-2026-10-13.md).** Allí están los cambios de los seis responsables, sus próximas entregas, las tareas compartidas y los criterios de aceptación. El estado incorpora segmentos de Taco hasta `2c28fec` y conserva pronósticos de Gerardo, con **230 pruebas aprobadas** en la integración.
 
 El [plan de desarrollo](docs/plan-desarrollo.md) mantiene el alcance y el reparto de responsabilidades. Para decidir qué hacer ahora, guiarse por la verificación vigente: sus pendientes actualizados reemplazan los estados históricos que contradigan el código. Al completar una entrega, registrar su evidencia y actualizar ambos documentos para mantener esta guía al día.
+
+**Transacciones y segmentación — Taco:** los cinco commits hasta `2c28fec` corrigen el uso de la etiqueta en agrupamiento y añaden servicio, endpoints `/api/segments/...` y página `06_segmentos.py`. El [reporte regenerado](docs/transacciones/segmentacion.md) documenta k=2, silueta 0.2305 y estabilidad ARI 0.7280. La prueba de independencia de etiquetas verifica matriz y grupos. Falta reconstruir artefactos aquí, demostrar el recorrido y registrar aceptación cruzada.
 
 **Reclamos — Angel:** el [perfil](docs/reclamos/perfil-complaints.md) ya tiene el rango de fechas corregido y el [contrato Silver](docs/reclamos/contrato-silver.md) describe la tabla limpia (`scripts/build_silver_complaints.py`). El [clasificador de producto por narrativa](docs/reclamos/resultados-modelo.md) supera a sus referencias en la prueba temporal y sus [ejemplos](docs/reclamos/revision-ejemplos.md) están extraídos; siguen pendientes la lectura humana de esa revisión, el servicio, la API y la página.
 
@@ -25,7 +27,7 @@ La [base del proyecto](docs/bases-del-proyecto.md) define el alcance inicial, lo
 
 El [plan de desarrollo](docs/plan-desarrollo.md) detalla las cinco etapas, las tareas de cada integrante, las responsabilidades compartidas y las primeras entregas.
 
-La revisión vigente del **13 de octubre de 2026** está enlazada al inicio de ese plan. La [guía de pruebas y reproducción](docs/pruebas-reproduccion.md) reúne dependencias, comandos y criterios de ejecución; sus bloqueos históricos deben contrastarse con la revisión vigente. Hay cuatro módulos con API/página: fraude, crédito, grafos y pronósticos; faltan las vistas de segmentos y reclamos. Antes de la demo local deben reconstruirse el modelo de crédito, Gold temporal y reporte de monitoreo.
+La revisión vigente del **13 de octubre de 2026** está enlazada al inicio de ese plan. La [guía de pruebas y reproducción](docs/pruebas-reproduccion.md) reúne dependencias, comandos y criterios de ejecución; sus bloqueos históricos deben contrastarse con la revisión vigente. Hay cinco módulos con API/página: fraude, crédito, grafos, pronósticos y segmentos; falta la vista de reclamos. Antes de la demo local deben reconstruirse el modelo de crédito, Gold temporal, reporte de monitoreo y artefactos de segmentos. El avance global orientativo es 85%; no sustituye los criterios de aceptación.
 
 La primera entrega de Cueva incluye [perfilado y contrato de variables de fraude](docs/fraude/contrato-variables.md), con comandos reproducibles y controles de información disponible antes de la operación.
 
