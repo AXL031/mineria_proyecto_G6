@@ -10,7 +10,7 @@ Revisión del 9 de octubre de 2026. Complementa el [plan de desarrollo](plan-des
 | Grafos | Pruebas de ingesta, métricas, patrones y servicios; API y página de redes. | API probada con grafo en memoria; página llama directamente a servicios. Falta recorrido API → panel. |
 | Transacciones | Pruebas de Silver y construcción desde CSV. | Parquet local ausente; requiere regeneración. Segmentación pendiente. |
 | Temporal | Pruebas de agregación y exploración; construcción Gold y gráficos. | Parquet local ausente; pronóstico y backtesting pendientes. |
-| Reclamos | Pruebas, perfilado del CSV y Silver con limpieza de texto. | Sin modelo NLP, servicio ni página. Rango temporal corregido el 13 de octubre. |
+| Reclamos | Pruebas, perfilado del CSV, Silver con limpieza de texto y clasificador de producto. | Modelo local excluido de Git (reconstruir con `train_complaints.py`); sin servicio ni página. |
 | Crédito | Perfil, Silver, entrenamiento, scoring, API, página y pruebas con datos sintéticos. | Artefactos locales excluidos de Git; semántica de `loan_status` sin confirmar. |
 
 ## Bloqueos y responsables

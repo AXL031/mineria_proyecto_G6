@@ -10,7 +10,7 @@ La [entrega de fraude](fraude/cierre-entrega.md) añade asociaciones descriptiva
 
 ### Avance de Angel — reclamos
 
-Se corrigió el rango temporal del [perfil](reclamos/perfil-complaints.md): las fechas se interpretan antes de comparar y el rango real es 2011-12-01 a 2016-04-25, coherente con los conteos anuales. Se construyó el Silver de reclamos ([contrato](reclamos/contrato-silver.md) y [calidad](reclamos/calidad-silver.md)): 555,957 filas, 0 rechazos, 66,806 narrativas y 7,057 envíos anteriores a la recepción marcados sin rechazarlos. Las censuras de la CFPB se sustituyen por marcadores en `narrative_clean`. Quedan pendientes la tarea NLP con su línea base, la evaluación, el servicio, la API, la página y la navegación con Rhamses.
+Se corrigió el rango temporal del [perfil](reclamos/perfil-complaints.md): las fechas se interpretan antes de comparar y el rango real es 2011-12-01 a 2016-04-25, coherente con los conteos anuales. Se construyó el Silver de reclamos ([contrato](reclamos/contrato-silver.md) y [calidad](reclamos/calidad-silver.md)): 555,957 filas, 0 rechazos, 66,806 narrativas y 7,057 envíos anteriores a la recepción marcados sin rechazarlos. Las censuras de la CFPB se sustituyen por marcadores en `narrative_clean`. Se entrenó un clasificador de producto a partir de la narrativa, evaluado en una prueba cronológica ([resultados](reclamos/resultados-modelo.md)): macro-F1 0.728 frente a 0.668 de Naive Bayes y 0.037 de la referencia trivial. Los [ejemplos de error](reclamos/revision-ejemplos.md) están extraídos y comentados. Quedan pendientes la confirmación humana de esa lectura, el servicio, la API, la página y la navegación con Rhamses.
 
 La [verificación del avance](revision-avance-2026-10-12.md) contrasta las responsabilidades siguientes con el código de `c588482`, la suite de 157 pruebas aprobadas y comprobaciones de datos/API locales. Registra avances nuevos de Gold, segmentación y backtesting, pendientes por responsable y dos problemas reproducidos: uso de la etiqueta de fraude en el agrupamiento y comparación no cronológica de fechas de reclamos. El resumen histórico siguiente contiene estados que quedaron desactualizados; consultar la verificación vigente para decidir el próximo trabajo.
 
@@ -242,7 +242,16 @@ Con los datos actuales se pronosticará volumen transaccional simulado. Para med
 - Pruebas nuevas: `test_text_cleaning.py` y `test_silver_complaints.py`; suite completa de 182 aprobadas.
 - `pyarrow` agregado al extra `complaints`.
 
-**Pendientes:** línea base y método NLP evaluados, `services/complaints.py`, `api/routers/complaints.py`, página de reclamos y actualización de la portada con Rhamses.
+#### Incremento NLP — 13 de octubre de 2026
+
+- Tarea: predecir `product` (11 clases) desde `narrative_clean`, solo con reclamos que tienen narrativa de 5 palabras o más (66,736).
+- Partición cronológica 70/15/15 que mantiene cada texto idéntico en una sola partición; el vectorizador se ajusta solo con entrenamiento.
+- `models/complaints.py` y `scripts/train_complaints.py`: referencia trivial, Naive Bayes y TF-IDF con regresión logística (C elegido en validación). Prueba: exactitud 0.849, macro-F1 0.728, top-3 0.974.
+- `models/complaints_review.py` y `scripts/analyze_complaints_errors.py`: pares confundidos, errores de mayor confianza, textos con etiquetas contradictorias y medición de casi-duplicados con el entrenamiento (0.3% de la prueba).
+- Pruebas nuevas: `test_complaints_model.py` y `test_complaints_review.py`; suite completa de 199 aprobadas.
+- Hallazgos: los términos más pesados son nombres de empresas; el error restante parece venir sobre todo de etiquetas ambiguas. Los tópicos (NMF) quedan fuera por decisión de alcance.
+
+**Pendientes:** lectura humana de los ejemplos (las observaciones actuales son una primera lectura sobre fragmentos), `services/complaints.py`, `api/routers/complaints.py`, página de reclamos y actualización de la portada con Rhamses.
 
 **Entrega final:** pipeline de reclamos, análisis NLP evaluado, página de reclamos y navegación inicial del panel.
 

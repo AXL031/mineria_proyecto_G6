@@ -10,7 +10,7 @@ El proyecto tiene tres de seis módulos con servicio, API y página: fraude, cr�
 
 **Actualización posterior de Cueva, 12 de octubre:** se implementaron asociaciones sencillas, endpoint/página de patrones, revisión técnica de Silver desde fraude y comandos de reproducción/verificación. Consultar el [cierre de entrega](fraude/cierre-entrega.md) para la evidencia más reciente del módulo; el resto de esta revisión conserva el diagnóstico inicial.
 
-**Actualización posterior de Angel, 13 de octubre:** se corrigió el rango de fechas del perfil y se construyó el Silver de reclamos con limpieza de narrativas (ver [contrato](reclamos/contrato-silver.md) y [calidad](reclamos/calidad-silver.md)). Las filas de Angel siguientes conservan el diagnóstico inicial; falta el análisis NLP, el servicio y la página.
+**Actualización posterior de Angel, 13 de octubre:** se corrigió el rango de fechas del perfil y se construyó el Silver de reclamos con limpieza de narrativas (ver [contrato](reclamos/contrato-silver.md) y [calidad](reclamos/calidad-silver.md)). Después se entrenó el clasificador de producto y se extrajeron los ejemplos de error (ver [resultados](reclamos/resultados-modelo.md) y [revisión](reclamos/revision-ejemplos.md)). Las filas de Angel siguientes conservan el diagnóstico inicial; falta la lectura humana de los ejemplos, el servicio y la página.
 
 ## Estado de las etapas
 
@@ -93,8 +93,8 @@ El proyecto tiene tres de seis módulos con servicio, API y página: fraude, cr�
 | --- | --- |
 | Perfil y cobertura | Implementado/reportado: `ingestion/complaints_profile.py`, `scripts/profile_complaints.py`; 555,957 reclamos y 66,806 narrativas (12.02%). Las marcas `XXXX` se cuentan; no existe todavía un pipeline de limpieza del texto. |
 | Limpieza estructurada/texto | Implementado posteriormente: Silver con tipos, marcas de calidad y `narrative_clean`; fechas del perfil corregidas (13 de octubre). Inicialmente pendiente. |
-| Línea base y método NLP | Pendiente: propuesta TF-IDF/clasificador y tópicos en documentos; no hay modelo implementado. |
-| Evaluación y ejemplos | Pendiente: no hay evaluación de un análisis NLP principal ni revisión de ejemplos documentada como aceptación. |
+| Línea base y método NLP | Implementado posteriormente (13 de octubre): referencia trivial, Naive Bayes y TF-IDF con regresión logística para predecir `product`. Los tópicos quedan fuera. Inicialmente pendiente. |
+| Evaluación y ejemplos | Parcial (13 de octubre): prueba cronológica con macro-F1 0.728 frente a 0.668 y 0.037; ejemplos extraídos y comentados, pero la lectura humana de la revisión sigue pendiente. Inicialmente pendiente. |
 | Servicio y página de reclamos | Pendiente: no existen servicio/router/página de reclamos. |
 | Navegación con Rhamses | Parcial: portal y tres páginas existen; portada omite segmentos, marca crédito en desarrollo y navegación solo menciona fraude/redes. |
 
