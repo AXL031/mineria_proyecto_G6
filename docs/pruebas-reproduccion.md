@@ -1,32 +1,30 @@
 # Pruebas y reproducción local
 
-Revisión del 9 de octubre de 2026. Complementa el [plan de desarrollo](plan-desarrollo.md). Los comandos se ejecutan en PowerShell desde la raíz del repositorio. Esta guía describe verificaciones pendientes; no certifica una ejecución completa exitosa.
+Estado actualizado el 13 de octubre de 2026. Complementa el [plan de desarrollo](plan-desarrollo.md) y la [revisión vigente](revision-avance-2026-10-13.md). Los comandos se ejecutan en PowerShell desde la raíz del repositorio. La integración local en `55d81d0` pasó 213 pruebas; eso no certifica reproducción completa de los seis módulos desde clon limpio ni demo visual integral.
 
 ## Qué se puede probar hoy
 
 | Componente | Verificación disponible | Límite actual |
 | --- | --- | --- |
-| Fraude | Perfil, pruebas unitarias, entrenamiento y scoring por CLI. | Sin endpoint ni página. Artefactos locales excluidos de Git. El entrenamiento lee Bronze. |
-| Grafos | Pruebas de ingesta, métricas, patrones y servicios; API y página de redes. | API probada con grafo en memoria; página llama directamente a servicios. Falta recorrido API → panel. |
-| Transacciones | Pruebas de Silver y construcción desde CSV. | Parquet local ausente; requiere regeneración. Segmentación pendiente. |
-| Temporal | Pruebas de agregación y exploración; construcción Gold y gráficos. | Parquet local ausente; pronóstico y backtesting pendientes. |
+| Fraude | Perfil, entrenamiento desde Bronze/Silver, scoring, patrones, API/página y comandos de reproducción/verificación. | Modelos locales presentes; aceptación humana cruzada y fuentes pendientes. Reproducción aislada documentada en el cierre de entrega. |
+| Grafos | Ingesta, métricas, patrones, servicios, API y página conectada mediante HTTP. | Demo con muestra acotada y referencia comparable por cerrar; no acredita la red completa. |
+| Transacciones | Silver, mart Gold, variables y segmentación con cuantiles/KMeans. | Silver local presente; regenerar Gold/segmentos después de corregir la influencia de `fraud_rate_received`. Sin servicio/API/página de segmentos. |
+| Temporal | Gold, exploración, backtesting, Holt-Winters comparado, monitoreo histórico y API/página. | Reconstruir Gold y reporte de monitoreo en esta copia; registrar demo visual. Naive sigue seleccionado por MAE. |
 | Reclamos | Pruebas, perfilado del CSV, Silver con limpieza de texto y clasificador de producto. | Modelo local excluido de Git (reconstruir con `train_complaints.py`); sin servicio ni página. |
-| Crédito | Perfil, Silver, entrenamiento, scoring, API, página y pruebas con datos sintéticos. | Artefactos locales excluidos de Git; semántica de `loan_status` sin confirmar. |
+| Crédito | Perfil, Silver, entrenamiento, scoring, explicaciones, API/página y pruebas con datos sintéticos. | Reconstruir modelo para demo local; artefactos excluidos de Git y etiqueta/fuente original por confirmar. |
 
 ## Bloqueos y responsables
 
 | Prioridad | Falta o problema | Acción y responsable |
 | --- | --- | --- |
-| P0 | Intérprete utilizable y entorno con todas las dependencias. | Cada integrante prepara un entorno aislado; Sevan–Gerardo documentan y validan una instalación común. |
-| Resuelto en configuración | `TestClient` necesita `httpx`. | Declarado en el extra `test`, incluido en `requirements/common.txt`; falta verificar instalación y suite completas. |
-| P0 | Silver y Gold no existen en esta copia. | Taco ejecuta Silver completo; Gerardo genera Gold y exploración. Verificar controles y recuentos. |
-| P1 | Archivos de versiones fijadas no forman un entorno común: `fraud.txt` y `graph.txt` fijan `tzdata==2026.4`, `transactions.txt` fija `tzdata==2026.5`. | Sevan–Gerardo unifican versiones y Python tras validar la suite. No instalar todos los archivos fijados juntos. |
-| P1 | API y panel no recorren juntos los datos reales. | Rhamses–Angel conectan redes a la API y añaden una prueba de integración con muestra acotada. |
-| P1 | No existe endpoint ni página de fraude. | Cueva implementa ambos y acuerda con Taco el uso de Silver. |
-| P1 | Caché de grafos ignora cambios de `limit` tras la primera carga. | Rhamses define caché por muestra o rechaza cambios explícitamente; añade prueba que cambie el límite. |
-| Resuelto | Rango de fechas de reclamos incorrecto. | Angel interpretó las fechas, añadió prueba de cruce de años y regeneró el reporte completo (2011-12-01 a 2016-04-25). |
-| P2 | Segmentación, pronósticos y NLP incompletos. | Cada responsable completa su siguiente entrega según el plan; todavía no se pueden demostrar los seis módulos finales. |
-| P2 | Procedencia/licencia, comando único, Docker y reproducción desde clon limpio pendientes. | Equipo confirma fuentes; Gerardo coordina reproducción y empaquetado después de validar el recorrido local. |
+| P1 | Segmentación usa una variable derivada de la etiqueta para agrupar. | Taco excluye fraude/derivados, comprueba independencia y regenera métricas/perfiles; Cueva revisa contrato. |
+| P1 | Faltan artefactos de crédito y temporal para la demo local. | Sevan reconstruye Silver/modelo de crédito; Gerardo reconstruye Gold/monitoreo y ambos ensayan API/página. |
+| P2 | Segmentos y reclamos no tienen servicio/API/página. | Taco y Angel entregan sus vistas; Rhamses–Angel revisan contratos/navegación. |
+| P2 | Referencia de alertas de grafos y navegación integral pendientes. | Rhamses cierra comparación; Rhamses–Angel ajustan portada y registran demo acotada. |
+| P2 | Versiones fijadas por módulo y reproducción conjunta pendientes. | Sevan–Gerardo validan un entorno común desde clon limpio; los rangos de `requirements/common.txt` no son un lock exacto. |
+| Transversal | Fuentes/licencias, aceptación cruzada, comando integral y Docker pendientes. | Todos registran fuentes y revisiones; Gerardo–Sevan coordinan empaquetado cuando estén los seis recorridos. |
+
+Fraude/API/página, caché por muestra de grafos, fechas de reclamos, Silver/NLP y método/monitoreo temporal ya tienen implementación. No volver a asignarlos como tareas nuevas. Los detalles de aceptación por integrante están en la revisión vigente.
 
 ## 1. Preparar el entorno
 

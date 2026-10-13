@@ -2,7 +2,26 @@
 
 Este documento concreta las etapas y entregas de los seis integrantes. Complementa las [bases del proyecto](bases-del-proyecto.md) y el [inventario de datasets](datasets.md). Las fechas se acordarán cuando el equipo confirme su disponibilidad y los requisitos del curso.
 
-## Verificación vigente — 12 de octubre de 2026
+## Avance y pendientes vigentes — 13 de octubre de 2026
+
+La [revisión vigente del equipo](revision-avance-2026-10-13.md) contrasta el código integrado en `55d81d0`, las **213 pruebas aprobadas** y la disponibilidad local de artefactos. Incluye la integración de Gerardo. Sus siguientes entregas reemplazan los pendientes históricos de este documento.
+
+| Integrante | Implementado ahora | Trabajo pendiente y próxima entrega |
+| --- | --- | --- |
+| Cueva | Fraude, evaluación temporal, patrones, API/página y reproducción aislada. | Registrar aceptación cruzada con Taco y Rhamses–Angel; revisar independencia de etiquetas en segmentos; aportar fuente/licencia y participar en demo integral. |
+| Sevan | Silver, modelo calibrado, explicaciones y API/página de crédito. | Reconstruir artefactos para demo; confirmar etiqueta/fuente/licencia; cerrar con Gerardo versiones y reproducción, y revisar navegación. |
+| Rhamses | Grafos, indicadores, patrones, consultas API y página HTTP con límites de muestra. | Documentar referencia comparable de alertas; validar demo acotada; cerrar con Angel contratos/navegación y corregir anuncios de comunidades sin implementación. |
+| Taco | Silver, mart Gold, variables por destino, cuantiles y KMeans con evaluación. | Excluir `fraud_rate_received` y derivados de etiqueta del agrupamiento; comprobar independencia y regenerar métricas/perfiles; crear servicio/API/página y cerrar contrato con Cueva. |
+| Gerardo | Gold temporal, backtesting, Holt-Winters comparado, monitoreo histórico y API/página de pronósticos. | Reconstruir Gold/monitoreo y comprobar visualmente; cerrar revisión con Sevan, versiones, reproducción integral y Docker. |
+| Angel | Fechas corregidas, Silver/texto limpio, clasificador evaluado y ejemplos de error. | Registrar lectura humana de ejemplos; crear servicio/API/página de reclamos; reconstruir artefactos para demo y cerrar navegación con Rhamses. |
+
+**Integración actual:** cuatro módulos tienen API/página (fraude, crédito, grafos y pronósticos); faltan las de segmentos y reclamos. En esta copia deben reconstruirse crédito y artefactos temporales para la demo. La suite aprobada no acredita reproducción de todos los módulos desde clon limpio. Los criterios de aceptación, dependencias y estimaciones orientativas están en la revisión vigente.
+
+**Orden recomendado:** preparar la demo de los cuatro módulos; corregir segmentación; entregar las vistas de segmentos y reclamos; cerrar evaluación de grafos, navegación, fuentes y revisiones; finalmente demostrar los seis módulos y empaquetar. Cada responsable mantiene su módulo; Gerardo–Sevan coordinan reproducción y Rhamses–Angel navegación.
+
+## Registro de entregas previas — 12 y 13 de octubre de 2026
+
+Las secciones siguientes conservan evidencia y alcance originales. Para asignar trabajo pendiente, usar exclusivamente el estado vigente anterior y sus criterios de aceptación.
 
 ### Cierre técnico de Cueva — fraude y patrones
 

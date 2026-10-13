@@ -4,7 +4,7 @@ Proyecto académico de minería de datos y analítica financiera. La visión inc
 
 ## Guía vigente para continuar el desarrollo
 
-**Antes de elegir o implementar una tarea, cada integrante debe consultar la [verificación del avance — 12 de octubre de 2026](docs/revision-avance-2026-10-12.md).** Allí están los avances verificados, los pendientes y la siguiente entrega de cada responsable, las tareas compartidas y los criterios de aceptación.
+**Antes de elegir o implementar una tarea, cada integrante debe consultar el [avance y pendientes — 13 de octubre de 2026](docs/revision-avance-2026-10-13.md).** Allí están los cambios de los seis responsables, sus próximas entregas, las tareas compartidas y los criterios de aceptación. El estado incluye la integración de Gerardo en `55d81d0`, con 213 pruebas aprobadas.
 
 El [plan de desarrollo](docs/plan-desarrollo.md) mantiene el alcance y el reparto de responsabilidades. Para decidir qué hacer ahora, guiarse por la verificación vigente: sus pendientes actualizados reemplazan los estados históricos que contradigan el código. Al completar una entrega, registrar su evidencia y actualizar ambos documentos para mantener esta guía al día.
 
@@ -25,7 +25,7 @@ La [base del proyecto](docs/bases-del-proyecto.md) define el alcance inicial, lo
 
 El [plan de desarrollo](docs/plan-desarrollo.md) detalla las cinco etapas, las tareas de cada integrante, las responsabilidades compartidas y las primeras entregas.
 
-La revisión vigente del **12 de octubre de 2026** está enlazada al inicio de ese plan. La [guía de pruebas y reproducción](docs/pruebas-reproduccion.md) reúne dependencias, comandos y criterios de ejecución; sus bloqueos históricos deben contrastarse con la verificación vigente.
+La revisión vigente del **13 de octubre de 2026** está enlazada al inicio de ese plan. La [guía de pruebas y reproducción](docs/pruebas-reproduccion.md) reúne dependencias, comandos y criterios de ejecución; sus bloqueos históricos deben contrastarse con la revisión vigente. Hay cuatro módulos con API/página: fraude, crédito, grafos y pronósticos; faltan las vistas de segmentos y reclamos. Antes de la demo local deben reconstruirse el modelo de crédito, Gold temporal y reporte de monitoreo.
 
 La primera entrega de Cueva incluye [perfilado y contrato de variables de fraude](docs/fraude/contrato-variables.md), con comandos reproducibles y controles de información disponible antes de la operación.
 
@@ -39,7 +39,7 @@ Los tres CSV aportados están organizados en `data/bronze/` y se versionan media
 
 ## Estado histórico
 
-Esta lista conserva el estado anterior a la verificación del 12 de octubre y contiene pendientes ya implementados. Para el estado actual y las próximas tareas, consultar la [verificación vigente](docs/revision-avance-2026-10-12.md).
+Esta lista conserva el estado anterior a la verificación del 12 de octubre y contiene pendientes ya implementados. Para el estado actual y las próximas tareas, consultar la [revisión vigente](docs/revision-avance-2026-10-13.md).
 
 - [x] Contexto y bases documentados.
 - [x] Fuente transaccional de trabajo elegida: archivo con esquema PaySim.
