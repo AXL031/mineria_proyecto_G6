@@ -5,6 +5,7 @@ import hashlib
 import json
 import math
 from collections import Counter
+from datetime import date, datetime
 from pathlib import Path
 
 FIELDS = (
@@ -38,20 +39,15 @@ def compute_sha256(path: Path) -> str:
     return hasher.hexdigest()
 
 
-def extract_year(date_str: str) -> str:
-    """Extrae el año desde formatos comunes como MM/DD/YYYY o YYYY-MM-DD."""
-    date_str = date_str.strip()
-    if not date_str:
-        return "desconocido"
-    if "/" in date_str:
-        parts = date_str.split("/")
-        if len(parts) == 3 and len(parts[2]) == 4:
-            return parts[2]
-    elif "-" in date_str:
-        parts = date_str.split("-")
-        if len(parts) >= 1 and len(parts[0]) == 4:
-            return parts[0]
-    return "otro"
+def parse_date(date_str: str) -> date | None:
+    """Convierte MM/DD/YYYY o YYYY-MM-DD en una fecha; devuelve None si no es válida."""
+    date_str = (date_str or "").strip()
+    for fmt in ("%m/%d/%Y", "%Y-%m-%d"):
+        try:
+            return datetime.strptime(date_str, fmt).date()
+        except ValueError:
+            continue
+    return None
 
 
 def profile_complaints(path: Path | str, limit: int | None = None) -> dict:
@@ -93,6 +89,7 @@ def profile_complaints(path: Path | str, limit: int | None = None) -> dict:
     duplicate_ids = 0
     min_date = None
     max_date = None
+    sent_before_received = 0
 
     with path.open("r", encoding="utf-8", errors="replace", newline="") as handle:
         reader = csv.DictReader(handle)
@@ -134,8 +131,11 @@ def profile_complaints(path: Path | str, limit: int | None = None) -> dict:
             # Validación de fecha y producto obligatorios
             date_val = row.get("date_received", "").strip()
             prod_val = row.get("product", "").strip()
+            received = parse_date(date_val)
             if not date_val:
                 row_issues.append("missing:date_received")
+            elif received is None:
+                row_issues.append("invalid:date_received")
             if not prod_val:
                 row_issues.append("missing:product")
 
@@ -180,13 +180,15 @@ def profile_complaints(path: Path | str, limit: int | None = None) -> dict:
                 if disputed:
                     disputed_counter[disputed] += 1
 
-                year = extract_year(date_val)
-                year_counter[year] += 1
+                year_counter[str(received.year)] += 1
+                if min_date is None or received < min_date:
+                    min_date = received
+                if max_date is None or received > max_date:
+                    max_date = received
 
-                if min_date is None or date_val < min_date:
-                    min_date = date_val
-                if max_date is None or date_val > max_date:
-                    max_date = date_val
+                sent = parse_date(row.get("date_sent_to_company", ""))
+                if sent is not None and sent < received:
+                    sent_before_received += 1
 
             if limit is not None and total_rows >= limit:
                 break
@@ -239,9 +241,10 @@ def profile_complaints(path: Path | str, limit: int | None = None) -> dict:
         "disputed_distribution": dict(disputed_counter.most_common()),
         "by_year": dict(sorted(year_counter.items())),
         "temporal_range": {
-            "min_date": min_date,
-            "max_date": max_date,
+            "min_date": min_date.isoformat() if min_date else None,
+            "max_date": max_date.isoformat() if max_date else None,
         },
+        "sent_before_received": sent_before_received,
     }
 
 
@@ -305,6 +308,8 @@ def write_reports(profile: dict, json_path: Path | str, markdown_path: Path | st
             "",
             f"- **Fecha más antigua registrada:** `{profile['temporal_range']['min_date']}`",
             f"- **Fecha más reciente registrada:** `{profile['temporal_range']['max_date']}`",
+            f"- **Envíos a la empresa anteriores a la recepción:** {profile['sent_before_received']:,} "
+            "(hallazgo de calidad; no se rechazan)",
             "",
             "### Reclamos por Año",
             "",

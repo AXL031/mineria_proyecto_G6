@@ -61,8 +61,9 @@ Informe generado por `scripts/profile_complaints.py`. Los originales en Bronze n
 
 ## 4. Cobertura Temporal y Tendencias
 
-- **Fecha más antigua registrada:** `01/01/2012`
-- **Fecha más reciente registrada:** `12/31/2015`
+- **Fecha más antigua registrada:** `2011-12-01`
+- **Fecha más reciente registrada:** `2016-04-25`
+- **Envíos a la empresa anteriores a la recepción:** 7,057 (hallazgo de calidad; no se rechazan)
 
 ### Reclamos por Año
 
