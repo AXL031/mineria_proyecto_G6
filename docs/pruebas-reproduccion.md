@@ -19,7 +19,7 @@ Revisión del 9 de octubre de 2026. Complementa el [plan de desarrollo](plan-des
 | --- | --- | --- |
 | P0 | Intérprete utilizable y entorno con todas las dependencias. | Cada integrante prepara un entorno aislado; Sevan–Gerardo documentan y validan una instalación común. |
 | Resuelto en configuración | `TestClient` necesita `httpx`. | Declarado en el extra `test`, incluido en `requirements/common.txt`; falta verificar instalación y suite completas. |
-| P0 | Silver y Gold no existen en esta copia. | Taco ejecuta Silver completo; Gerardo genera Gold y exploración. Verificar controles y recuentos. |
+| Resuelto (transaccional) | Silver y mart Gold transaccional no existían en esta copia. | Silver, mart Gold y segmentos regenerados por Taco con controles aprobados; queda pendiente el Gold temporal de Gerardo. |
 | P1 | Archivos de versiones fijadas no forman un entorno común: `fraud.txt` y `graph.txt` fijan `tzdata==2026.4`, `transactions.txt` fija `tzdata==2026.5`. | Sevan–Gerardo unifican versiones y Python tras validar la suite. No instalar todos los archivos fijados juntos. |
 | P1 | API y panel no recorren juntos los datos reales. | Rhamses–Angel conectan redes a la API y añaden una prueba de integración con muestra acotada. |
 | P1 | No existe endpoint ni página de fraude. | Cueva implementa ambos y acuerda con Taco el uso de Silver. |
