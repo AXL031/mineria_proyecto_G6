@@ -144,3 +144,27 @@ Los tres scripts usan los valores predeterminados de `configs/credit.json` y no 
 - `train_credit.py`: verifica el Parquet contra su reporte, entrena, calibra, elige el umbral en validación y evalúa la prueba una sola vez; escribe `artifacts/models/credit/` y `docs/credito/resultados-modelo.md`.
 
 El esquema y las decisiones están en el [contrato de variables](../docs/credito/contrato-variables.md).
+
+## Pipeline de reclamos
+
+Los dos scripts no modifican Bronze y usan rutas predeterminadas.
+
+```powershell
+.venv-pruebas/Scripts/python.exe scripts/profile_complaints.py
+.venv-pruebas/Scripts/python.exe scripts/build_silver_complaints.py
+```
+
+- `profile_complaints.py`: lee `data/bronze/complaints/consumer_complaints.csv`; escribe `artifacts/reports/complaints/complaints_profile.json` y `docs/reclamos/perfil-complaints.md`. Interpreta las fechas antes de calcular el rango.
+- `build_silver_complaints.py`: rechaza filas sin identificador, fecha o producto válidos, conserva el primer `complaint_id` repetido y sustituye la censura de las narrativas por marcadores; escribe `data/silver/complaints/complaints.parquet`, `artifacts/reports/complaints/silver_quality.json` y `docs/reclamos/calidad-silver.md`. Termina con error si falla algún control de calidad.
+
+El esquema y las decisiones están en el [contrato Silver de reclamos](../docs/reclamos/contrato-silver.md).
+
+Clasificador de producto y revisión de ejemplos (usan `configs/complaints.json` y requieren el Silver y su reporte de calidad):
+
+```powershell
+.venv-pruebas/Scripts/python.exe scripts/train_complaints.py
+.venv-pruebas/Scripts/python.exe scripts/analyze_complaints_errors.py
+```
+
+- `train_complaints.py`: verifica el Parquet contra su reporte, parte cronológicamente, entrena la referencia trivial, Naive Bayes y TF-IDF con regresión logística, elige C en validación y evalúa la prueba una vez; escribe `artifacts/models/complaints/` y `docs/reclamos/resultados-modelo.md`. Tarda unos 2.5 minutos.
+- `analyze_complaints_errors.py`: reconstruye la partición de prueba del modelo guardado y extrae pares confundidos, errores de mayor confianza y casi-duplicados; escribe `artifacts/reports/complaints/error_examples.json` y `docs/reclamos/revision-ejemplos.md`. Conserva el texto escrito a mano bajo el marcador `<!-- OBSERVACIONES -->`.

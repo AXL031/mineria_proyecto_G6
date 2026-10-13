@@ -3,13 +3,14 @@ import json
 import sys
 import unittest
 import uuid
+from datetime import date
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
 from bankshield.ingestion.complaints_profile import (
     FIELDS,
-    extract_year,
+    parse_date,
     profile_complaints,
     write_reports,
 )
@@ -61,11 +62,56 @@ class ComplaintsProfileTests(unittest.TestCase):
             writer.writeheader()
             writer.writerows(rows)
 
-    def test_extract_year(self):
-        self.assertEqual(extract_year("08/30/2013"), "2013")
-        self.assertEqual(extract_year("2015-05-12"), "2015")
-        self.assertEqual(extract_year(""), "desconocido")
-        self.assertEqual(extract_year("invalid-date"), "otro")
+    def test_parse_date(self):
+        self.assertEqual(parse_date("08/30/2013"), date(2013, 8, 30))
+        self.assertEqual(parse_date("2015-05-12"), date(2015, 5, 12))
+        self.assertEqual(parse_date(" 01/02/2015 "), date(2015, 1, 2))
+        self.assertIsNone(parse_date(""))
+        self.assertIsNone(parse_date("invalid-date"))
+        self.assertIsNone(parse_date("13/45/2015"))
+
+    def test_temporal_range_crosses_years(self):
+        self.write_csv([
+            mock_complaint(complaint_id="1", date_received="12/31/2014", date_sent_to_company="12/31/2014"),
+            mock_complaint(complaint_id="2", date_received="01/01/2015", date_sent_to_company="01/02/2015"),
+        ])
+        profile = profile_complaints(self.path)
+        self.assertEqual(profile["temporal_range"]["min_date"], "2014-12-31")
+        self.assertEqual(profile["temporal_range"]["max_date"], "2015-01-01")
+        self.assertEqual(profile["by_year"], {"2014": 1, "2015": 1})
+
+    def test_range_is_consistent_with_yearly_counts(self):
+        self.write_csv([
+            mock_complaint(complaint_id="1", date_received="03/15/2013"),
+            mock_complaint(complaint_id="2", date_received="11/02/2011"),
+            mock_complaint(complaint_id="3", date_received="04/25/2016"),
+            mock_complaint(complaint_id="4", date_received="07/01/2013"),
+        ])
+        profile = profile_complaints(self.path)
+        years = sorted(profile["by_year"])
+        self.assertEqual(profile["temporal_range"]["min_date"][:4], years[0])
+        self.assertEqual(profile["temporal_range"]["max_date"][:4], years[-1])
+        self.assertEqual(sum(profile["by_year"].values()), profile["valid_rows"])
+
+    def test_impossible_date_is_invalid_row(self):
+        self.write_csv([
+            mock_complaint(complaint_id="1"),
+            mock_complaint(complaint_id="2", date_received="13/45/2015"),
+        ])
+        profile = profile_complaints(self.path)
+        self.assertEqual(profile["valid_rows"], 1)
+        self.assertEqual(profile["invalid_rows"], 1)
+        self.assertEqual(profile["issues"]["invalid:date_received"], 1)
+        self.assertEqual(profile["by_year"], {"2015": 1})
+
+    def test_sent_before_received_is_counted_not_rejected(self):
+        self.write_csv([
+            mock_complaint(complaint_id="1", date_received="05/12/2015", date_sent_to_company="05/10/2015"),
+            mock_complaint(complaint_id="2", date_received="05/12/2015", date_sent_to_company="05/14/2015"),
+        ])
+        profile = profile_complaints(self.path)
+        self.assertEqual(profile["valid_rows"], 2)
+        self.assertEqual(profile["sent_before_received"], 1)
 
     def test_profile_basic_and_narratives(self):
         row1 = mock_complaint(complaint_id="1", consumer_complaint_narrative="Complaint text with XXXX redaction.")

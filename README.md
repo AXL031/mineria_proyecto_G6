@@ -8,6 +8,8 @@ Proyecto académico de minería de datos y analítica financiera. La visión inc
 
 El [plan de desarrollo](docs/plan-desarrollo.md) mantiene el alcance y el reparto de responsabilidades. Para decidir qué hacer ahora, guiarse por la verificación vigente: sus pendientes actualizados reemplazan los estados históricos que contradigan el código. Al completar una entrega, registrar su evidencia y actualizar ambos documentos para mantener esta guía al día.
 
+**Reclamos — Angel:** el [perfil](docs/reclamos/perfil-complaints.md) ya tiene el rango de fechas corregido y el [contrato Silver](docs/reclamos/contrato-silver.md) describe la tabla limpia (`scripts/build_silver_complaints.py`). El [clasificador de producto por narrativa](docs/reclamos/resultados-modelo.md) supera a sus referencias en la prueba temporal y sus [ejemplos](docs/reclamos/revision-ejemplos.md) están extraídos; siguen pendientes la lectura humana de esa revisión, el servicio, la API y la página.
+
 **Fraude y patrones — Cueva:** consultar el [cierre de entrega](docs/fraude/cierre-entrega.md) para las comprobaciones más recientes, asociaciones descriptivas, endpoints y el comando `scripts/reproduce_fraud.ps1` que reconstruye y verifica el módulo.
 
 ## Punto de partida

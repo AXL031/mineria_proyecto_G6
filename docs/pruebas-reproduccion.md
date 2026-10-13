@@ -10,7 +10,7 @@ Revisión del 9 de octubre de 2026. Complementa el [plan de desarrollo](plan-des
 | Grafos | Pruebas de ingesta, métricas, patrones y servicios; API y página de redes. | API probada con grafo en memoria; página llama directamente a servicios. Falta recorrido API → panel. |
 | Transacciones | Pruebas de Silver y construcción desde CSV. | Parquet local ausente; requiere regeneración. Segmentación pendiente. |
 | Temporal | Pruebas de agregación y exploración; construcción Gold y gráficos. | Parquet local ausente; pronóstico y backtesting pendientes. |
-| Reclamos | Pruebas y perfilado del CSV. | Rango temporal incorrecto por comparación de cadenas; sin Silver, modelo ni página. |
+| Reclamos | Pruebas, perfilado del CSV, Silver con limpieza de texto y clasificador de producto. | Modelo local excluido de Git (reconstruir con `train_complaints.py`); sin servicio ni página. |
 | Crédito | Perfil, Silver, entrenamiento, scoring, API, página y pruebas con datos sintéticos. | Artefactos locales excluidos de Git; semántica de `loan_status` sin confirmar. |
 
 ## Bloqueos y responsables
@@ -24,7 +24,7 @@ Revisión del 9 de octubre de 2026. Complementa el [plan de desarrollo](plan-des
 | P1 | API y panel no recorren juntos los datos reales. | Rhamses–Angel conectan redes a la API y añaden una prueba de integración con muestra acotada. |
 | P1 | No existe endpoint ni página de fraude. | Cueva implementa ambos y acuerda con Taco el uso de Silver. |
 | P1 | Caché de grafos ignora cambios de `limit` tras la primera carga. | Rhamses define caché por muestra o rechaza cambios explícitamente; añade prueba que cambie el límite. |
-| P1 | Rango de fechas de reclamos incorrecto. | Angel parsea fechas antes de compararlas, prueba cruce de años y regenera el reporte completo. |
+| Resuelto | Rango de fechas de reclamos incorrecto. | Angel interpretó las fechas, añadió prueba de cruce de años y regeneró el reporte completo (2011-12-01 a 2016-04-25). |
 | P2 | Segmentación, pronósticos y NLP incompletos. | Cada responsable completa su siguiente entrega según el plan; todavía no se pueden demostrar los seis módulos finales. |
 | P2 | Procedencia/licencia, comando único, Docker y reproducción desde clon limpio pendientes. | Equipo confirma fuentes; Gerardo coordina reproducción y empaquetado después de validar el recorrido local. |
 
