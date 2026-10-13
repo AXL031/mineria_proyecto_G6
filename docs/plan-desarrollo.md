@@ -8,6 +8,10 @@ Este documento concreta las etapas y entregas de los seis integrantes. Complemen
 
 La [entrega de fraude](fraude/cierre-entrega.md) añade asociaciones descriptivas, `GET /api/fraud/patterns`, consulta desde la página y comandos de reproducción/verificación HTTP. Se revisó técnicamente el contrato Silver del lado de fraude a solicitud de Cueva y se comprobó la interfaz en navegador. La reconstrucción completa desde Bronze en una copia aislada y un entorno nuevo terminó correctamente, reprodujo las métricas y pasó 14 comprobaciones HTTP/página; la suite tiene 160 pruebas aprobadas. El módulo puede avanzar independientemente de las entregas pendientes de otros dominios. La revisión humana cruzada del PR y las decisiones de procedencia/licencia siguen a cargo del equipo; no se declaran realizadas por estas comprobaciones.
 
+### Avance de Angel — reclamos
+
+Se corrigió el rango temporal del [perfil](reclamos/perfil-complaints.md): las fechas se interpretan antes de comparar y el rango real es 2011-12-01 a 2016-04-25, coherente con los conteos anuales. Se construyó el Silver de reclamos ([contrato](reclamos/contrato-silver.md) y [calidad](reclamos/calidad-silver.md)): 555,957 filas, 0 rechazos, 66,806 narrativas y 7,057 envíos anteriores a la recepción marcados sin rechazarlos. Las censuras de la CFPB se sustituyen por marcadores en `narrative_clean`. Quedan pendientes la tarea NLP con su línea base, la evaluación, el servicio, la API, la página y la navegación con Rhamses.
+
 La [verificación del avance](revision-avance-2026-10-12.md) contrasta las responsabilidades siguientes con el código de `c588482`, la suite de 157 pruebas aprobadas y comprobaciones de datos/API locales. Registra avances nuevos de Gold, segmentación y backtesting, pendientes por responsable y dos problemas reproducidos: uso de la etiqueta de fraude en el agrupamiento y comparación no cronológica de fechas de reclamos. El resumen histórico siguiente contiene estados que quedaron desactualizados; consultar la verificación vigente para decidir el próximo trabajo.
 
 ## Revisión histórica del avance — 9 de octubre de 2026
@@ -230,6 +234,15 @@ Con los datos actuales se pronosticará volumen transaccional simulado. Para med
 4. Evaluar los resultados mediante métricas pertinentes y revisión documentada de ejemplos.
 5. Implementar el servicio y la página de reclamos, con tendencias y ejemplos permitidos.
 6. Construir con Rhamses el esqueleto de navegación del panel y su conexión con la API.
+
+#### Incremento implementado — 13 de octubre de 2026
+
+- Fechas del perfil interpretadas como fechas; `parse_date` en `ingestion/complaints_profile.py`. Un valor imposible cuenta como fila inválida.
+- Silver: `features/text_cleaning.py`, `transforms/silver_complaints.py` y `scripts/build_silver_complaints.py`, con controles que detienen el comando si fallan.
+- Pruebas nuevas: `test_text_cleaning.py` y `test_silver_complaints.py`; suite completa de 182 aprobadas.
+- `pyarrow` agregado al extra `complaints`.
+
+**Pendientes:** línea base y método NLP evaluados, `services/complaints.py`, `api/routers/complaints.py`, página de reclamos y actualización de la portada con Rhamses.
 
 **Entrega final:** pipeline de reclamos, análisis NLP evaluado, página de reclamos y navegación inicial del panel.
 

@@ -10,6 +10,8 @@ El proyecto tiene tres de seis módulos con servicio, API y página: fraude, cr�
 
 **Actualización posterior de Cueva, 12 de octubre:** se implementaron asociaciones sencillas, endpoint/página de patrones, revisión técnica de Silver desde fraude y comandos de reproducción/verificación. Consultar el [cierre de entrega](fraude/cierre-entrega.md) para la evidencia más reciente del módulo; el resto de esta revisión conserva el diagnóstico inicial.
 
+**Actualización posterior de Angel, 13 de octubre:** se corrigió el rango de fechas del perfil y se construyó el Silver de reclamos con limpieza de narrativas (ver [contrato](reclamos/contrato-silver.md) y [calidad](reclamos/calidad-silver.md)). Las filas de Angel siguientes conservan el diagnóstico inicial; falta el análisis NLP, el servicio y la página.
+
 ## Estado de las etapas
 
 | Etapa del plan | Estado contrastado | Qué falta para cerrarla | Responsables |
@@ -90,7 +92,7 @@ El proyecto tiene tres de seis módulos con servicio, API y página: fraude, cr�
 | Compromiso del plan | Estado y evidencia |
 | --- | --- |
 | Perfil y cobertura | Implementado/reportado: `ingestion/complaints_profile.py`, `scripts/profile_complaints.py`; 555,957 reclamos y 66,806 narrativas (12.02%). Las marcas `XXXX` se cuentan; no existe todavía un pipeline de limpieza del texto. |
-| Limpieza estructurada/texto | Pendiente; tampoco hay Silver de reclamos. El rango de fechas del perfil compara cadenas MM/DD/YYYY sin parsearlas. |
+| Limpieza estructurada/texto | Implementado posteriormente: Silver con tipos, marcas de calidad y `narrative_clean`; fechas del perfil corregidas (13 de octubre). Inicialmente pendiente. |
 | Línea base y método NLP | Pendiente: propuesta TF-IDF/clasificador y tópicos en documentos; no hay modelo implementado. |
 | Evaluación y ejemplos | Pendiente: no hay evaluación de un análisis NLP principal ni revisión de ejemplos documentada como aceptación. |
 | Servicio y página de reclamos | Pendiente: no existen servicio/router/página de reclamos. |
