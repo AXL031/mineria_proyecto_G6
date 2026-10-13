@@ -10,6 +10,8 @@ DATE_MARKER = "<fecha>"
 AMOUNT_MARKER = "<monto>"
 REDACTED_MARKER = "<censurado>"
 MARKERS = (DATE_MARKER, AMOUNT_MARKER, REDACTED_MARKER)
+# Tokens que deja el vectorizador al partir los marcadores; se tratan como stopwords en los modelos.
+MARKER_TOKENS = tuple(marker.strip("<>") for marker in MARKERS)
 
 # Monto anonimizado por la CFPB, p. ej. {$27.00} o {$1,250.50}.
 _AMOUNT = re.compile(r"\{\$[\d,]*\.?\d+\}")
