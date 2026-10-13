@@ -12,6 +12,13 @@ El [plan de desarrollo](docs/plan-desarrollo.md) mantiene el alcance y el repart
 
 **Fraude y patrones — Cueva:** consultar el [cierre de entrega](docs/fraude/cierre-entrega.md) para las comprobaciones más recientes, asociaciones descriptivas, endpoints y el comando `scripts/reproduce_fraud.ps1` que reconstruye y verifica el módulo.
 
+**Pronósticos — Gerardo:** las [líneas base](docs/pronosticos/resultados-baselines.md)
+y [tres configuraciones Holt-Winters](docs/pronosticos/resultados-holt-winters.md)
+se evaluaron sobre las mismas cuatro ventanas. Naive se mantiene seleccionado;
+el [monitoreo histórico](docs/pronosticos/resultados-monitoreo.md) detecta el
+cambio del tramo 719–743. El servicio y la página temporal exponen la proyección
+Naive, incertidumbre descriptiva y los indicadores de cambio mediante la API.
+
 ## Punto de partida
 
 La [base del proyecto](docs/bases-del-proyecto.md) define el alcance inicial, los límites de las fuentes públicas, la arquitectura propuesta, los criterios de evaluación, el reparto entre los seis integrantes y el orden de trabajo. Es una propuesta de ejecución para discutir con el equipo antes de implementar los módulos.

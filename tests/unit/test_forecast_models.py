@@ -6,7 +6,11 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
-from bankshield.models.forecast import naive_forecast, seasonal_naive_forecast
+from bankshield.models.forecast import (
+    holt_winters_forecast,
+    naive_forecast,
+    seasonal_naive_forecast,
+)
 
 
 class ForecastBaselineTests(unittest.TestCase):
@@ -43,6 +47,45 @@ class ForecastBaselineTests(unittest.TestCase):
         seasonal_naive_forecast(history, horizon=2, seasonal_period=2)
 
         np.testing.assert_array_equal(history, original)
+
+    def test_holt_winters_recovers_a_repeating_additive_cycle(self):
+        history = [10.0, 20.0, 15.0, 25.0] * 8
+
+        prediction = holt_winters_forecast(
+            history,
+            horizon=4,
+            seasonal_periods=4,
+            trend=None,
+        )
+
+        np.testing.assert_allclose(prediction, [10.0, 20.0, 15.0, 25.0], atol=1e-4)
+
+    def test_holt_winters_rejects_an_incomplete_or_inconsistent_configuration(self):
+        invalid_calls = [
+            lambda: holt_winters_forecast(
+                [1.0] * 7,
+                horizon=1,
+                seasonal_periods=4,
+            ),
+            lambda: holt_winters_forecast(
+                [1.0] * 8,
+                horizon=1,
+                seasonal_periods=4,
+                trend=None,
+                damped_trend=True,
+            ),
+            lambda: holt_winters_forecast(
+                [1.0] * 8,
+                horizon=1,
+                seasonal_periods=4,
+                seasonal="mul",
+            ),
+        ]
+
+        for call in invalid_calls:
+            with self.subTest(call=call):
+                with self.assertRaises(ValueError):
+                    call()
 
     def test_rejects_invalid_history_and_parameters(self):
         invalid_calls = [

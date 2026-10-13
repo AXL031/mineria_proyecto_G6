@@ -12,6 +12,19 @@ La [entrega de fraude](fraude/cierre-entrega.md) añade asociaciones descriptiva
 
 Se corrigió el rango temporal del [perfil](reclamos/perfil-complaints.md): las fechas se interpretan antes de comparar y el rango real es 2011-12-01 a 2016-04-25, coherente con los conteos anuales. Se construyó el Silver de reclamos ([contrato](reclamos/contrato-silver.md) y [calidad](reclamos/calidad-silver.md)): 555,957 filas, 0 rechazos, 66,806 narrativas y 7,057 envíos anteriores a la recepción marcados sin rechazarlos. Las censuras de la CFPB se sustituyen por marcadores en `narrative_clean`. Se entrenó un clasificador de producto a partir de la narrativa, evaluado en una prueba cronológica ([resultados](reclamos/resultados-modelo.md)): macro-F1 0.728 frente a 0.668 de Naive Bayes y 0.037 de la referencia trivial. Los [ejemplos de error](reclamos/revision-ejemplos.md) están extraídos y comentados. Quedan pendientes la confirmación humana de esa lectura, el servicio, la API, la página y la navegación con Rhamses.
 
+### Avance de Gerardo — modelo principal temporal
+
+La [comparación de Holt-Winters](pronosticos/resultados-holt-winters.md)
+evalúa tres configuraciones aditivas junto con Naive y Naive estacional sobre
+las mismas cuatro ventanas, sin usar el tramo 719–743. Ninguna configuración
+ajustada mejora el MAE de Naive; por ello Naive se mantiene como selección para
+cantidad y monto. El [monitoreo histórico](pronosticos/resultados-monitoreo.md)
+compara los steps 694–718 con 719–743 y detecta cambios en los seis indicadores
+configurados. `GET /api/forecast/projection`, `GET /api/forecast/monitoring` y
+la página `04_pronosticos.py` integran la proyección Naive y el monitoreo sin
+ocultar sus limitaciones. El siguiente incremento es cerrar la reproducción
+integral y revisar visualmente el recorrido API–panel.
+
 La [verificación del avance](revision-avance-2026-10-12.md) contrasta las responsabilidades siguientes con el código de `c588482`, la suite de 157 pruebas aprobadas y comprobaciones de datos/API locales. Registra avances nuevos de Gold, segmentación y backtesting, pendientes por responsable y dos problemas reproducidos: uso de la etiqueta de fraude en el agrupamiento y comparación no cronológica de fechas de reclamos. El resumen histórico siguiente contiene estados que quedaron desactualizados; consultar la verificación vigente para decidir el próximo trabajo.
 
 ## Revisión histórica del avance — 9 de octubre de 2026

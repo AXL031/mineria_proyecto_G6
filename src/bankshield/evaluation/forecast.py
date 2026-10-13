@@ -12,7 +12,11 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from bankshield.models.forecast import naive_forecast, seasonal_naive_forecast
+from bankshield.models.forecast import (
+    holt_winters_forecast,
+    naive_forecast,
+    seasonal_naive_forecast,
+)
 
 
 def _positive_integer(name: str, value: object) -> int:
@@ -319,25 +323,86 @@ def _configured_targets(evaluation_config: Mapping[str, object]) -> tuple[str, .
 
 def _configured_models(
     evaluation_config: Mapping[str, object],
-) -> tuple[tuple[str, ...], int]:
+) -> dict[str, dict[str, object]]:
     models = evaluation_config.get("models")
     if not isinstance(models, Mapping):
         raise ValueError("models debe ser un objeto")
-    expected = {"naive", "seasonal_naive"}
-    if set(models) != expected:
-        raise ValueError("El experimento requiere naive y seasonal_naive")
-    seasonal = models["seasonal_naive"]
-    if not isinstance(seasonal, Mapping) or "lag" not in seasonal:
-        raise ValueError("seasonal_naive requiere el parámetro lag")
-    lag = _positive_integer("seasonal_naive.lag", seasonal["lag"])
-    return tuple(models), lag
+    if not models:
+        raise ValueError("Se requiere al menos un modelo")
+    if any(not isinstance(name, str) or not name for name in models):
+        raise ValueError("Los modelos deben tener nombres de texto no vacíos")
+
+    unknown = {
+        name
+        for name in models
+        if name not in {"naive", "seasonal_naive"}
+        and not name.startswith("holt_winters")
+    }
+    if unknown:
+        raise ValueError("Modelos no soportados: " + ", ".join(sorted(unknown)))
+
+    validated: dict[str, dict[str, object]] = {}
+    for name, raw_parameters in models.items():
+        if not isinstance(raw_parameters, Mapping):
+            raise ValueError(f"La configuración de {name} debe ser un objeto")
+        parameters = dict(raw_parameters)
+        if name == "naive":
+            unexpected = set(parameters)
+        elif name == "seasonal_naive":
+            unexpected = set(parameters).difference({"lag"})
+            if "lag" not in parameters:
+                raise ValueError("seasonal_naive requiere el parámetro lag")
+            parameters["lag"] = _positive_integer(
+                "seasonal_naive.lag", parameters["lag"]
+            )
+        elif name.startswith("holt_winters"):
+            unexpected = set(parameters).difference(
+                {
+                    "seasonal_periods",
+                    "trend",
+                    "seasonal",
+                    "damped_trend",
+                    "clip_lower",
+                }
+            )
+            if "seasonal_periods" not in parameters:
+                raise ValueError(f"{name} requiere seasonal_periods")
+            parameters["seasonal_periods"] = _positive_integer(
+                f"{name}.seasonal_periods", parameters["seasonal_periods"]
+            )
+        if unexpected:
+            raise ValueError(
+                f"Parámetros no soportados para {name}: "
+                + ", ".join(sorted(unexpected))
+            )
+        validated[name] = parameters
+    return validated
+
+
+def _forecast_model(
+    name: str,
+    history: Sequence[float],
+    horizon: int,
+    parameters: Mapping[str, object],
+) -> np.ndarray:
+    if name == "naive":
+        return naive_forecast(history, horizon)
+    if name == "seasonal_naive":
+        return seasonal_naive_forecast(
+            history,
+            horizon,
+            seasonal_period=parameters["lag"],
+        )
+    if name.startswith("holt_winters"):
+        return holt_winters_forecast(history, horizon, **parameters)
+    raise ValueError(f"Modelo no soportado: {name}")
 
 
 def evaluate_forecast_baselines(
     series: pd.DataFrame,
     evaluation_config: Mapping[str, object],
 ) -> dict[str, object]:
-    """Ejecuta ambos modelos sobre las mismas ventanas y agrega sus métricas."""
+    """Ejecuta los modelos configurados sobre las mismas ventanas."""
 
     if not isinstance(series, pd.DataFrame):
         raise TypeError("La serie debe ser un DataFrame")
@@ -347,7 +412,7 @@ def evaluate_forecast_baselines(
         raise ValueError("Faltan objetivos en Gold: " + ", ".join(missing_targets))
 
     windows = backtest_windows_from_config(evaluation_config)
-    model_names, seasonal_lag = _configured_models(evaluation_config)
+    models = _configured_models(evaluation_config)
     metrics_config = evaluation_config.get("metrics")
     if not isinstance(metrics_config, Mapping):
         raise ValueError("metrics debe ser un objeto")
@@ -360,18 +425,14 @@ def evaluate_forecast_baselines(
             history = train[target].to_numpy()
             actual = test[target].to_numpy()
             predictions = {
-                "naive": naive_forecast(history, window.horizon),
-                "seasonal_naive": seasonal_naive_forecast(
-                    history,
-                    window.horizon,
-                    seasonal_period=seasonal_lag,
-                ),
+                name: _forecast_model(name, history, window.horizon, parameters)
+                for name, parameters in models.items()
             }
             results[target] = {
                 model: {
                     "metrics": calculate_forecast_metrics(actual, predictions[model])
                 }
-                for model in model_names
+                for model in models
             }
 
         window_reports.append(
@@ -394,7 +455,7 @@ def evaluate_forecast_baselines(
     aggregates = {}
     for target in targets:
         aggregates[target] = {}
-        for model in model_names:
+        for model in models:
             aggregates[target][model] = {
                 metric: float(
                     np.mean(
@@ -409,15 +470,21 @@ def evaluate_forecast_baselines(
             aggregates[target][model]["window_count"] = len(window_reports)
 
     numeric_steps = pd.to_numeric(series["step"], errors="coerce")
+    versions = {
+        "python": platform.python_version(),
+        "numpy": np.__version__,
+        "pandas": pd.__version__,
+    }
+    if any(name.startswith("holt_winters") for name in models):
+        import statsmodels
+
+        versions["statsmodels"] = statsmodels.__version__
+
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "experiment_id": evaluation_config.get("experiment_id"),
-        "versions": {
-            "python": platform.python_version(),
-            "numpy": np.__version__,
-            "pandas": pd.__version__,
-        },
+        "versions": versions,
         "series_coverage": {
             "rows": int(len(series)),
             "min_step": int(numeric_steps.min()),
@@ -486,3 +553,20 @@ def run_forecast_baseline_evaluation(
         encoding="utf-8",
     )
     return report
+
+
+def run_forecast_model_evaluation(
+    input_path: Path,
+    output_path: Path,
+    evaluation_config: Mapping[str, object],
+    *,
+    base_dir: Path | None = None,
+) -> dict[str, object]:
+    """Alias explícito para evaluaciones que incluyen el modelo principal."""
+
+    return run_forecast_baseline_evaluation(
+        input_path,
+        output_path,
+        evaluation_config,
+        base_dir=base_dir,
+    )

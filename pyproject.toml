@@ -37,6 +37,7 @@ forecast = [
     "pandas>=2.2,<4",
     "pyarrow>=17,<30",
     "matplotlib>=3.8,<4",
+    "statsmodels>=0.14.4,<1",
 ]
 transactions = [
     "numpy>=1.26,<3",

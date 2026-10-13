@@ -8,6 +8,7 @@ Servicio web backend construido con **FastAPI** que expone endpoints analíticos
 - `api/routers/graphs.py`: Endpoints del módulo de grafos de transacciones (`/api/graphs/*`).
 - `api/routers/fraud.py`: Predicción y métricas de fraude (`/api/fraud/*`).
 - `api/routers/credit.py`: Riesgo crediticio (`/api/credit/*`).
+- `api/routers/forecast.py`: Proyección y monitoreo temporal (`/api/forecast/*`).
 
 ## Endpoints Disponibles (Grafos)
 
@@ -56,3 +57,16 @@ python -m unittest tests/unit/test_api_graphs.py -v
 | `GET` | `/api/credit/model` | Métricas, particiones, versiones y límites embebidos en el artefacto. |
 
 El modelo se indica con `BANKSHIELD_CREDIT_MODEL` (por defecto `artifacts/models/credit/model.joblib`). Si falta o es incompatible, responde 503 sin afectar a los demás módulos. Ver el [contrato de variables](../docs/credito/contrato-variables.md).
+
+## Endpoints de pronósticos
+
+| Método | Endpoint | Descripción |
+|---|---|---|
+| `GET` | `/api/forecast/projection` | Historia y proyección Naive para cantidad o monto; admite `target`, `horizon` e `history_steps`. Incluye un intervalo empírico no calibrado. |
+| `GET` | `/api/forecast/monitoring` | Comparación histórica de volumen, montos, tipos y fraude entre los steps 694–718 y 719–743. |
+
+La serie se lee desde `data/gold/forecast/transactions_hourly.parquet` o desde
+`BANKSHIELD_FORECAST_GOLD`. El monitoreo se lee desde
+`artifacts/reports/forecast_monitoring.json` o desde
+`BANKSHIELD_FORECAST_MONITORING`. Si falta un derivado, solo este módulo responde
+503; la API puede seguir atendiendo los demás dominios.
