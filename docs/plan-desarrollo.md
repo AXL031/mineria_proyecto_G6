@@ -36,7 +36,7 @@ Estado basado en el código, reportes y referencias Git disponibles en esta copi
 
 ### Estado de integración y reproducción
 
-- Existen API y página de fraude y de crédito conectadas entre sí, además de API de grafos y página de redes. Redes todavía consulta servicios directamente; segmentos, temporal y reclamos no tienen vistas finales.
+- Existen API y página de fraude y de crédito conectadas entre sí, además de API de grafos y página de redes. Redes todavía consulta servicios directamente; segmentos ya tiene vista conectada a su API y quedan temporal y reclamos sin vistas finales.
 - Silver está regenerado con 6,362,620 filas y controles aprobados. Gold temporal sigue sin regenerarse en esta copia. Los derivados están excluidos de Git.
 - Modelo anterior en `artifacts/models/fraud/` y experimento Silver en `artifacts/models/fraud-silver/`, ambos locales. Otro clon debe reconstruirlos.
 - Entorno común instalado con Python 3.12.14 y `pip check` aprobado. Suite completa: **111 pruebas aprobadas**, incluidas API, equivalencia Bronze/Silver e interacciones de Streamlit. Las pruebas de grafos aún usan un grafo en memoria y no validan su carga completa del CSV.

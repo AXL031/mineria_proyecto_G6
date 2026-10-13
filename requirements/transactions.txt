@@ -1,7 +1,12 @@
-# Versiones usadas en el pipeline Silver transaccional, con Python 3.13.
+# Versiones usadas en el pipeline transaccional (Silver, mart Gold y
+# segmentación), con Python 3.13.
 numpy==2.5.3
 pandas==3.0.6
 pyarrow==25.0.1
 python-dateutil==2.9.0.post0
 six==1.17.0
 tzdata==2026.5
+scikit-learn==1.9.1
+scipy==1.18.1
+threadpoolctl==3.7.0
+joblib==1.6.0

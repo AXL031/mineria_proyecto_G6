@@ -104,7 +104,8 @@ El esquema, los roles de columna y los controles se describen en el
 reincidentes (>= 10 transacciones recibidas) con KMeans sobre variables de
 comportamiento, comparado con una línea base por cuantiles de actividad. El
 agrupamiento **no usa la etiqueta de fraude**; `fraud_rate` solo perfila el
-segmento ya formado.
+segmento ya formado. Requiere `scikit-learn` (extra `transactions`):
+`python -m pip install -e ".[transactions]"` o `requirements/transactions.txt`.
 
 ```powershell
 .venv-pruebas/Scripts/python.exe scripts/segment_transactions.py

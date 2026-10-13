@@ -110,5 +110,7 @@ dataset completo.
   representan operaciones bancarias reales.
 - `data/silver/` queda fuera de Git; cada integrante regenera el Parquet con
   el comando anterior.
-- Esta entrega cubre Bronze → Silver. El mart analítico en Gold y la
-  segmentación son las siguientes entregas del módulo.
+- Esta entrega cubre Bronze → Silver. El [mart analítico en Gold](contrato-gold.md)
+  y la [segmentación de cuentas](segmentacion.md) ya están implementados sobre
+  este Silver; el servicio, los endpoints y la página de segmentos consumen sus
+  artefactos.

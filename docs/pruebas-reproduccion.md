@@ -25,7 +25,7 @@ Revisión del 9 de octubre de 2026. Complementa el [plan de desarrollo](plan-des
 | P1 | No existe endpoint ni página de fraude. | Cueva implementa ambos y acuerda con Taco el uso de Silver. |
 | P1 | Caché de grafos ignora cambios de `limit` tras la primera carga. | Rhamses define caché por muestra o rechaza cambios explícitamente; añade prueba que cambie el límite. |
 | Resuelto | Rango de fechas de reclamos incorrecto. | Angel interpretó las fechas, añadió prueba de cruce de años y regeneró el reporte completo (2011-12-01 a 2016-04-25). |
-| P2 | Segmentación, pronósticos y NLP incompletos. | Cada responsable completa su siguiente entrega según el plan; todavía no se pueden demostrar los seis módulos finales. |
+| P2 | Pronósticos y NLP incompletos. | Cada responsable completa su siguiente entrega según el plan; todavía no se pueden demostrar los seis módulos finales. |
 | P2 | Procedencia/licencia, comando único, Docker y reproducción desde clon limpio pendientes. | Equipo confirma fuentes; Gerardo coordina reproducción y empaquetado después de validar el recorrido local. |
 
 ## 1. Preparar el entorno

@@ -124,8 +124,8 @@ La procedencia/licencia de los CSV sigue abierta para todo el equipo, con los pr
 - Los pendientes de Taco presentaban Gold/segmentación como trabajo futuro y la corrección metodológica de la etiqueta; ya están implementados y la independencia de la etiqueta se verificó el 13 de octubre (ver la actualización de Taco arriba).
 - Los pendientes de Gerardo aún presentan definición de horizonte y comparación de referencias como futuros; ya hay horizonte 24 y backtesting.
 - `docs/pruebas-reproduccion.md` afirma que fraude carece de API/página, Silver falta y la caché de grafos no respeta el límite. Esas afirmaciones quedaron desactualizadas. Sus instrucciones deben revisarse junto con la prueba desde un clon limpio.
-- La portada marca crédito en desarrollo y ofrece detección de comunidades no implementada; además omite segmentación.
-- `docs/transacciones/contrato-gold.md` todavía anuncia la segmentación como siguiente entrega.
+- La portada marcaba crédito en desarrollo y ofrecía detección de comunidades no implementada; además omitía segmentación. **Resuelto el 13 de octubre (Taco):** la portada ya incluye segmentación.
+- `docs/transacciones/contrato-gold.md` todavía anunciaba la segmentación como siguiente entrega. **Resuelto el 13 de octubre (Taco).**
 
 ## Validación de esta revisión
 

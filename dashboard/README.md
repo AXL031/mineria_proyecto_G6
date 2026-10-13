@@ -8,6 +8,7 @@ Aplicación web frontend interactiva construida con **Streamlit** para la explor
 - `dashboard/pages/01_fraude.py`: Evaluación de transacciones y métricas del modelo de fraude (`Cueva`).
 - `dashboard/pages/02_credito.py`: Solicitud de crédito, probabilidad calibrada, factores y métricas del modelo; consume solo la API (`Sevan`).
 - `dashboard/pages/03_redes.py`: Módulo interactivo de redes y grafos de transacciones (`Rhamses`).
+- `dashboard/pages/06_segmentos.py`: Perfiles y cuentas por segmento de destino; consume solo la API (`Taco`).
 
 ## Capacidades de la Vista de Redes
 
