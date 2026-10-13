@@ -211,6 +211,15 @@ Pendientes: confirmar con la fuente original la semántica de `loan_status` (res
 4. Crear segmentos, evaluar su calidad y explicar las características de cada grupo.
 5. Implementar el servicio de consulta y la página de segmentos.
 
+#### Incremento implementado — 13 de octubre de 2026
+
+- Corrección metodológica: `CLUSTER_COLUMNS` deja fuera `fraud_rate_received` y cualquier derivado de `isFraud`; la etiqueta solo perfila los segmentos. Nueva prueba `test_clustering_is_independent_of_fraud_label` que exige matriz y etiquetas idénticas al cambiar solo el fraude.
+- Reporte regenerado: 146,629 cuentas reincidentes, k=2 por silueta (0.2305) y estabilidad ARI media 0.7280 (ver [segmentación](transacciones/segmentacion.md)).
+- Servicio `services/segments.py`, router `api/routers/segments.py` (`GET /api/segments/summary`, `GET /api/segments/{segmento}/accounts`, `GET /api/segments/{segmento}/account/{cuenta}`) y página `dashboard/pages/06_segmentos.py` consumiendo la API por HTTP con manejo de 503.
+- Pruebas nuevas: `test_api_segments.py` (servicio y API) y `test_segments_dashboard.py` (AppTest).
+
+**Pendientes:** revisión humana cruzada del contrato con Cueva y de la navegación con Rhamses–Angel; verificar el recorrido completo desde un clon limpio.
+
 **Entrega final:** pipeline transaccional reproducible, tablas Gold, segmentación evaluada y página de segmentos.
 
 ### Gerardo — pronósticos, monitoreo y reproducción

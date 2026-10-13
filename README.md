@@ -12,6 +12,8 @@ El [plan de desarrollo](docs/plan-desarrollo.md) mantiene el alcance y el repart
 
 **Fraude y patrones — Cueva:** consultar el [cierre de entrega](docs/fraude/cierre-entrega.md) para las comprobaciones más recientes, asociaciones descriptivas, endpoints y el comando `scripts/reproduce_fraud.ps1` que reconstruye y verifica el módulo.
 
+**Transacciones y segmentación — Taco:** el [reporte de segmentación](docs/transacciones/segmentacion.md) documenta el agrupamiento de cuentas reincidentes, ya independiente de la etiqueta de fraude. El servicio (`src/bankshield/services/segments.py`), los endpoints `/api/segments/...` y la página `dashboard/pages/06_segmentos.py` consultan los artefactos generados por `scripts/segment_transactions.py`.
+
 ## Punto de partida
 
 La [base del proyecto](docs/bases-del-proyecto.md) define el alcance inicial, los límites de las fuentes públicas, la arquitectura propuesta, los criterios de evaluación, el reparto entre los seis integrantes y el orden de trabajo. Es una propuesta de ejecución para discutir con el equipo antes de implementar los módulos.
@@ -48,7 +50,7 @@ Esta lista conserva el estado anterior a la verificación del 12 de octubre y co
 - [x] Riesgo crediticio: Silver, modelo calibrado, explicación por oclusión, endpoints y página (ver [contrato](docs/credito/contrato-variables.md) y [resultados](docs/credito/resultados-modelo.md)).
 - [ ] Conexión API → panel y página/endpoint de fraude integrados.
 
-Fraude tiene un modelo entrenado y un servicio de scoring local. Grafos tiene perfilado, métricas, patrones, servicios, endpoints y página de redes (ver [contrato](docs/grafos/contrato-variables.md) y [perfil](docs/grafos/perfil-red.md)); la página llama directamente a servicios y falta conectarla a la API. Reclamos tiene perfilado de 555,957 quejas y propuesta del panel; su rango temporal requiere corrección. Transacciones tiene Silver y controles; pronósticos tiene Gold por `step` y exploración, pero aún no un pronóstico evaluado. Crédito tiene perfil, Silver, modelo calibrado, API y página; falta confirmar con la fuente original el significado de `loan_status`. Segmentación y modelado NLP siguen pendientes. Los Parquet y modelos se regeneran localmente y quedan fuera de Git.
+Fraude tiene un modelo entrenado y un servicio de scoring local. Grafos tiene perfilado, métricas, patrones, servicios, endpoints y página de redes (ver [contrato](docs/grafos/contrato-variables.md) y [perfil](docs/grafos/perfil-red.md)); la página llama directamente a servicios y falta conectarla a la API. Reclamos tiene perfilado de 555,957 quejas y propuesta del panel; su rango temporal requiere corrección. Transacciones tiene Silver, mart Gold y segmentación con servicio, API y página (revisión cruzada pendiente); pronósticos tiene Gold por `step` y exploración, pero aún no un pronóstico evaluado. Crédito tiene perfil, Silver, modelo calibrado, API y página; falta confirmar con la fuente original el significado de `loan_status`. El modelado NLP de reclamos sigue pendiente. Los Parquet y modelos se regeneran localmente y quedan fuera de Git.
 
 ## Preparación común del equipo
 

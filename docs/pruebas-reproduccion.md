@@ -8,7 +8,7 @@ Revisión del 9 de octubre de 2026. Complementa el [plan de desarrollo](plan-des
 | --- | --- | --- |
 | Fraude | Perfil, pruebas unitarias, entrenamiento y scoring por CLI. | Sin endpoint ni página. Artefactos locales excluidos de Git. El entrenamiento lee Bronze. |
 | Grafos | Pruebas de ingesta, métricas, patrones y servicios; API y página de redes. | API probada con grafo en memoria; página llama directamente a servicios. Falta recorrido API → panel. |
-| Transacciones | Pruebas de Silver y construcción desde CSV. | Parquet local ausente; requiere regeneración. Segmentación pendiente. |
+| Transacciones | Pruebas de Silver, mart Gold y segmentación; API y página de segmentos. | Derivados locales excluidos de Git; regenerar Silver, Gold y segmentos con los comandos de la sección 3. |
 | Temporal | Pruebas de agregación y exploración; construcción Gold y gráficos. | Parquet local ausente; pronóstico y backtesting pendientes. |
 | Reclamos | Pruebas, perfilado del CSV, Silver con limpieza de texto y clasificador de producto. | Modelo local excluido de Git (reconstruir con `train_complaints.py`); sin servicio ni página. |
 | Crédito | Perfil, Silver, entrenamiento, scoring, API, página y pruebas con datos sintéticos. | Artefactos locales excluidos de Git; semántica de `loan_status` sin confirmar. |
@@ -78,6 +78,20 @@ Después, ejecutar el recorrido completo. Estos comandos regeneran los reportes 
 ```
 
 Aceptar cuando Silver conserva 6,362,620 filas para esta fuente, no hay rechazos y pasan sus controles; Gold tiene 743 filas, conserva cantidad/monto/fraudes y no tiene nulos. Comparar con los reportes versionados. No existe todavía un pronóstico evaluado.
+
+El mart transaccional y la segmentación de cuentas se reconstruyen así (la
+segmentación exige el mart Gold como entrada):
+
+```powershell
+.venv-pruebas/Scripts/python.exe scripts/build_gold_transactions.py
+.venv-pruebas/Scripts/python.exe scripts/segment_transactions.py
+```
+
+Aceptar cuando el mart conserva una fila por transacción con sus controles y la
+segmentación reporta 146,629 cuentas con `fraud_rate_received` fuera de
+`CLUSTER_COLUMNS`. Con la API iniciada, `GET /api/segments/summary` responde 200
+y la página de segmentos muestra perfiles y cuentas; sin los artefactos, la API
+responde 503 con el comando para generarlos.
 
 ## 4. Probar fraude local
 

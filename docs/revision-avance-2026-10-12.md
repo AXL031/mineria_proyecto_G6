@@ -12,6 +12,8 @@ El proyecto tiene tres de seis módulos con servicio, API y página: fraude, cr�
 
 **Actualización posterior de Angel, 13 de octubre:** se corrigió el rango de fechas del perfil y se construyó el Silver de reclamos con limpieza de narrativas (ver [contrato](reclamos/contrato-silver.md) y [calidad](reclamos/calidad-silver.md)). Después se entrenó el clasificador de producto y se extrajeron los ejemplos de error (ver [resultados](reclamos/resultados-modelo.md) y [revisión](reclamos/revision-ejemplos.md)). Las filas de Angel siguientes conservan el diagnóstico inicial; falta la lectura humana de los ejemplos, el servicio y la página.
 
+**Actualización posterior de Taco, 13 de octubre:** se cerró el bloqueo metodológico de segmentación: `CLUSTER_COLUMNS` ya no incluye `fraud_rate_received` y una prueba exige independencia de la etiqueta. Se regeneró el [reporte](transacciones/segmentacion.md) (146,629 cuentas, k=2, silueta 0.2305, ARI 0.7280) y se agregaron servicio, router (`api/routers/segments.py`) y página (`dashboard/pages/06_segmentos.py`) con sus pruebas. El diagnóstico de la fila de Taco abajo queda reemplazado por esta actualización; falta la revisión humana cruzada del contrato y la navegación.
+
 ## Estado de las etapas
 
 | Etapa del plan | Estado contrastado | Qué falta para cerrarla | Responsables |
@@ -68,11 +70,11 @@ El proyecto tiene tres de seis módulos con servicio, API y página: fraude, cr�
 | Mart Gold | Implementado/reportado: `transforms/gold_transactions.py`, `scripts/build_gold_transactions.py`; una fila por transacción, conservación de montos/etiquetas y controles. Gold temporal es otra tabla. |
 | Variables de comportamiento | Implementado: `features/segments.py`; destinos con al menos 10 operaciones recibidas. Adaptación razonable frente a poca repetición de orígenes. |
 | Agrupamiento y evaluación | Implementado con bloqueo: `models/segments.py`, `scripts/segment_transactions.py`; cuantiles y MiniBatchKMeans, elección de k por silueta y remuestreo ARI. Reporte: 146,629 cuentas, k=5, silueta 0.2316, ARI medio 0.3883. Estas cifras requieren regeneración por el problema descrito abajo. |
-| Servicio y página | Pendiente: no existe servicio/router/página de segmentos. |
+| Servicio y página | Implementado (13 de octubre): `services/segments.py`, `api/routers/segments.py`, `dashboard/pages/06_segmentos.py`; consulta por segmento mediante HTTP con manejo de artefacto ausente (503). Pruebas nuevas de servicio/API y de página. |
 
-**Bloqueo metodológico:** `CLUSTER_COLUMNS` incluye `fraud_rate_received`, calculada como fraudes recibidos / operaciones recibidas. `prepare_matrix()` incorpora todas esas columnas y `segment_accounts()` usa esa matriz. Por tanto, la etiqueta influye en los grupos, contrario a `docs/transacciones/segmentacion.md`, que afirma que solo se usa para perfilar. La separación de un grupo con fraude no prueba descubrimiento independiente del fraude.
+**Bloqueo metodológico (resuelto el 13 de octubre):** `CLUSTER_COLUMNS` incluía `fraud_rate_received`; ya se excluyó y una prueba exige que cambiar solo `isFraud` no altere la matriz ni las etiquetas. La etiqueta se conserva solo para perfilar. Reporte regenerado en [segmentación](transacciones/segmentacion.md).
 
-**Siguiente entrega:** excluir la etiqueta y sus derivados del agrupamiento; conservarlos solo para descripción posterior; verificar que cambios de etiquetas no cambien la matriz/segmentos cuando el comportamiento es igual; regenerar métricas y perfiles. Después entregar consulta por cuenta/segmento, endpoints y página. Revisar estabilidad moderada y explicar perfiles sin presentar clusters como categorías de riesgo validadas. Cerrar el contrato de datos con Cueva.
+**Siguiente entrega:** revisión humana cruzada del contrato con Cueva y de la navegación con Rhamses–Angel; verificar el recorrido completo desde un clon limpio. Ampliaciones (comunidades, partición temporal) quedan fuera del alcance actual.
 
 ## Gerardo — pronósticos, monitoreo y reproducción
 
@@ -104,10 +106,10 @@ El proyecto tiene tres de seis módulos con servicio, API y página: fraude, cr�
 
 | Orden | Trabajo concreto | Responsable principal / apoyo | Aceptación |
 | --- | --- | --- | --- |
-| 1 | Corregir uso de etiqueta en segmentación | Taco / Cueva revisa contrato | Matriz sin fraude/derivados, comprobación de independencia de etiquetas, reporte y perfiles regenerados. |
+| 1 | Corregir uso de etiqueta en segmentación (**hecho el 13 de octubre**) | Taco / Cueva revisa contrato | Matriz sin fraude/derivados, comprobación de independencia de etiquetas, reporte y perfiles regenerados. |
 | 1 | Corregir fechas y crear Silver de reclamos | Angel / Taco apoya patrón de calidad | Tipos fecha, prueba entre años, rango correcto, recuentos/rechazos trazables y texto procesado. |
 | 1 | Cerrar revisiones de contratos y actualizar estado documental | Cueva–Taco, Sevan–Gerardo, Rhamses–Angel | Confirmaciones y decisiones registradas; resumen del plan/guía/portada coherentes con el código. |
-| 2 | Entregar segmento de aplicación | Taco / Rhamses–Angel revisan HTTP | Consulta de cuentas/perfiles desde página mediante API y manejo de artefacto ausente. |
+| 2 | Entregar segmento de aplicación (**hecho el 13 de octubre**) | Taco / Rhamses–Angel revisan HTTP | Consulta de cuentas/perfiles desde página mediante API y manejo de artefacto ausente. |
 | 2 | Completar método temporal | Gerardo / Sevan revisa evaluación | Modelo principal comparado en las cuatro ventanas sin fuga; elección y errores documentados. |
 | 2 | Implementar NLP | Angel / revisión de otra pareja | Línea base y método principal, evaluación independiente y ejemplos documentados. |
 | 3 | Completar vistas temporal y reclamos | Gerardo y Angel / Rhamses apoya contratos | Cada vista consume su endpoint con datos/resultados reales y errores manejados. |
@@ -119,7 +121,7 @@ La procedencia/licencia de los CSV sigue abierta para todo el equipo, con los pr
 ## Documentación que requiere actualización
 
 - El resumen del plan fechado el 9 de octubre mezcla entregas del 11 y todavía dice que redes llama directamente a servicios; el código actual llama a la API.
-- Los pendientes de Taco aún presentan Gold/segmentación como trabajo futuro; ambos existen, pero la segmentación requiere la corrección metodológica indicada.
+- Los pendientes de Taco presentaban Gold/segmentación como trabajo futuro y la corrección metodológica de la etiqueta; ya están implementados y la independencia de la etiqueta se verificó el 13 de octubre (ver la actualización de Taco arriba).
 - Los pendientes de Gerardo aún presentan definición de horizonte y comparación de referencias como futuros; ya hay horizonte 24 y backtesting.
 - `docs/pruebas-reproduccion.md` afirma que fraude carece de API/página, Silver falta y la caché de grafos no respeta el límite. Esas afirmaciones quedaron desactualizadas. Sus instrucciones deben revisarse junto con la prueba desde un clon limpio.
 - La portada marca crédito en desarrollo y ofrece detección de comunidades no implementada; además omite segmentación.

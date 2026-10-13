@@ -98,6 +98,29 @@ Entradas y salidas predeterminadas (definidas en `configs/transactions_gold.json
 El esquema, los roles de columna y los controles se describen en el
 [contrato del mart transaccional](../docs/transacciones/contrato-gold.md).
 
+## Segmentación de cuentas destino
+
+`segment_transactions.py` consume el mart transaccional Gold y agrupa cuentas
+reincidentes (>= 10 transacciones recibidas) con KMeans sobre variables de
+comportamiento, comparado con una línea base por cuantiles de actividad. El
+agrupamiento **no usa la etiqueta de fraude**; `fraud_rate` solo perfila el
+segmento ya formado.
+
+```powershell
+.venv-pruebas/Scripts/python.exe scripts/segment_transactions.py
+```
+
+Entradas y salidas predeterminadas (definidas en `configs/segments.json`):
+
+- Entrada: `data/gold/transactions/transactions_mart.parquet`.
+- Salida: `data/gold/segments/account_segments.parquet`.
+- Reporte JSON: `artifacts/reports/segments.json`.
+- Resumen: `docs/transacciones/segmentacion.md`.
+
+Los límites están en el [reporte de segmentación](../docs/transacciones/segmentacion.md).
+La API expone `GET /api/segments/summary` y
+`GET /api/segments/{segmento}/accounts` para la página de segmentos.
+
 ## Exploración de la serie temporal
 
 `analyze_forecast_series.py` calcula estadísticas del periodo operativo,
