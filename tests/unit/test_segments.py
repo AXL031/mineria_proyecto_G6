@@ -128,6 +128,23 @@ class SegmentationModelTests(unittest.TestCase):
         self.assertEqual(int(profiles["size"].sum()), len(self.features))
         self.assertEqual(profiles["segment"].tolist(), [0, 1])
 
+    def test_cluster_columns_exclude_fraud(self):
+        self.assertNotIn("fraud_received", CLUSTER_COLUMNS)
+        self.assertNotIn("fraud_rate_received", CLUSTER_COLUMNS)
+
+    def test_clustering_is_independent_of_fraud_label(self):
+        raw_zero = sample_transactions()
+        raw_zero["isFraud"] = 0
+        features_zero = build_account_features(raw_zero, min_transactions=10)
+
+        matrix = prepare_matrix(self.features)
+        matrix_zero = prepare_matrix(features_zero)
+        self.assertTrue(np.allclose(matrix, matrix_zero))
+
+        result = segment_accounts(self.features, k_range=range(2, 4), seed=7)
+        result_zero = segment_accounts(features_zero, k_range=range(2, 4), seed=7)
+        np.testing.assert_array_equal(result["labels"], result_zero["labels"])
+
 
 if __name__ == "__main__":
     unittest.main()

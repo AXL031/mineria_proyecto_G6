@@ -4,6 +4,10 @@ Compara una línea base exploratoria (cortes por cuantiles de actividad) con un
 método principal de agrupamiento (KMeans sobre variables estandarizadas). La
 evaluación usa silueta sobre una muestra y estabilidad por remuestreo (ARI),
 porque las cuentas reincidentes son pocas y el agrupamiento debe ser estable.
+
+El agrupamiento es independiente de la etiqueta: ``CLUSTER_COLUMNS`` no incluye
+``fraud_rate_received`` ni ningún derivado de ``isFraud``. La etiqueta se usa
+solo para perfilar los segmentos una vez formados.
 """
 
 from __future__ import annotations
@@ -24,7 +28,6 @@ CLUSTER_COLUMNS = (
     "amount_concentration",
     "activity_density",
     *(f"share_{name.lower()}" for name in TRANSACTION_TYPES),
-    "fraud_rate_received",
 )
 HEAVY_TAILED = (
     "n_received",
@@ -158,7 +161,6 @@ def segment_accounts(
         size=("n_received", "size"),
         mean_n_received=("n_received", "mean"),
         mean_total_received=("total_received", "mean"),
-        mean_fraud_rate=("fraud_rate_received", "mean"),
     )
 
     return {
