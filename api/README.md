@@ -70,3 +70,9 @@ La serie se lee desde `data/gold/forecast/transactions_hourly.parquet` o desde
 `artifacts/reports/forecast_monitoring.json` o desde
 `BANKSHIELD_FORECAST_MONITORING`. Si falta un derivado, solo este módulo responde
 503; la API puede seguir atendiendo los demás dominios.
+
+## Demo de reclamos
+
+El módulo `/api/complaints` expone `POST /predict` con `{"narrative": "texto en inglés"}`, y `GET /model`, `/summary` y `/examples`. El clasificador aplica la misma limpieza que Silver y devuelve producto y tres puntuaciones no calibradas. Rechaza entradas sin texto suficiente o términos reconocidos (422); artefactos ausentes/incompatibles responden 503 sin impedir otros módulos.
+
+`BANKSHIELD_COMPLAINTS_MODEL`, `BANKSHIELD_COMPLAINTS_SILVER` y `BANKSHIELD_COMPLAINTS_EXAMPLES` permiten rutas alternativas. La guía [demo local](../docs/demo-local.md) contiene preparación y verificación de los seis módulos. Las consultas de grafos admiten `limit` para mantener una muestra consistente.

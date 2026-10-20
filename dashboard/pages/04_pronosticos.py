@@ -5,10 +5,11 @@ import os
 import pandas as pd
 import requests
 import streamlit as st
+from bankshield.ui import configure_page
 
 
 API_URL = os.environ.get("BANKSHIELD_API_URL", "http://127.0.0.1:8000").rstrip("/")
-st.set_page_config(page_title="Pronósticos | BankShield", page_icon="📈", layout="wide")
+configure_page(page_title="Pronósticos | BankShield", page_icon="📈", layout="wide")
 st.title("Pronósticos y monitoreo transaccional")
 st.caption("Demostración académica sobre horas simuladas de PaySim.")
 st.info(

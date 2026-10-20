@@ -1,12 +1,22 @@
 # Avance y pendientes del equipo — 13 de octubre de 2026
 
+> **Revisión histórica.** Desde el 20 de octubre, usar [pendientes vigentes y contratos de cierre](pendientes-cierre-2026-10-20.md) y los seis encargos allí enlazados. Añaden regresión numérica, asociaciones descubiertas, comparación de grafos e integración/reproducción; el historial ampliado es recomendado y Docker opcional. Las estimaciones y listas de este corte no describen el alcance nuevo. La actualización de demo siguiente sigue siendo evidencia de las seis capacidades existentes, no de las ampliaciones futuras.
+
 ## Alcance y evidencia
+
+### Actualización posterior: demo local de seis módulos
+
+Se preparó la demo en esta PC sobre `948cda6`: nuevo servicio/API/página de reclamos, tendencias, clasificación, evaluación y ejemplos de prueba; artefactos completos de crédito, temporal, segmentos y reclamos reconstruidos. Se reutilizaron Silver transaccional y fraude-Silver. Se corrigieron consultas de redes para mantener la muestra y renderizar HTML embebido sin problemas de codificación Windows ni archivo compartido. El [guion de demo](demo-local.md) documenta casos y scripts de preparación/arranque/parada.
+
+La suite final pasó **238 pruebas en 29.857 segundos** (log `artifacts/reports/demo/test-suite.log`). El ensayo con HTTP real y las seis páginas pasó **48 comprobaciones**, registrado en `artifacts/reports/demo/delivery-check.json`. Esto resuelve los pendientes de desarrollo de reclamos y preparación de artefactos locales enumerados en el corte anterior de este informe. La aceptación humana, confirmación de fuentes, referencia de grafos, clon limpio en otra PC y Docker siguen pendientes. La preparación nueva es local; no se presume publicada en GitHub ni realizada por los responsables originales.
+
+### Corte anterior: integración de Taco y reparto de pendientes
 
 Estado actualizado sobre `af8652a`, incorporando `origin/taco` en `2c28fec`: incluye los PR #13 de Cueva y #14 de Angel, la integración de Gerardo y los cinco commits nuevos de Taco. Se conservan simultáneamente pronósticos y segmentos en API, portada y navegación. Esta actualización se publica directamente en `main` por indicación de Cueva. No se incluye trabajo de otros integrantes sin subir.
 
 La integración de Taco pasó **230 pruebas en 20.814 segundos**, con Python 3.12 y concurrencia numérica limitada a dos hilos. Log local excluido de Git: `artifacts/reports/integracion-taco-2026-10-13-tests.txt`. Incluye independencia de etiquetas, servicio/API y AppTest de segmentos junto con los módulos anteriores. Se resolvieron conflictos en README, API central, portada y guía de reproducción conservando las entregas previas. La integración anterior de Gerardo pasó 213 pruebas (log `artifacts/reports/integracion-gerardo-2026-10-13-tests.txt`). Las pruebas no sustituyen una demo completa con datos reales ni una reproducción de los seis módulos desde clon limpio.
 
-## Resumen actual
+## Resumen del corte anterior a la preparación de demo
 
 | Integrante | Avance estimado | Cambios implementados | Próxima entrega |
 | --- | ---: | --- | --- |

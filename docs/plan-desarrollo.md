@@ -2,7 +2,36 @@
 
 Este documento concreta las etapas y entregas de los seis integrantes. Complementa las [bases del proyecto](bases-del-proyecto.md) y el [inventario de datasets](datasets.md). Las fechas se acordarán cuando el equipo confirme su disponibilidad y los requisitos del curso.
 
-## Avance y pendientes vigentes — 13 de octubre de 2026
+## Pendientes vigentes — 20 de octubre de 2026
+
+El contraste con los entregables del curso incorpora regresión numérica, descubrimiento automático de asociaciones, comparación de grafos e integración reproducible. La especificación ejecutable para los agentes está en [pendientes y contratos de cierre](pendientes-cierre-2026-10-20.md). Ese documento y los encargos individuales son la autoridad para asignar trabajo; las secciones del 13 de octubre y anteriores quedan como historia.
+
+| Integrante | Pendientes nuevos y de cierre | Instrucciones para su agente |
+| --- | --- | --- |
+| Cueva | CUE-01: minería de asociaciones con selección sin test, evaluación, servicio/API y ampliación de Fraude. CUE-02: aceptar datos/segmentos, revisar HTTP y aportar fuente PaySim. | [Encargo detallado](encargos/cueva.md) |
+| Taco | TAC-01: tabla analítica D1, cortes temporales, bins ajustados en train y trazabilidad para asociaciones/regresión. TAC-02: aceptar segmentos, probar consultas y reproducir datos. | [Encargo detallado](encargos/taco.md) |
+| Sevan | SEV-01: regresión de monto transaccional, comparación, artefactos, API y página. SEV-02/03: fuente/etiqueta crediticia, revisión de asociaciones, versiones y reproducción. | [Encargo detallado](encargos/sevan.md) |
+| Rhamses | RHA-01: comparación red vs referencia con igual universo/k, reporte, API y vista. RHA-02: revisar regresión y navegación/errores con Angel. | [Encargo detallado](encargos/rhamses.md) |
+| Gerardo | GER-01: preparación integral, reuso validado, versiones y clon limpio. GER-03: aceptar temporal. GER-02: historial del desempeño por lotes, como mejora recomendada. | [Encargo detallado](encargos/gerardo.md) |
+| Angel | ANG-01: routers centrales, portada, siete páginas y verificador ampliado. ANG-02: lectura humana NLP/fuente CFPB. ANG-03: matriz de entregables e integración del material final. | [Encargo detallado](encargos/angel.md) |
+
+**Estado de partida:** los seis módulos existentes y sus artefactos locales ya están preparados. No volver a asignar la creación del servicio/API/página de reclamos ni la reconstrucción local como si faltaran. Regresión, asociaciones descubiertas, comparación de grafos e historial ampliado son trabajo futuro, no capacidades verificadas hoy.
+
+**Orden:** Taco fija D1 mientras Cueva y Sevan desarrollan con fixtures; Rhamses avanza en grafos; luego Angel integra y Gerardo prepara/reproduce. Cada responsable entrega sus pruebas y vista, con revisión de otra pareja. La propiedad de archivos compartidos y los contratos HTTP/datos están fijados en la guía para evitar implementaciones incompatibles.
+
+**Prioridades:** P0 cubre regresión/asociaciones; P1 cierra comparación, integración, fuentes y reproducción. P2 identifica historial ampliado y Docker/Compose opcional. Las tecnologías sugeridas del PDF no son obligaciones de cambiar el stack. No se recalculan porcentajes de avance con cifras históricas tras ampliar alcance.
+
+## Registro histórico — estado del 13 de octubre de 2026
+
+### Preparación local para demo — actualización posterior
+
+Se completaron servicio, endpoints y página de reclamos sobre el clasificador existente, con tendencias de Silver, evaluación y ejemplos de errores. Se reconstruyeron los artefactos de crédito, temporal, segmentos y reclamos en esta PC. Grafos respeta la muestra elegida en todas las consultas y embebe su HTML sin archivo compartido ni descarga de la biblioteca de red. Los seis módulos tienen recorrido API–panel. La [guía de demo](demo-local.md) contiene casos, arranque, verificación y parada; el ensayo pasó **48 comprobaciones** con HTTP real y las páginas.
+
+Los pendientes de implementación de reclamos y de reconstrucción local que aparecen en el resumen previo siguiente quedan resueltos por esta preparación. Se mantienen la lectura humana cruzada de errores/contratos, fuentes/licencias, referencia comparable de grafos y reproducción integral desde otro clon/Docker. Esta preparación se hizo aquí a solicitud de Cueva; no acredita aceptación de los responsables originales ni publicación de los cambios nuevos.
+
+La suite final pasó **238 pruebas en 29.857 segundos**, incluyendo la nueva regresión de renderizado de subgrafos. Evidencia local: `artifacts/reports/demo/test-suite.log` y `delivery-check.json`.
+
+### Corte previo: integración de Taco
 
 La [revisión vigente del equipo](revision-avance-2026-10-13.md) incorpora los cinco commits de Taco hasta `2c28fec` sobre `af8652a`, conservando pronósticos de Gerardo. La integración pasó **230 pruebas** y registra la disponibilidad local de artefactos. Sus siguientes entregas reemplazan los pendientes históricos de este documento.
 
@@ -15,13 +44,13 @@ La [revisión vigente del equipo](revision-avance-2026-10-13.md) incorpora los c
 | Gerardo | Gold temporal, backtesting, Holt-Winters comparado, monitoreo histórico y API/página de pronósticos. | Reconstruir Gold/monitoreo y comprobar visualmente; cerrar revisión con Sevan, versiones, reproducción integral y Docker. |
 | Angel | Fechas corregidas, Silver/texto limpio, clasificador evaluado y ejemplos de error. | Registrar lectura humana de ejemplos; crear servicio/API/página de reclamos; reconstruir artefactos para demo y cerrar navegación con Rhamses. |
 
-**Integración actual:** cinco módulos tienen API/página (fraude, crédito, grafos, pronósticos y segmentos); falta la de reclamos. En esta copia deben reconstruirse crédito, artefactos temporales y segmentos para la demo. La suite aprobada no acredita reproducción de todos los módulos desde clon limpio. El avance orientativo global es 85%; los criterios de aceptación y estimaciones individuales están en la revisión vigente.
+**Integración en aquel corte previo:** cinco módulos tenían API/página y faltaba la de reclamos; después se prepararon los seis módulos y artefactos locales según la actualización superior. El 85% fue una estimación histórica anterior al alcance ampliado del 20 de octubre y no debe usarse como avance vigente.
 
 **Orden recomendado:** preparar la demo de los cinco módulos y cerrar la aceptación de segmentos; entregar servicio/API/página de reclamos; cerrar evaluación de grafos, navegación, fuentes y revisiones; finalmente demostrar los seis módulos y empaquetar. Cada responsable mantiene su módulo; Gerardo–Sevan coordinan reproducción y Rhamses–Angel navegación.
 
 ## Registro de entregas previas — 12 y 13 de octubre de 2026
 
-Las secciones siguientes conservan evidencia y alcance originales. Para asignar trabajo pendiente, usar exclusivamente el estado vigente anterior y sus criterios de aceptación.
+Las secciones siguientes conservan evidencia y alcance originales. Para asignar trabajo pendiente, usar exclusivamente la guía del 20 de octubre y sus encargos, enlazados al principio de este documento.
 
 ### Cierre técnico de Cueva — fraude y patrones
 

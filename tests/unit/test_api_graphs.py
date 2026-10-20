@@ -57,6 +57,15 @@ class TestGraphAPIEndpoints(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["status"], "online")
 
+    def test_selected_sample_is_used_by_all_graph_queries(self):
+        from unittest.mock import patch
+        with patch("api.routers.graphs._get_or_load_graph", return_value=self.mock_graph) as load:
+            for endpoint in ("account/C100", "subgraph/C100", "top", "patterns/suspicious"):
+                with self.subTest(endpoint=endpoint):
+                    response = self.client.get(f"/api/graphs/{endpoint}?limit=10000")
+                    self.assertEqual(response.status_code, 200)
+                    load.assert_called_with(10000)
+
     def test_get_graph_summary(self):
         """Verifica el resumen global de la topología."""
         response = self.client.get("/api/graphs/summary")

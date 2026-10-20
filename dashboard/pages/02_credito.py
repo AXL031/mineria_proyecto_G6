@@ -5,9 +5,10 @@ import os
 import pandas as pd
 import requests
 import streamlit as st
+from bankshield.ui import configure_page, status_notice
 
 API_URL = os.environ.get("BANKSHIELD_API_URL", "http://127.0.0.1:8000").rstrip("/")
-st.set_page_config(page_title="Crédito | BankShield", page_icon="🛡️", layout="wide")
+configure_page(page_title="Crédito | BankShield", page_icon="💳", layout="wide")
 st.title("Riesgo crediticio")
 st.caption("Demostración académica sobre un dataset público de solicitudes de préstamo.")
 st.info("La clase positiva es un impago **asumido**: el significado de `loan_status` no está confirmado por la "
@@ -70,6 +71,9 @@ if prediction:
     columns[0].metric("Probabilidad de impago (asumido)", f"{result['default_probability']:.1%}")
     columns[1].metric("Umbral de alto riesgo", f"{result['threshold']:.1%}")
     columns[2].metric("Clasificación", "Alto riesgo" if result["high_risk"] else "Riesgo bajo")
+    status_notice("danger" if result["high_risk"] else "success",
+                  "Alto riesgo según el modelo" if result["high_risk"] else "Riesgo bajo según el umbral",
+                  "Resultado académico del modelo; no aprueba ni rechaza una solicitud de crédito.")
     st.caption(f"Modelo: {result['model_id']}")
     st.write("Se marca alto riesgo cuando la probabilidad es mayor o igual al umbral. "
              "El umbral procede de costes académicos supuestos (aprobar a un moroso cuesta 5× rechazar a un buen pagador).")

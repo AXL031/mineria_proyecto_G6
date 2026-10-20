@@ -1,10 +1,11 @@
 """Portal Principal de BankShield Analytics."""
 
 import streamlit as st
+from bankshield.ui import configure_page
 
-st.set_page_config(
+configure_page(
     page_title="BankShield Analytics",
-    page_icon="🛡️",
+    page_icon="🛡",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -16,12 +17,13 @@ st.markdown(
     .main-title {
         font-size: 2.4rem;
         font-weight: 700;
-        color: #1E3A8A;
+        color: inherit;
         margin-bottom: 0.2rem;
     }
     .subtitle {
         font-size: 1.1rem;
-        color: #475569;
+        color: inherit;
+        opacity: 0.8;
         margin-bottom: 1.5rem;
     }
     .card {
@@ -45,7 +47,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.markdown('<div class="main-title">🛡️ BankShield Analytics</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-title">🛡 BankShield Analytics</div>', unsafe_allow_html=True)
 st.markdown(
     '<div class="subtitle">Plataforma académica integral de minería de datos y analítica financiera</div>',
     unsafe_allow_html=True,
@@ -54,7 +56,7 @@ st.markdown(
 st.markdown(
     """
     <div class="compliance-box">
-        ⚠️ <strong>Aviso Académico / Compliance:</strong> Los módulos presentados operan sobre datasets
+        ⚠ <strong>Aviso Académico / Compliance:</strong> Los módulos presentados operan sobre datasets
         públicos y simulados (PaySim). Las predicciones y métricas son de carácter exploratorio y de apoyo a la decisión.
     </div>
     """,
@@ -69,10 +71,10 @@ with col1:
         """
         - 🌐 **Redes y Grafos de Transacciones** (*Disponible*): Topología de relaciones `nameOrig → nameDest`,
           patrones atípicos y visualización interactiva de subgrafos.
-        - 🕵️ **Detección de Fraude Supervisado** (*Disponible mediante API*): Formulario de predicción, umbral y métricas del modelo cargado.
+        - 🕵 **Detección de Fraude Supervisado** (*Disponible mediante API*): Formulario de predicción, umbral y métricas del modelo cargado.
         - 💳 **Riesgo Crediticio y Explicabilidad** (*Disponible*): Scoring y calibración de probabilidad de impago.
         - 🧩 **Segmentos de Cuentas** (*Disponible mediante API*): Agrupamiento de cuentas destino reincidentes sin usar la etiqueta de fraude.
-        - 🗣️ **Reclamos y NLP** (*En desarrollo*): Análisis semántico de quejas de clientes CFPB.
+        - 🗣 **Reclamos y NLP** (*Disponible mediante API*): Producto sugerido por narrativa, tendencias, evaluación y ejemplos de errores de CFPB.
         - 📈 **Pronósticos de Flujo** (*Disponible*): Proyección Naive de volumen o monto y monitoreo histórico de cambios.
         """
     )
@@ -81,7 +83,7 @@ with col2:
     st.markdown("### 🧭 Cómo Navegar")
     st.markdown(
         """
-        Utiliza el menú lateral para acceder a **Fraude**, **Crédito**, **Redes**, **Pronósticos** y **Segmentos**.
+        Utiliza el menú lateral para acceder a **Fraude**, **Crédito**, **Redes**, **Pronósticos**, **Reclamos** y **Segmentos**.
         En Pronósticos puedes proyectar cantidad o monto y consultar el cambio histórico del tramo final.
         En Fraude puedes evaluar una operación y consultar las métricas del modelo mediante la API.
         En Segmentos puedes revisar los perfiles, la línea base y las cuentas de cada grupo.
