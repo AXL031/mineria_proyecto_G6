@@ -77,7 +77,15 @@ def get_accounts_by_segment(
     frame = load_segments(parquet_path)
     if segment_id not in set(frame["segment"].unique()):
         raise KeyError(f"No existe el segmento {segment_id}")
-    subset = frame.loc[frame["segment"] == segment_id].iloc[offset:]
+    subset = frame.loc[frame["segment"] == segment_id]
+    if "n_received" in subset.columns:
+        order = ["n_received"]
+        if ACCOUNT_COLUMN in subset.columns:
+            order.append(ACCOUNT_COLUMN)
+        subset = subset.sort_values(
+            order, ascending=[False] * len(order), kind="stable"
+        )
+    subset = subset.iloc[offset:]
     if limit is not None:
         subset = subset.head(limit)
     return subset.reset_index(drop=True)
