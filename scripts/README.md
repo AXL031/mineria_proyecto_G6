@@ -122,6 +122,37 @@ Los límites están en el [reporte de segmentación](../docs/transacciones/segme
 La API expone `GET /api/segments/summary` y
 `GET /api/segments/{segmento}/accounts` para la página de segmentos.
 
+## Tabla analítica compartida (D1)
+
+`build_analytics_transactions.py` construye la tabla D1 que consumen la minería
+de asociaciones y la regresión numérica. No sustituye al mart de segmentos ni
+al Gold temporal y no modifica Bronze ni Silver.
+
+```powershell
+.venv-pruebas/Scripts/python.exe scripts/build_analytics_transactions.py --config configs/analytics.json
+```
+
+Entradas y salidas predeterminadas (definidas en `configs/analytics.json`):
+
+- Entrada: `data/silver/transactions/transactions.parquet` y su reporte de
+  calidad `artifacts/reports/transactions_silver.json`.
+- Salida: `data/gold/analytics/transactions.parquet`.
+- Metadatos: `artifacts/reports/analytics/dataset.json` y
+  `artifacts/reports/analytics/discretization.json`.
+
+Particiones: `train` 1–323, `validation` 324–378, `test` 379–718 y `stress`
+719–743. Los terciles de `amount` y `oldbalanceOrg` se ajustan solo con `train`.
+El contrato completo está en el
+[contrato analítico](../docs/transacciones/contrato-analitico.md).
+
+Para entregar un fixture pequeño a otros módulos, sin ejecutar el archivo
+completo:
+
+```powershell
+.venv-pruebas/Scripts/python.exe scripts/build_analytics_transactions.py --write-fixture artifacts/reports/analytics/fixture
+```
+
+
 ## Exploración de la serie temporal
 
 `analyze_forecast_series.py` calcula estadísticas del periodo operativo,

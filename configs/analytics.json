@@ -1,0 +1,19 @@
+{
+  "input": "data/silver/transactions/transactions.parquet",
+  "silver_quality": "artifacts/reports/transactions_silver.json",
+  "output": "data/gold/analytics/transactions.parquet",
+  "dataset_report": "artifacts/reports/analytics/dataset.json",
+  "discretization_report": "artifacts/reports/analytics/discretization.json",
+  "chunksize": 500000,
+  "require_silver_quality": true,
+  "partitions": {
+    "train_end_step": 323,
+    "validation_end_step": 378,
+    "test_end_step": 718,
+    "max_step": 743
+  },
+  "discretization": {
+    "columns": ["amount", "oldbalanceOrg"],
+    "quantiles": [0.3333333333333333, 0.6666666666666667]
+  }
+}
