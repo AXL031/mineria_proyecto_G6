@@ -11,12 +11,13 @@ import pandas as pd
 from pyvis.network import Network
 import requests
 import streamlit as st
+from bankshield.ui import configure_page, status_notice
 import streamlit.components.v1 as components
 
 API_URL = os.environ.get("BANKSHIELD_API_URL", "http://127.0.0.1:8000").rstrip("/")
 ROOT = Path(__file__).resolve().parents[2]
 
-st.set_page_config(
+configure_page(
     page_title="Redes de Transacciones | BankShield",
     page_icon="🌐",
     layout="wide",
@@ -29,12 +30,13 @@ st.markdown(
     .module-header {
         font-size: 2.1rem;
         font-weight: 700;
-        color: #0F172A;
+        color: inherit;
         margin-bottom: 0.2rem;
     }
     .module-sub {
         font-size: 1rem;
-        color: #64748B;
+        color: inherit;
+        opacity: 0.8;
         margin-bottom: 1.2rem;
     }
     .badge-sim {
@@ -64,7 +66,7 @@ st.markdown(
     '<div class="module-sub">Monitoreo de aristas de pago (nameOrig → nameDest), centralidad de intermediación y detección de patrones de dispersión/concentración.</div>',
     unsafe_allow_html=True,
 )
-st.markdown('<span class="badge-sim">ℹ️ Datos Simulados — Esquema PaySim</span>', unsafe_allow_html=True)
+st.markdown('<span class="badge-sim">ℹ Datos Simulados — Esquema PaySim</span>', unsafe_allow_html=True)
 
 
 # ---------------------------------------------------------------
@@ -75,7 +77,7 @@ def _call_api(endpoint: str, params: dict | None = None) -> dict | None:
     """Llama a un endpoint GET de la API de grafos y devuelve el JSON."""
     try:
         url = f"{API_URL}/api/graphs/{endpoint}"
-        response = requests.get(url, params=params, timeout=60)
+        response = requests.get(url, params={"limit": sample_size, **(params or {})}, timeout=60)
         if response.status_code == 404:
             st.warning("Recurso no encontrado en la API.")
             return None
@@ -101,11 +103,11 @@ def _call_api(endpoint: str, params: dict | None = None) -> dict | None:
 
 # Barra lateral de configuración y filtros
 with st.sidebar:
-    st.header("⚙️ Parámetros de Análisis")
+    st.header("⚙ Parámetros de Análisis")
     sample_size = st.select_slider(
         "Muestra de transacciones iniciales",
         options=[10_000, 25_000, 50_000, 100_000],
-        value=50_000,
+        value=int(os.environ.get("BANKSHIELD_GRAPH_SAMPLE", "50000")),
         format_func=lambda x: f"{x:,} filas",
     )
     st.caption("Carga particiones acotadas para mantener fluidez en el navegador.")
@@ -135,12 +137,13 @@ col5.metric("Aristas con Fraude", f"{summary['pares_con_fraude']:,}", delta=f"{e
 # -------------------------------------------------------------
 # SECCIÓN 2: PESTAÑAS DE ANÁLISIS
 # -------------------------------------------------------------
-tab_subgraph, tab_patterns, tab_ranking, tab_theory = st.tabs([
-    "🔍 Explorador Interactivo de Subgrafos",
-    "⚠️ Detección de Patrones Atípicos",
-    "🏆 Ranking de Centralidad (PageRank)",
-    "📖 Metodología y Contrato",
-])
+with st.container(key="graph-tabs"):
+    tab_subgraph, tab_patterns, tab_ranking, tab_theory = st.tabs([
+        "🔍 Explorador Interactivo de Subgrafos",
+        ":orange[⚠] Detección de Patrones Atípicos",
+        "🏆 Ranking de Centralidad (PageRank)",
+        "📖 Metodología y Contrato",
+    ])
 
 # -------------------------------------------------------------
 # TAB 1: VISUALIZACIÓN INTERACTIVA DE SUBGRAFOS (PYVIS)
@@ -194,7 +197,7 @@ with tab_subgraph:
             mcol4.metric("Flujo Neto", f"${acc_info['net_flow']:,.2f}")
 
             # Generar grafo Pyvis interactivo
-            net = Network(height="520px", width="100%", directed=True, bgcolor="#ffffff", font_color="#1e293b")
+            net = Network(height="520px", width="100%", directed=True, bgcolor="#ffffff", font_color="#1e293b", cdn_resources="in_line")
             net.force_atlas_2based(gravity=-60, central_gravity=0.01, spring_length=120)
 
             # Nodos
@@ -204,10 +207,10 @@ with tab_subgraph:
                 acc_type = n.get("account_type", "cliente")
 
                 if is_center:
-                    color = "#EF4444"  # Rojo para el centro
+                    color = "#8B5CF6"  # Morado: selección, no nivel de riesgo
                     size = 28
                 elif acc_type == "comercio":
-                    color = "#10B981"  # Verde para comercios
+                    color = "#14B8A6"  # Turquesa para comercios
                     size = 18
                 else:
                     color = "#3B82F6"  # Azul para clientes
@@ -227,11 +230,11 @@ with tab_subgraph:
                 net.add_edge(u, v, title=title, value=max(1, int(e.get("weight", 1))), color=edge_color)
 
             # Renderizar HTML del canvas interactivo
-            html_path = ROOT / "artifacts/reports/graph/subgraph_view.html"
-            html_path.parent.mkdir(parents=True, exist_ok=True)
-            net.save_graph(str(html_path))
-            html_content = html_path.read_text(encoding="utf-8")
+            # HTML embebido sin escritura intermedia: evita codificaciones de Windows
+            # y que sesiones simultáneas sobrescriban el mismo subgrafo.
+            html_content = net.generate_html()
             components.html(html_content, height=550)
+            st.caption("Morado: cuenta seleccionada · Azul: clientes · Turquesa: comercios · Rojo en conexiones: fraude etiquetado en la muestra.")
 
             # Tablas con detalle de transacciones
             with st.expander("📄 Ver detalle tabular de conexiones"):
@@ -263,9 +266,11 @@ with tab_patterns:
 
     pat_col1, pat_col2 = st.columns(2)
     with pat_col1:
-        fanout_p = st.slider("Percentil para Alto Fan-out (Dispersión)", 90.0, 99.9, 95.0, 0.5)
+        fanout_p = st.slider("Percentil para Alto Fan-out (Dispersión)", 90.0, 99.9, 95.0, 0.5,
+                            help="Un percentil mayor selecciona menos cuentas, con conexiones salientes más inusuales.")
     with pat_col2:
-        fanin_p = st.slider("Percentil para Alto Fan-in (Concentración)", 90.0, 99.9, 95.0, 0.5)
+        fanin_p = st.slider("Percentil para Alto Fan-in (Concentración)", 90.0, 99.9, 95.0, 0.5,
+                           help="Un percentil mayor selecciona menos cuentas, con conexiones entrantes más inusuales.")
 
     patterns_resp = _call_api(
         "patterns/suspicious",
@@ -276,7 +281,12 @@ with tab_patterns:
         total_detected = patterns_resp.get("total_detected", 0)
         results = patterns_resp.get("results", [])
 
-        st.markdown(f"**Cuentas con Alertas Activas Detectadas:** `{total_detected:,}`")
+        if total_detected:
+            status_notice("warning", f"{total_detected:,} cuentas con patrones atípicos",
+                          "Revisar las conexiones y los patrones de cada cuenta. Una anomalía estructural no confirma fraude.")
+        else:
+            status_notice("info", "Sin patrones por encima de estos umbrales",
+                          "El resultado corresponde a la muestra y filtros actuales; no garantiza ausencia de fraude.")
 
         if results:
             display_df = pd.DataFrame(results)
@@ -295,8 +305,6 @@ with tab_patterns:
                     "pagerank": st.column_config.NumberColumn("PageRank", format="%.6f"),
                 },
             )
-        else:
-            st.info("No se registraron cuentas que superen los umbrales seleccionados.")
 
 # -------------------------------------------------------------
 # TAB 3: RANKING DE CENTRALIDAD

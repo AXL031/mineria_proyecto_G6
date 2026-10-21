@@ -1,32 +1,33 @@
 # Pruebas y reproducción local
 
-Revisión del 9 de octubre de 2026. Complementa el [plan de desarrollo](plan-desarrollo.md). Los comandos se ejecutan en PowerShell desde la raíz del repositorio. Esta guía describe verificaciones pendientes; no certifica una ejecución completa exitosa.
+> **Estado vigente — 20 de octubre:** los seis módulos existentes y sus artefactos locales están preparados. Regresión, asociaciones descubiertas y comparación de grafos requieren implementación según [pendientes y contratos](pendientes-cierre-2026-10-20.md). Los scripts actuales todavía no preparan/verifican esas ampliaciones. El historial del desempeño es recomendado; Docker/Compose es opcional. Gerardo mantiene preparación/entorno y Angel la verificación integrada.
+
+Los comandos se ejecutan en PowerShell desde la raíz. La [revisión histórica del 13 de octubre](revision-avance-2026-10-13.md) y [demo-local.md](demo-local.md) documentan 238 pruebas y 48 comprobaciones posteriores de las seis capacidades. Esos logs no certifican el alcance ampliado ni reproducción integral en otra PC. Los apartados de evidencia histórica al final conservan sus fechas y límites originales.
 
 ## Qué se puede probar hoy
 
 | Componente | Verificación disponible | Límite actual |
 | --- | --- | --- |
-| Fraude | Perfil, pruebas unitarias, entrenamiento y scoring por CLI. | Sin endpoint ni página. Artefactos locales excluidos de Git. El entrenamiento lee Bronze. |
-| Grafos | Pruebas de ingesta, métricas, patrones y servicios; API y página de redes. | API probada con grafo en memoria; página llama directamente a servicios. Falta recorrido API → panel. |
-| Transacciones | Pruebas de Silver, mart Gold y segmentación; API y página de segmentos. | Derivados locales excluidos de Git; regenerar Silver, Gold y segmentos con los comandos de la sección 3. |
-| Temporal | Pruebas de agregación y exploración; construcción Gold y gráficos. | Parquet local ausente; pronóstico y backtesting pendientes. |
-| Reclamos | Pruebas, perfilado del CSV, Silver con limpieza de texto y clasificador de producto. | Modelo local excluido de Git (reconstruir con `train_complaints.py`); sin servicio ni página. |
-| Crédito | Perfil, Silver, entrenamiento, scoring, API, página y pruebas con datos sintéticos. | Artefactos locales excluidos de Git; semántica de `loan_status` sin confirmar. |
+| Fraude | Perfil, entrenamiento desde Bronze/Silver, scoring, patrones, API/página y comandos de reproducción/verificación. | Modelos locales presentes; aceptación humana cruzada y fuentes pendientes. Reproducción aislada documentada en el cierre de entrega. |
+| Grafos | Ingesta, métricas, patrones, servicios, API y página conectada mediante HTTP. | Demo con muestra acotada y referencia comparable por cerrar; no acredita la red completa. |
+| Transacciones | Silver, mart Gold, segmentación independiente de etiqueta, servicio/API/página; artefactos locales preparados. | Aceptación cruzada y reproducción; D1 nuevo de TAC-01 pendiente. |
+| Temporal | Gold, backtesting, Holt-Winters comparado, monitoreo histórico y API/página; artefactos locales preparados. | Aceptación visual/reproducción; historial de desempeño P2 aún no implementado. Naive sigue seleccionado por MAE. |
+| Reclamos | Silver/texto, clasificador, tendencias, ejemplos, servicio/API/página y artefactos locales preparados. | Lectura humana cruzada, fuente/condiciones de uso y reproducción pendientes. |
+| Crédito | Silver, modelo calibrado, explicaciones y API/página; artefactos locales preparados. | Semántica/fuente original, aceptación y reproducción pendientes. |
+| Ampliaciones | Especificaciones y encargos del 20 de octubre. | Regresión, asociaciones descubiertas y comparación de grafos no se declaran implementadas por existir el plan. |
 
 ## Bloqueos y responsables
 
 | Prioridad | Falta o problema | Acción y responsable |
 | --- | --- | --- |
-| P0 | Intérprete utilizable y entorno con todas las dependencias. | Cada integrante prepara un entorno aislado; Sevan–Gerardo documentan y validan una instalación común. |
-| Resuelto en configuración | `TestClient` necesita `httpx`. | Declarado en el extra `test`, incluido en `requirements/common.txt`; falta verificar instalación y suite completas. |
-| Resuelto (transaccional) | Silver y mart Gold transaccional no existían en esta copia. | Silver, mart Gold y segmentos regenerados por Taco con controles aprobados; queda pendiente el Gold temporal de Gerardo. |
-| P1 | Archivos de versiones fijadas no forman un entorno común: `fraud.txt` y `graph.txt` fijan `tzdata==2026.4`, `transactions.txt` fija `tzdata==2026.5`. | Sevan–Gerardo unifican versiones y Python tras validar la suite. No instalar todos los archivos fijados juntos. |
-| P1 | API y panel no recorren juntos los datos reales. | Rhamses–Angel conectan redes a la API y añaden una prueba de integración con muestra acotada. |
-| P1 | No existe endpoint ni página de fraude. | Cueva implementa ambos y acuerda con Taco el uso de Silver. |
-| P1 | Caché de grafos ignora cambios de `limit` tras la primera carga. | Rhamses define caché por muestra o rechaza cambios explícitamente; añade prueba que cambie el límite. |
-| Resuelto | Rango de fechas de reclamos incorrecto. | Angel interpretó las fechas, añadió prueba de cruce de años y regeneró el reporte completo (2011-12-01 a 2016-04-25). |
-| P2 | Pronósticos y NLP incompletos. | Cada responsable completa su siguiente entrega según el plan; todavía no se pueden demostrar los seis módulos finales. |
-| P2 | Procedencia/licencia, comando único, Docker y reproducción desde clon limpio pendientes. | Equipo confirma fuentes; Gerardo coordina reproducción y empaquetado después de validar el recorrido local. |
+| P0 | Regresión numérica y minería automática de asociaciones. | Taco prepara D1; Sevan implementa regresión; Cueva descubre/evalúa reglas. |
+| P1 | Comparación de alertas de grafos. | Rhamses compara red/referencia con igual universo y k y agrega consulta/vista. |
+| P1 | Preparación y verificación ampliadas. | Gerardo integra DAG/identidades; Angel registra routers, navegación y checks de las siete páginas. |
+| P1 | Versiones y reproducción integral. | Gerardo–Sevan validan lock y entorno nuevo; todos reproducen su módulo en el segundo entorno. |
+| Transversal | Fuentes, semántica crediticia, lectura NLP y aceptación. | Conservar tareas humanas de los seis encargos y registrar evidencia real. |
+| P2 recomendado | Historial del desempeño y empaquetado opcional. | Gerardo desarrolla historial si se incorpora; Docker solo si se conserva como entregable. |
+
+Fraude/API/página, caché por muestra de grafos, fechas de reclamos, Silver/NLP, método/monitoreo temporal y corrección/API/página de segmentos ya tienen implementación. No volver a asignarlos como tareas nuevas. Los detalles de aceptación por integrante están en la guía vigente del 20 de octubre.
 
 ## 1. Preparar el entorno
 
@@ -77,21 +78,18 @@ Después, ejecutar el recorrido completo. Estos comandos regeneran los reportes 
 .venv-pruebas/Scripts/python.exe scripts/analyze_forecast_series.py
 ```
 
-Aceptar cuando Silver conserva 6,362,620 filas para esta fuente, no hay rechazos y pasan sus controles; Gold tiene 743 filas, conserva cantidad/monto/fraudes y no tiene nulos. Comparar con los reportes versionados. No existe todavía un pronóstico evaluado.
+Aceptar cuando Silver conserva 6,362,620 filas para esta fuente, no hay rechazos y pasan sus controles; Gold temporal tiene 743 filas, conserva cantidad/monto/fraudes y no tiene nulos. Comparar con los reportes versionados. Los métodos temporales ya están evaluados; para reconstruir monitoreo y comparación, consultar `scripts/README.md`.
 
-El mart transaccional y la segmentación de cuentas se reconstruyen así (la
-segmentación exige el mart Gold como entrada):
+El mart transaccional y la segmentación requieren Silver completo y se reconstruyen así:
 
 ```powershell
 .venv-pruebas/Scripts/python.exe scripts/build_gold_transactions.py
 .venv-pruebas/Scripts/python.exe scripts/segment_transactions.py
 ```
 
-Aceptar cuando el mart conserva una fila por transacción con sus controles y la
-segmentación reporta 146,629 cuentas con `fraud_rate_received` fuera de
-`CLUSTER_COLUMNS`. Con la API iniciada, `GET /api/segments/summary` responde 200
-y la página de segmentos muestra perfiles y cuentas; sin los artefactos, la API
-responde 503 con el comando para generarlos.
+Estos comandos regeneran reportes versionados: revisar el diff antes de guardar. La configuración está en `configs/segments.json`. Se generan `data/gold/segments/account_segments.parquet` y `artifacts/reports/segments.json`, excluidos de Git. El reporte nuevo documenta 146,629 cuentas, k=2, silueta 0.2305 y ARI 0.7280; fraude queda fuera de `CLUSTER_COLUMNS`.
+
+Con API y panel iniciados, consultar `/api/segments/summary`, `/api/segments/0/accounts?limit=50&offset=0` y una cuenta existente de la respuesta; comprobar perfiles y cuentas en Segmentos. Sin artefactos, la API devuelve 503; recursos desconocidos devuelven 404 y límites inválidos 422. `BANKSHIELD_SEGMENTS_PARQUET` y `BANKSHIELD_SEGMENTS_REPORT` permiten rutas alternativas.
 
 ## 4. Probar fraude local
 
@@ -127,18 +125,18 @@ Invoke-RestMethod 'http://127.0.0.1:8000/api/graphs/top?top_n=5'
 .venv-pruebas/Scripts/python.exe -m streamlit run dashboard/app.py
 ```
 
-Abrir Swagger en `http://127.0.0.1:8000/docs` y panel en `http://localhost:8501`. Usar una cuenta devuelta por el ranking para consultar cuenta/subgrafo. Confirmar respuesta de error para una cuenta inexistente. La primera consulta de resumen fija hoy la muestra en caché: reiniciar la API antes de probar otro límite hasta corregirlo.
+Abrir Swagger en `http://127.0.0.1:8000/docs` y panel en `http://localhost:8501`. Usar una cuenta devuelta por el ranking para consultar cuenta/subgrafo. Confirmar respuesta de error para una cuenta inexistente. La caché actual respeta el límite solicitado; usar el mismo `limit` en resumen, ranking, cuenta, subgrafo y patrones para comparar el mismo universo.
 
-En redes, comprobar KPIs, ranking, subgrafo y filtros de patrones. La página puede funcionar sin la API porque llama directamente a servicios: esto valida dos componentes separados, no la integración API → panel. El endpoint raíz tampoco acredita que todos los módulos anunciados estén implementados.
+En redes, comprobar KPIs, ranking, subgrafo y filtros de patrones mediante el recorrido HTTP actual. El endpoint raíz por sí solo no acredita artefactos disponibles. La comparación nueva de RHA-01 se incorpora a este recorrido únicamente cuando esté implementada y preparada.
 
-## Evidencia de esta revisión
+## Evidencia histórica de una revisión anterior a la preparación de demo
 
 - El comando `python` del PATH apuntó a WindowsApps y no pudo iniciar.
 - Con el Python incluido en Codex, la suite no pudo completarse: faltaban dependencias (`fastapi`, `joblib`, `pyarrow`, `matplotlib` y `networkx` en verificaciones realizadas) y algunas pruebas encontraron restricciones de escritura temporal.
 - Existe `.venv` con Python 3.12 y dependencias de fraude; el intento de ejecutar la suite no produjo resultados y se interrumpió. No se considera un entorno común validado.
 - No se instaló un entorno nuevo ni se ejecutó entrenamiento/procesamiento completo durante esta revisión. No se certifican pruebas aprobadas ni funcionamiento visual de la aplicación.
 
-## Criterio para declarar el primer recorrido probado
+## Criterio histórico del primer recorrido
 
 1. Instalación desde entorno limpio y `pip check` sin conflictos.
 2. Suite completa sin errores, con versiones y resultado registrados.
@@ -147,7 +145,7 @@ En redes, comprobar KPIs, ranking, subgrafo y filtros de patrones. La página pu
 5. API de grafos y página de redes demostrables con datos reales acotados.
 6. Para declarar el MVP integrado: página de fraude consumiendo su endpoint y contrato de datos revisado Cueva–Taco; integración API → panel revisada Rhamses–Angel.
 
-Los puntos 1–5 permiten probar los componentes existentes; el punto 6 todavía necesita desarrollo. La entrega de los seis módulos requiere además los pendientes individuales del plan.
+La preparación posterior resolvió la integración base del punto 6; su reproducción en otro entorno sigue pendiente. Para el cierre ampliado usar el checklist del 20 de octubre: además exige regresión, asociaciones descubiertas y comparación de grafos con evidencia propia.
 
 ## Qué compartir por Git y cómo trabajar en equipo
 
@@ -175,7 +173,7 @@ actualizar. El script no descarga LFS ni genera Silver/Gold ni entrena modelos;
 seguir las secciones anteriores para probar esos recorridos.
 
 Una vez aprobada la suite en un entorno limpio, Sevan–Gerardo pueden registrar
-las versiones exactas en `requirements/common-lock.txt` mediante
+las versiones exactas en `requirements/lock-py312-windows.txt` mediante
 `pip freeze --exclude-editable`, revisar el archivo y validar su instalación en
 un segundo entorno antes de usarlo como contrato común. Hasta entonces, se
 comparte una configuración común con rangos, no una reproducción exacta de

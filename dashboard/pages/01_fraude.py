@@ -5,9 +5,10 @@ import os
 import pandas as pd
 import requests
 import streamlit as st
+from bankshield.ui import configure_page, status_notice
 
 API_URL = os.environ.get("BANKSHIELD_API_URL", "http://127.0.0.1:8000").rstrip("/")
-st.set_page_config(page_title="Fraude | BankShield", page_icon="🛡️", layout="wide")
+configure_page(page_title="Fraude | BankShield", page_icon="🛡", layout="wide")
 st.title("Detección de fraude")
 st.caption("Demostración sobre transacciones simuladas de PaySim.")
 st.info("El score no es una probabilidad calibrada. La alerta usa el umbral elegido en validación; los montos no tienen una moneda verificada.")
@@ -51,6 +52,10 @@ if prediction:
     columns[0].metric("Score", f"{result['score']:.6f}")
     columns[1].metric("Umbral", f"{result['threshold']:.6f}")
     columns[2].metric("Alerta", "Sí" if result["alert"] else "No")
+    status_notice("danger" if result["alert"] else "success",
+                  "Alerta según el modelo" if result["alert"] else "Sin alerta según el umbral",
+                  "Revisar la operación: el score supera o iguala el umbral." if result["alert"] else
+                  "El score está por debajo del umbral. Esto no garantiza que la operación esté libre de fraude.")
     st.caption(f"Modelo: {result['model_id']}")
     st.write("La alerta se activa cuando el score es mayor o igual al umbral.")
     with st.expander("Condiciones observadas de la entrada"):

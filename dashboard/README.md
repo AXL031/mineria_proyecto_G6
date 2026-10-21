@@ -1,5 +1,11 @@
 # Panel Analítico — BankShield Analytics
 
+## Estilo de iconos
+
+Los emojis usan [Google Noto Emoji](https://github.com/google/fonts/tree/main/ofl/notoemoji) en su variante monocromática. Cada pantalla debe llamar a `bankshield.ui.configure_page`, que aplica la fuente local y un favicon del mismo diseño. Los assets y su licencia OFL están en `dashboard/assets/noto-emoji/`; no hay descargas de fuentes durante la demo. Evitar selectores de presentación en color (`U+FE0F`) en las etiquetas para conservar los contornos minimalistas.
+
+Los colores se asignan por significado: amarillo/ámbar para advertencias, rojo para errores o alto riesgo, verde para resultados bajo el umbral y azul para información y acciones principales. `bankshield.ui.status_notice` combina icono, título y detalle, con variantes de contraste para tema claro/oscuro; el color no es la única señal. La pestaña de patrones utiliza un icono amarillo y los filtros explican su efecto. Una clasificación de producto es informativa, no un estado de éxito o resolución.
+
 Aplicación web frontend interactiva construida con **Streamlit** para la exploración visual de modelos, métricas y redes.
 
 ## Estructura
@@ -8,6 +14,7 @@ Aplicación web frontend interactiva construida con **Streamlit** para la explor
 - `dashboard/pages/01_fraude.py`: Evaluación de transacciones y métricas del modelo de fraude (`Cueva`).
 - `dashboard/pages/02_credito.py`: Solicitud de crédito, probabilidad calibrada, factores y métricas del modelo; consume solo la API (`Sevan`).
 - `dashboard/pages/03_redes.py`: Módulo interactivo de redes y grafos de transacciones (`Rhamses`).
+- `dashboard/pages/04_pronosticos.py`: Historia, proyección Naive, incertidumbre descriptiva y monitoreo histórico; consume solo la API (`Gerardo`).
 - `dashboard/pages/06_segmentos.py`: Perfiles y cuentas por segmento de destino; consume solo la API (`Taco`).
 
 ## Capacidades de la Vista de Redes

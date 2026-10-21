@@ -1,5 +1,7 @@
 # Verificación del avance — 12 de octubre de 2026
 
+> **Registro histórico.** La [revisión del 13 de octubre](revision-avance-2026-10-13.md) reemplaza los estados y pendientes que quedaron desactualizados tras las entregas de Cueva, Angel y la integración local de Gerardo. Este informe conserva las comprobaciones y sus límites originales; sus tareas siguientes no deben utilizarse como lista vigente.
+
 ## Alcance y criterio
 
 Revisión del código y documentación de `c588482`, commit que comparten `main`, `origin/main` y la rama local `cueva` después de actualizar el remoto. Se contrastaron las responsabilidades de [plan-desarrollo.md](plan-desarrollo.md) y los criterios de [bases-del-proyecto.md](bases-del-proyecto.md) con scripts, servicios, routers, páginas, pruebas y artefactos disponibles.

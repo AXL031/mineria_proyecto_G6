@@ -10,7 +10,10 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
-from bankshield.evaluation.forecast import run_forecast_baseline_evaluation
+from bankshield.evaluation.forecast import (
+    evaluate_forecast_baselines,
+    run_forecast_baseline_evaluation,
+)
 
 
 def evaluation_config():
@@ -101,6 +104,32 @@ class ForecastBacktestingTests(unittest.TestCase):
         self.assertEqual(stored["series_coverage"]["max_step"], 12)
         self.assertEqual(stored["windows"][-1]["test"]["end_step"], 8)
         self.assertEqual(len(stored["source"]["sha256"]), 64)
+
+    def test_compares_holt_winters_on_the_exact_same_windows(self):
+        config = evaluation_config()
+        config["models"]["holt_winters_additive"] = {
+            "trend": "add",
+            "seasonal": "add",
+            "seasonal_periods": 2,
+            "damped_trend": False,
+            "clip_lower": 0.0,
+        }
+
+        with patch(
+            "bankshield.evaluation.forecast.holt_winters_forecast",
+            return_value=pd.Series([10.0, 20.0]).to_numpy(),
+        ) as forecast:
+            report = evaluate_forecast_baselines(small_series(), config)
+
+        self.assertEqual(forecast.call_count, 4)
+        self.assertEqual(report["schema_version"], 2)
+        self.assertIn("statsmodels", report["versions"])
+        for window in report["windows"]:
+            for target in config["targets"]:
+                self.assertEqual(
+                    set(window["results"][target]),
+                    {"naive", "seasonal_naive", "holt_winters_additive"},
+                )
 
 
 if __name__ == "__main__":

@@ -9,6 +9,7 @@ Servicio web backend construido con **FastAPI** que expone endpoints analíticos
 - `api/routers/fraud.py`: Predicción y métricas de fraude (`/api/fraud/*`).
 - `api/routers/credit.py`: Riesgo crediticio (`/api/credit/*`).
 - `api/routers/segments.py`: Segmentación de cuentas de destino (`/api/segments/*`).
+- `api/routers/forecast.py`: Proyección y monitoreo temporal (`/api/forecast/*`).
 
 ## Endpoints Disponibles (Grafos)
 
@@ -67,3 +68,21 @@ El modelo se indica con `BANKSHIELD_CREDIT_MODEL` (por defecto `artifacts/models
 | `GET` | `/api/segments/{segmento}/account/{cuenta}` | Ninguno | Detalle de una cuenta de destino dentro de su segmento. |
 
 Los datos se leen de `data/gold/segments/account_segments.parquet` y `artifacts/reports/segments.json`, generados por `scripts/segment_transactions.py` (rutas ajustables con `BANKSHIELD_SEGMENTS_PARQUET` y `BANKSHIELD_SEGMENTS_REPORT`). Si falta un artefacto responde 503 con el comando para generarlo; un segmento o cuenta inexistente responde 404 y un identificador inválido 422. Ver la [segmentación](../docs/transacciones/segmentacion.md).
+## Endpoints de pronósticos
+
+| Método | Endpoint | Descripción |
+|---|---|---|
+| `GET` | `/api/forecast/projection` | Historia y proyección Naive para cantidad o monto; admite `target`, `horizon` e `history_steps`. Incluye un intervalo empírico no calibrado. |
+| `GET` | `/api/forecast/monitoring` | Comparación histórica de volumen, montos, tipos y fraude entre los steps 694–718 y 719–743. |
+
+La serie se lee desde `data/gold/forecast/transactions_hourly.parquet` o desde
+`BANKSHIELD_FORECAST_GOLD`. El monitoreo se lee desde
+`artifacts/reports/forecast_monitoring.json` o desde
+`BANKSHIELD_FORECAST_MONITORING`. Si falta un derivado, solo este módulo responde
+503; la API puede seguir atendiendo los demás dominios.
+
+## Demo de reclamos
+
+El módulo `/api/complaints` expone `POST /predict` con `{"narrative": "texto en inglés"}`, y `GET /model`, `/summary` y `/examples`. El clasificador aplica la misma limpieza que Silver y devuelve producto y tres puntuaciones no calibradas. Rechaza entradas sin texto suficiente o términos reconocidos (422); artefactos ausentes/incompatibles responden 503 sin impedir otros módulos.
+
+`BANKSHIELD_COMPLAINTS_MODEL`, `BANKSHIELD_COMPLAINTS_SILVER` y `BANKSHIELD_COMPLAINTS_EXAMPLES` permiten rutas alternativas. La guía [demo local](../docs/demo-local.md) contiene preparación y verificación de los seis módulos. Las consultas de grafos admiten `limit` para mantener una muestra consistente.

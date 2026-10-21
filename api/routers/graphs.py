@@ -80,9 +80,9 @@ def get_graph_summary(limit: int = Query(default=100_000, ge=1000, le=500_000)):
 
 
 @router.get("/account/{account_id}")
-def get_account_detail(account_id: str):
+def get_account_detail(account_id: str, limit: int = Query(default=100_000, ge=1000, le=500_000)):
     """Consulta detallada de una cuenta (conexiones entrantes, salientes y flujos)."""
-    G = _get_or_load_graph()
+    G = _get_or_load_graph(limit)
     try:
         data = query_account(G, account_id)
         return {"status": "success", "data": data}
@@ -94,9 +94,10 @@ def get_account_detail(account_id: str):
 def get_account_subgraph(
     account_id: str,
     depth: int = Query(default=1, ge=1, le=2),
+    limit: int = Query(default=100_000, ge=1000, le=500_000),
 ):
     """Extrae el subgrafo ego alrededor de una cuenta para visualización interactiva."""
-    G = _get_or_load_graph()
+    G = _get_or_load_graph(limit)
     try:
         subgraph_data = query_subgraph(G, account_id, depth=depth)
         return {"status": "success", "data": subgraph_data}
@@ -108,9 +109,10 @@ def get_account_subgraph(
 def get_top_accounts(
     metric: str = Query(default="pagerank"),
     top_n: int = Query(default=20, ge=1, le=100),
+    limit: int = Query(default=100_000, ge=1000, le=500_000),
 ):
     """Ranking de cuentas con mayor valor en métricas de centralidad y flujo."""
-    G = _get_or_load_graph()
+    G = _get_or_load_graph(limit)
     try:
         ranked = query_top_accounts(G, metric=metric, top_n=top_n)
         return {
@@ -128,9 +130,10 @@ def get_top_accounts(
 def get_suspicious_patterns(
     fanout_pct: float = Query(default=95.0, ge=50.0, le=99.9),
     fanin_pct: float = Query(default=95.0, ge=50.0, le=99.9),
+    limit: int = Query(default=100_000, ge=1000, le=500_000),
 ):
     """Detecta cuentas que activan múltiples patrones de sospecha en la red."""
-    G = _get_or_load_graph()
+    G = _get_or_load_graph(limit)
     from bankshield.features.graph import compute_node_metrics
     node_metrics = compute_node_metrics(G)
     suspicious_df = combine_suspicion_indicators(

@@ -68,6 +68,30 @@ class GraphDashboardTests(unittest.TestCase):
             self.assertFalse(app.exception)
             self.assertTrue(len(app.error) >= 1)
 
+    def test_real_subgraph_renders_with_inline_resources_and_consistent_sample(self):
+        from bankshield.features.graph import build_transaction_graph
+        from bankshield.services.graph import query_account, query_subgraph
+        from tests.unit.test_api_graphs import _mock_edges_df
+        graph = build_transaction_graph(_mock_edges_df())
+        calls = []
+        def fake_get(url, **kwargs):
+            calls.append(kwargs["params"]["limit"])
+            if "summary" in url:
+                return mock_response(200, self.summary_payload)
+            if "subgraph" in url:
+                return mock_response(200, {"data": query_subgraph(graph, "C100")})
+            if "account/" in url:
+                return mock_response(200, {"data": query_account(graph, "C100")})
+            if "top" in url:
+                return mock_response(200, self.top_payload)
+            return mock_response(200, {"results": [], "total_detected": 0})
+        with patch("requests.get", side_effect=fake_get):
+            page = AppTest.from_file(str(PAGE)).run()
+        self.assertFalse(page.exception)
+        self.assertFalse(page.error)
+        self.assertGreaterEqual(len(calls), 5)
+        self.assertEqual(len(set(calls)), 1)
+
 
 if __name__ == "__main__":
     unittest.main()

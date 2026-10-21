@@ -1,4 +1,4 @@
-"""Modelos de referencia para pronósticos de series temporales."""
+"""Modelos de referencia y Holt-Winters para series temporales."""
 
 from collections.abc import Sequence
 from numbers import Integral
@@ -50,3 +50,62 @@ def seasonal_naive_forecast(
     last_cycle = values[-seasonal_period:]
     repetitions = int(np.ceil(horizon / seasonal_period))
     return np.tile(last_cycle, repetitions)[:horizon].copy()
+
+
+def holt_winters_forecast(
+    history: Sequence[float],
+    horizon: int,
+    *,
+    seasonal_periods: int = 24,
+    trend: str | None = "add",
+    seasonal: str = "add",
+    damped_trend: bool = False,
+    clip_lower: float | None = 0.0,
+) -> np.ndarray:
+    """Ajusta Holt-Winters al historial y pronostica sin usar datos futuros.
+
+    El recorte inferior es parte del contrato del dominio: cantidades y montos
+    no pueden ser negativos. Se puede desactivar pasando ``clip_lower=None``.
+    """
+
+    values = _validated_history(history)
+    horizon = _positive_integer("horizon", horizon)
+    seasonal_periods = _positive_integer("seasonal_periods", seasonal_periods)
+    if len(values) < 2 * seasonal_periods:
+        raise ValueError(
+            "El historial debe contener al menos dos periodos estacionales completos"
+        )
+    if trend not in {None, "add"}:
+        raise ValueError("trend debe ser null o 'add'")
+    if seasonal != "add":
+        raise ValueError("seasonal debe ser 'add'")
+    if not isinstance(damped_trend, bool):
+        raise ValueError("damped_trend debe ser booleano")
+    if damped_trend and trend is None:
+        raise ValueError("damped_trend requiere una tendencia")
+    if clip_lower is not None:
+        try:
+            clip_lower = float(clip_lower)
+        except (TypeError, ValueError) as error:
+            raise ValueError("clip_lower debe ser numérico o null") from error
+        if not np.isfinite(clip_lower):
+            raise ValueError("clip_lower debe ser finito")
+
+    from statsmodels.tsa.holtwinters import ExponentialSmoothing
+
+    fitted = ExponentialSmoothing(
+        values,
+        trend=trend,
+        damped_trend=damped_trend,
+        seasonal=seasonal,
+        seasonal_periods=seasonal_periods,
+        initialization_method="estimated",
+    ).fit(optimized=True, remove_bias=False)
+    if not bool(fitted.mle_retvals.get("success", False)):
+        raise ValueError("El ajuste Holt-Winters no convergió")
+    prediction = np.asarray(fitted.forecast(horizon), dtype="float64")
+    if not np.isfinite(prediction).all():
+        raise ValueError("Holt-Winters produjo valores no finitos")
+    if clip_lower is not None:
+        prediction = np.maximum(prediction, clip_lower)
+    return prediction

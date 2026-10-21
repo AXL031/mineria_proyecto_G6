@@ -1,5 +1,7 @@
 # Bases del proyecto — BankShield Analytics
 
+> **Para implementar ahora:** estas bases conservan el alcance inicial. El reparto vigente y la ampliación para los entregables del curso están en [pendientes y contratos — 20 de octubre](pendientes-cierre-2026-10-20.md), con seis encargos detallados. Las tecnologías sugeridas no obligan a cambiar el stack; Docker/Compose se mantiene como opción de empaquetado.
+
 ## Propósito y alcance
 
 BankShield Analytics será una demostración académica reproducible de cómo datos financieros pasan de una fuente pública a productos analíticos y modelos explicables. La propuesta original contempla fraude, riesgo crediticio, límites de financiación, segmentación, redes de transacciones, liquidez y reclamos. Estos dominios siguen en la visión, pero se desarrollarán por incrementos verificables.

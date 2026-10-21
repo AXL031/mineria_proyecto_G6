@@ -4,15 +4,26 @@ Proyecto académico de minería de datos y analítica financiera. La visión inc
 
 ## Guía vigente para continuar el desarrollo
 
-**Antes de elegir o implementar una tarea, cada integrante debe consultar la [verificación del avance — 12 de octubre de 2026](docs/revision-avance-2026-10-12.md).** Allí están los avances verificados, los pendientes y la siguiente entrega de cada responsable, las tareas compartidas y los criterios de aceptación.
+**Demo preparada en esta PC:** consultar la [guía de presentación](docs/demo-local.md). Los seis módulos tienen API/página, incluidos reclamos. `scripts/start_demo.ps1` inicia API y panel; `scripts/verify_demo.py` ensaya los recorridos con artefactos reales y `scripts/stop_demo.ps1` los detiene. La preparación de artefactos faltantes se hace con `scripts/prepare_demo.py`.
 
-El [plan de desarrollo](docs/plan-desarrollo.md) mantiene el alcance y el reparto de responsabilidades. Para decidir qué hacer ahora, guiarse por la verificación vigente: sus pendientes actualizados reemplazan los estados históricos que contradigan el código. Al completar una entrega, registrar su evidencia y actualizar ambos documentos para mantener esta guía al día.
+**Uso diario sin terminal:** los accesos locales **Abrir BankShield** y **Cerrar BankShield**, en la raíz del proyecto, abren la demo y detienen sus procesos completos. Abrir reutiliza una instancia ya iniciada. Los accesos se recrean con `scripts/create_demo_shortcuts.ps1` si cambia la ubicación de la carpeta; no se versionan porque contienen rutas de esta PC.
 
-**Reclamos — Angel:** el [perfil](docs/reclamos/perfil-complaints.md) ya tiene el rango de fechas corregido y el [contrato Silver](docs/reclamos/contrato-silver.md) describe la tabla limpia (`scripts/build_silver_complaints.py`). El [clasificador de producto por narrativa](docs/reclamos/resultados-modelo.md) supera a sus referencias en la prueba temporal y sus [ejemplos](docs/reclamos/revision-ejemplos.md) están extraídos; siguen pendientes la lectura humana de esa revisión, el servicio, la API y la página.
+**Antes de elegir o implementar una tarea, consultar los [pendientes vigentes y contratos — 20 de octubre de 2026](docs/pendientes-cierre-2026-10-20.md).** Contienen el reparto ampliado para cumplir los entregables del curso: regresión, asociaciones descubiertas, comparación de grafos e integración/reproducción. Cada integrante tiene un encargo con archivos, contratos, pruebas y criterios de cierre: [Cueva](docs/encargos/cueva.md), [Taco](docs/encargos/taco.md), [Sevan](docs/encargos/sevan.md), [Rhamses](docs/encargos/rhamses.md), [Gerardo](docs/encargos/gerardo.md) y [Angel](docs/encargos/angel.md). Las ampliaciones están pendientes; esta actualización solo documenta su implementación futura.
+
+El [plan de desarrollo](docs/plan-desarrollo.md) resume el reparto. La [revisión del 13 de octubre](docs/revision-avance-2026-10-13.md) conserva evidencia histórica, incluida la demo local posterior de seis módulos. Para decidir qué hacer ahora, prevalecen la guía del 20 de octubre y los encargos. Al completar una tarea, actualizar su ID y evidencia; las revisiones humanas no se presumen por aprobar pruebas automáticas.
+
+**Transacciones y segmentación — Taco:** los cinco commits hasta `2c28fec` corrigen el uso de la etiqueta en agrupamiento y añaden servicio, endpoints `/api/segments/...` y página `06_segmentos.py`. El [reporte regenerado](docs/transacciones/segmentacion.md) documenta k=2, silueta 0.2305 y estabilidad ARI 0.7280. Los artefactos locales ya se reconstruyeron. Quedan aceptación cruzada/reproducción y la nueva tabla analítica de TAC-01 para asociaciones/regresión.
+
+**Reclamos — Angel:** el [perfil](docs/reclamos/perfil-complaints.md) tiene fechas corregidas y el [contrato Silver](docs/reclamos/contrato-silver.md) describe la tabla limpia. Su [clasificador de producto](docs/reclamos/resultados-modelo.md) supera a las referencias en prueba temporal. La preparación posterior de demo añade servicio, API y página sobre ese modelo; siguen pendientes la lectura humana cruzada de los [ejemplos](docs/reclamos/revision-ejemplos.md) y la aceptación del equipo.
 
 **Fraude y patrones — Cueva:** consultar el [cierre de entrega](docs/fraude/cierre-entrega.md) para las comprobaciones más recientes, asociaciones descriptivas, endpoints y el comando `scripts/reproduce_fraud.ps1` que reconstruye y verifica el módulo.
 
-**Transacciones y segmentación — Taco:** el [reporte de segmentación](docs/transacciones/segmentacion.md) documenta el agrupamiento de cuentas reincidentes, ya independiente de la etiqueta de fraude. El servicio (`src/bankshield/services/segments.py`), los endpoints `/api/segments/...` y la página `dashboard/pages/06_segmentos.py` consultan los artefactos generados por `scripts/segment_transactions.py`.
+**Pronósticos — Gerardo:** las [líneas base](docs/pronosticos/resultados-baselines.md)
+y [tres configuraciones Holt-Winters](docs/pronosticos/resultados-holt-winters.md)
+se evaluaron sobre las mismas cuatro ventanas. Naive se mantiene seleccionado;
+el [monitoreo histórico](docs/pronosticos/resultados-monitoreo.md) detecta el
+cambio del tramo 719–743. El servicio y la página temporal exponen la proyección
+Naive, incertidumbre descriptiva y los indicadores de cambio mediante la API.
 
 ## Punto de partida
 
@@ -20,7 +31,7 @@ La [base del proyecto](docs/bases-del-proyecto.md) define el alcance inicial, lo
 
 El [plan de desarrollo](docs/plan-desarrollo.md) detalla las cinco etapas, las tareas de cada integrante, las responsabilidades compartidas y las primeras entregas.
 
-La revisión vigente del **12 de octubre de 2026** está enlazada al inicio de ese plan. La [guía de pruebas y reproducción](docs/pruebas-reproduccion.md) reúne dependencias, comandos y criterios de ejecución; sus bloqueos históricos deben contrastarse con la verificación vigente.
+Los seis módulos existentes tienen API/página y los artefactos de esta PC están preparados. La [guía de demo](docs/demo-local.md) contiene evidencia histórica: **238 pruebas aprobadas y 48 comprobaciones del recorrido real**. Esos resultados no verifican las ampliaciones del 20 de octubre. Fuentes, aceptación humana, comparación de grafos y reproducción en otra PC siguen pendientes; Docker es opcional respecto de las tecnologías sugeridas. La [guía de reproducción](docs/pruebas-reproduccion.md) distingue el recorrido actual de las etapas futuras.
 
 La primera entrega de Cueva incluye [perfilado y contrato de variables de fraude](docs/fraude/contrato-variables.md), con comandos reproducibles y controles de información disponible antes de la operación.
 
@@ -34,7 +45,7 @@ Los tres CSV aportados están organizados en `data/bronze/` y se versionan media
 
 ## Estado histórico
 
-Esta lista conserva el estado anterior a la verificación del 12 de octubre y contiene pendientes ya implementados. Para el estado actual y las próximas tareas, consultar la [verificación vigente](docs/revision-avance-2026-10-12.md).
+Esta lista conserva el estado anterior a la verificación del 12 de octubre y contiene pendientes ya implementados. Para el estado actual y las próximas tareas, consultar la [revisión vigente](docs/revision-avance-2026-10-13.md).
 
 - [x] Contexto y bases documentados.
 - [x] Fuente transaccional de trabajo elegida: archivo con esquema PaySim.
@@ -50,7 +61,7 @@ Esta lista conserva el estado anterior a la verificación del 12 de octubre y co
 - [x] Riesgo crediticio: Silver, modelo calibrado, explicación por oclusión, endpoints y página (ver [contrato](docs/credito/contrato-variables.md) y [resultados](docs/credito/resultados-modelo.md)).
 - [ ] Conexión API → panel y página/endpoint de fraude integrados.
 
-Fraude tiene un modelo entrenado y un servicio de scoring local. Grafos tiene perfilado, métricas, patrones, servicios, endpoints y página de redes (ver [contrato](docs/grafos/contrato-variables.md) y [perfil](docs/grafos/perfil-red.md)); la página llama directamente a servicios y falta conectarla a la API. Reclamos tiene perfilado de 555,957 quejas y propuesta del panel; su rango temporal requiere corrección. Transacciones tiene Silver, mart Gold y segmentación con servicio, API y página (revisión cruzada pendiente); pronósticos tiene Gold por `step` y exploración, pero aún no un pronóstico evaluado. Crédito tiene perfil, Silver, modelo calibrado, API y página; falta confirmar con la fuente original el significado de `loan_status`. El modelado NLP de reclamos sigue pendiente. Los Parquet y modelos se regeneran localmente y quedan fuera de Git.
+Fraude tiene un modelo entrenado y un servicio de scoring local. Grafos tiene perfilado, métricas, patrones, servicios, endpoints y página de redes (ver [contrato](docs/grafos/contrato-variables.md) y [perfil](docs/grafos/perfil-red.md)); la página llama directamente a servicios y falta conectarla a la API. Reclamos tiene perfilado de 555,957 quejas y propuesta del panel; su rango temporal requiere corrección. Transacciones tiene Silver y controles; pronósticos tiene Gold por `step` y exploración, pero aún no un pronóstico evaluado. Crédito tiene perfil, Silver, modelo calibrado, API y página; falta confirmar con la fuente original el significado de `loan_status`. Segmentación y modelado NLP siguen pendientes. Los Parquet y modelos se regeneran localmente y quedan fuera de Git.
 
 ## Preparación común del equipo
 

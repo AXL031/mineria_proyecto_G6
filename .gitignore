@@ -30,6 +30,9 @@ __pycache__/
 /artifacts/reports/fraud-clean-reproduction/
 
 # SO y editores
+# Accesos locales con rutas absolutas; recrear con scripts/create_demo_shortcuts.ps1.
+/Abrir BankShield.lnk
+/Cerrar BankShield.lnk
 .DS_Store
 Thumbs.db
 .vscode/

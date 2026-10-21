@@ -10,10 +10,11 @@ import os
 import pandas as pd
 import requests
 import streamlit as st
+from bankshield.ui import configure_page
 
 API_URL = os.environ.get("BANKSHIELD_API_URL", "http://127.0.0.1:8000").rstrip("/")
 
-st.set_page_config(page_title="Segmentos | BankShield", page_icon="🧩", layout="wide")
+configure_page(page_title="Segmentos | BankShield", page_icon="🧩", layout="wide")
 st.title("Segmentos de cuentas destino")
 st.caption("Agrupamiento de cuentas reincidentes (>= 10 transacciones recibidas) sobre PaySim.")
 st.info(
