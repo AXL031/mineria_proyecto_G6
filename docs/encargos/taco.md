@@ -30,12 +30,12 @@ desplazamiento inválidos, artefacto ausente), todas aprobadas, con evidencia en
 `artifacts/reports/segments-http-check.json`. Se corrigió la consulta de cuentas
 para ordenar por actividad, como ya indicaba el contrato, con prueba nueva.
 
-Suite completa al 21 de octubre: 263 pruebas, 261 aprobadas. Las 2 restantes
-fallan por `statsmodels` ausente en este entorno: la dependencia ya está
-declarada en el extra `forecast` y en `requirements/forecast.txt`, pero el
-`.venv-pruebas` local se creó antes de esa incorporación. No es un fallo del
-código de segmentos ni de D1; hay que reinstalar el extra para verificar la suite
-completa.
+Suite completa al 21 de octubre: 263 pruebas, 263 aprobadas
+(`.venv-pruebas/Scripts/python.exe -m unittest discover -s tests/unit`). Las dos
+pruebas de pronósticos que antes fallaban necesitaban `statsmodels`; la
+dependencia ya estaba declarada en el extra `forecast` y en
+`requirements/forecast.txt`, faltaba instalarla en el entorno local. Queda
+resuelto en este equipo; en un entorno nuevo basta instalar el extra.
 
 Siguen pendientes, por ser tareas humanas: aceptación cruzada del contrato con
 Cueva, revisión de particiones por Gerardo, revisión de navegación con
