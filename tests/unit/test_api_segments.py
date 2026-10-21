@@ -82,6 +82,14 @@ class SegmentsServiceTests(unittest.TestCase):
         self.assertEqual(len(frame), 1)
         self.assertEqual(frame.iloc[0]["account"], "D0")
 
+    def test_accounts_are_sorted_by_activity_and_offset(self):
+        frame = segments_service.get_accounts_by_segment(0, parquet_path=self.parquet)
+        self.assertEqual(frame["account"].tolist(), ["D0", "D1"])
+        second = segments_service.get_accounts_by_segment(
+            0, limit=1, offset=1, parquet_path=self.parquet
+        )
+        self.assertEqual(second["account"].tolist(), ["D1"])
+
     def test_get_account(self):
         record = segments_service.get_account(1, "D2", parquet_path=self.parquet)
         self.assertEqual(record["account"], "D2")

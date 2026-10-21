@@ -8,6 +8,7 @@ Servicio web backend construido con **FastAPI** que expone endpoints analíticos
 - `api/routers/graphs.py`: Endpoints del módulo de grafos de transacciones (`/api/graphs/*`).
 - `api/routers/fraud.py`: Predicción y métricas de fraude (`/api/fraud/*`).
 - `api/routers/credit.py`: Riesgo crediticio (`/api/credit/*`).
+- `api/routers/segments.py`: Segmentación de cuentas de destino (`/api/segments/*`).
 - `api/routers/forecast.py`: Proyección y monitoreo temporal (`/api/forecast/*`).
 
 ## Endpoints Disponibles (Grafos)
@@ -58,6 +59,15 @@ python -m unittest tests/unit/test_api_graphs.py -v
 
 El modelo se indica con `BANKSHIELD_CREDIT_MODEL` (por defecto `artifacts/models/credit/model.joblib`). Si falta o es incompatible, responde 503 sin afectar a los demás módulos. Ver el [contrato de variables](../docs/credito/contrato-variables.md).
 
+## Endpoints de Segmentos
+
+| Método | Endpoint | Parámetros | Descripción |
+|---|---|---|---|
+| `GET` | `/api/segments/summary` | Ninguno | Perfil de los segmentos de cuentas de destino reincidentes (tamaño, actividad y tasa de fraude por segmento). |
+| `GET` | `/api/segments/{segmento}/accounts` | `limit` (1-1000, default 50), `offset` (default 0) | Cuentas del segmento indicado, ordenadas por actividad. |
+| `GET` | `/api/segments/{segmento}/account/{cuenta}` | Ninguno | Detalle de una cuenta de destino dentro de su segmento. |
+
+Los datos se leen de `data/gold/segments/account_segments.parquet` y `artifacts/reports/segments.json`, generados por `scripts/segment_transactions.py` (rutas ajustables con `BANKSHIELD_SEGMENTS_PARQUET` y `BANKSHIELD_SEGMENTS_REPORT`). Si falta un artefacto responde 503 con el comando para generarlo; un segmento o cuenta inexistente responde 404 y un identificador inválido 422. Ver la [segmentación](../docs/transacciones/segmentacion.md).
 ## Endpoints de pronósticos
 
 | Método | Endpoint | Descripción |

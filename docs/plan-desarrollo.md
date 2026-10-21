@@ -97,7 +97,7 @@ Estado basado en el código, reportes y referencias Git disponibles en esta copi
 
 ### Estado de integración y reproducción
 
-- Existen API y página de fraude y de crédito conectadas entre sí, además de API de grafos y página de redes. Redes todavía consulta servicios directamente; segmentos, temporal y reclamos no tienen vistas finales.
+- Existen API y página de fraude y de crédito conectadas entre sí, además de API de grafos y página de redes. Redes todavía consulta servicios directamente; segmentos ya tiene vista conectada a su API y quedan temporal y reclamos sin vistas finales.
 - Silver está regenerado con 6,362,620 filas y controles aprobados. Gold temporal sigue sin regenerarse en esta copia. Los derivados están excluidos de Git.
 - Modelo anterior en `artifacts/models/fraud/` y experimento Silver en `artifacts/models/fraud-silver/`, ambos locales. Otro clon debe reconstruirlos.
 - Entorno común instalado con Python 3.12.14 y `pip check` aprobado. Suite completa: **111 pruebas aprobadas**, incluidas API, equivalencia Bronze/Silver e interacciones de Streamlit. Las pruebas de grafos aún usan un grafo en memoria y no validan su carga completa del CSV.
@@ -279,7 +279,15 @@ Pendientes: confirmar con la fuente original la semántica de `loan_status` (res
 - Servicio `services/segments.py`, router `api/routers/segments.py` (`GET /api/segments/summary`, `GET /api/segments/{segmento}/accounts`, `GET /api/segments/{segmento}/account/{cuenta}`) y página `dashboard/pages/06_segmentos.py` consumiendo la API por HTTP con manejo de 503.
 - Pruebas nuevas: `test_api_segments.py` (servicio y API) y `test_segments_dashboard.py` (AppTest).
 
-**Pendientes:** revisión humana cruzada del contrato con Cueva y de la navegación con Rhamses–Angel; verificar el recorrido completo desde un clon limpio.
+#### Incremento implementado — 21 de octubre de 2026 (D1)
+
+- Nueva tabla analítica compartida `data/gold/analytics/transactions.parquet` para asociaciones (Cueva) y regresión (Sevan): `row_id`, `step`, `type`, `amount`, `oldbalanceOrg`, `isFraud`, `partition`, `amount_bin` y `origin_balance_bin`.
+- Particiones nuevas sin mezclar filas: `train` 1–323, `validation` 324–378, `test` 379–718 y `stress` 719–743. El tramo final se separa porque solo contiene fraude; por eso `test` tiene 918,321 filas y no las 918,617 de la prueba histórica de fraude.
+- Terciles de `amount` y `oldbalanceOrg` ajustados solo con `train` y aplicados sin cambios al resto: cortes 21,649.48 / 157,428.26 y 28.00 / 51,716.00.
+- Ejecución completa: 6,362,620 filas, 0 excluidas, monto y fraudes conservados, nueve controles aprobados y dos corridas con la misma huella. Contrato y límites en el [contrato analítico](transacciones/contrato-analitico.md).
+- `scripts/verify_segments.py` ensaya los endpoints de segmentos con los artefactos locales: 18 comprobaciones aprobadas (resumen, paginación, detalle, 404, 422 y 503). La consulta de cuentas ahora ordena por actividad, como indicaba su contrato.
+
+**Pendientes:** revisión humana cruzada del contrato con Cueva y de la navegación con Rhamses–Angel; verificar el recorrido completo desde un clon limpio. La aceptación de D1 por Cueva y Sevan y la revisión de particiones por Gerardo son revisiones de personas, no pruebas automáticas.
 
 **Entrega final:** pipeline transaccional reproducible, tablas Gold, segmentación evaluada y página de segmentos.
 
