@@ -100,12 +100,13 @@ powershell -ExecutionPolicy Bypass -File scripts/setup_env.ps1
 powershell -ExecutionPolicy Bypass -File scripts/start_demo.ps1
 .venv-pruebas/Scripts/python.exe scripts/verify_demo.py
 powershell -ExecutionPolicy Bypass -File scripts/stop_demo.ps1
+.venv-pruebas/Scripts/python.exe scripts/build_analytics_transactions.py --config configs/analytics.json
+.venv-pruebas/Scripts/python.exe scripts/verify_segments.py
 ```
 
 Objetivos de CLI **por implementar**, con `--help`, errores accionables y salida no cero en fallo:
 
 ```powershell
-.venv-pruebas/Scripts/python.exe scripts/build_analytics_transactions.py --config configs/analytics.json
 .venv-pruebas/Scripts/python.exe scripts/mine_associations.py --config configs/associations.json
 .venv-pruebas/Scripts/python.exe scripts/train_regression.py --config configs/regression.json
 .venv-pruebas/Scripts/python.exe scripts/evaluate_graph_alerts.py --limit 10000 --comparison-output artifacts/reports/graph/comparison.json
@@ -117,7 +118,7 @@ Cada agente entrega: lista de cambios, comando reproducible, resultado de prueba
 
 ## Checklist de cierre compartido
 
-- [ ] D1 completo, controles aprobados y procedencia vinculada a Silver.
+- [x] D1 completo, controles aprobados y procedencia vinculada a Silver. Hecho el 21 de octubre de 2026 por Taco: `scripts/build_analytics_transactions.py`, 6,362,620 filas, cero excluidas, nueve controles aprobados, huellas Silver `47C786D9…C2E46C` y dataset `A4C6F55E…234960EA`. Queda la revisión de particiones a cargo de Gerardo y la aceptación cruzada de Cueva.
 - [ ] Regresión numérica con referencia, evaluación independiente, artefacto, HTTP y panel.
 - [ ] Asociaciones descubiertas automáticamente, selección sin test y evaluación posterior.
 - [ ] Comparación de grafos con igual universo y presupuesto de alertas.

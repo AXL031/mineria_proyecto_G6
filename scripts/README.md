@@ -122,6 +122,15 @@ Los límites están en el [reporte de segmentación](../docs/transacciones/segme
 La API expone `GET /api/segments/summary` y
 `GET /api/segments/{segmento}/accounts` para la página de segmentos.
 
+`verify_segments.py` ensaya esos endpoints contra los artefactos locales sin
+levantar el panel: resumen, paginación, detalle de cuenta, segmento inexistente,
+parámetros inválidos y respuesta 503 sin artefactos. Deja la evidencia en
+`artifacts/reports/segments-http-check.json`:
+
+```powershell
+.venv-pruebas/Scripts/python.exe scripts/verify_segments.py
+```
+
 ## Tabla analítica compartida (D1)
 
 `build_analytics_transactions.py` construye la tabla D1 que consumen la minería
