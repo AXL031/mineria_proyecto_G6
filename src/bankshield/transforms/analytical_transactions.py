@@ -62,7 +62,9 @@ BIN_OUTPUT_COLUMNS = {
 }
 PARTITION_NAMES = ("train", "validation", "test", "stress")
 
-DEFAULT_QUANTILES = (1.0 / 3.0, 2.0 / 3.0)
+# Literales explícitos para que coincidan exactamente con configs/analytics.json.
+# `2.0 / 3.0` produce 0.6666666666666666 y el JSON declara 0.6666666666666667.
+DEFAULT_QUANTILES = (0.3333333333333333, 0.6666666666666667)
 DEFAULT_CUTS = {
     "train_end_step": 323,
     "validation_end_step": 378,
