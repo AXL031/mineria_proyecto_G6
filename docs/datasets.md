@@ -16,6 +16,10 @@ Estos archivos fueron aportados por el equipo y se guardan en `data/bronze/` sin
 
 La estructura coincide con el formato conocido como PaySim y permite explorar transacciones y relaciones origen → destino. `step` es un paso de simulación, no una fecha calendario. La etiqueta `isFraud` requiere verificar su distribución antes de definir evaluación. No usar `isFlaggedFraud` como predictor sin comprobar su origen y disponibilidad al momento de la operación.
 
+**Procedencia probable (pendiente de confirmación humana).** El tamaño local, 493,534,783 bytes, coincide exactamente con el dataset público *Synthetic Financial Datasets For Fraud Detection* de Kaggle (`ealaxi/paysim1`, versión 2; autor Edgar Lopez-Rojas; licencia CC BY-SA 4.0; última actualización 2017-04-03). La coincidencia de tamaño es un indicio fuerte, no una prueba del contenido: falta que un integrante confirme la descarga y registre fecha, URL y atribución exigida por la licencia. Si se confirma, todo resultado debe citar PaySim y su licencia.
+
+PaySim advierte en su descripción que las transacciones fraudulentas se cancelan en la simulación, por lo que las columnas de saldo (`oldbalanceOrg`, `newbalanceOrig`, `oldbalanceDest`, `newbalanceDest`) no son una fuente fiable para detectar fraude. Nuestro modelo de fraude y la tabla D1 usan `oldbalanceOrg`; esa limitación debe declararse junto a sus métricas.
+
 ### Crédito
 
 `person_age`, `person_income`, `person_home_ownership`, `person_emp_length`, `loan_intent`, `loan_grade`, `loan_amnt`, `loan_int_rate`, `loan_status`, `loan_percent_income`, `cb_person_default_on_file`, `cb_person_cred_hist_length`.

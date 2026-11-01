@@ -167,8 +167,24 @@ de particiones y bins ante cambios de etiqueta, valores constantes, cortes
 repetidos, ceros, valores por encima del máximo de `train`, equivalencia entre
 tamaños de bloque y fallo limpio ante reportes o filas inválidas.
 
+## Revisión y aceptación
+
+Ninguna de estas revisiones se marca como hecha sin la evidencia de la persona
+que la firma. Taco entrega la implementación y los datos; la aceptación es
+cruzada, como en el resto del proyecto.
+
+| Revisión | Responsable | Estado | Qué debe comprobar |
+| --- | --- | --- | --- |
+| Contrato, bins y ausencia de fuga | Cueva | Pendiente | Que `train` 1–323 sea la única fuente de ajuste, que `stress` no participe en ninguna selección y que `amount_bin` no se use para predecir `amount`. |
+| Particiones y cortes | Gerardo | Pendiente | Que los cortes 323/378/718/743 y la separación `test` 918,321 + `stress` 296 sean consistentes con el DAG y con los reportes de fraude. |
+| Reproducción en clon limpio | Gerardo–Sevan | Pendiente | Reconstruir Silver → D1 desde otro entorno y comparar las tres huellas. |
+
 ## Límites
 
+- PaySim cancela las transacciones fraudulentas en su simulación, por lo que las
+  columnas de saldo no son fiables para detectar fraude. `oldbalanceOrg` se usa
+  porque el contrato lo exige, y esa limitación debe acompañar a cualquier
+  métrica del modelo de fraude construida sobre D1.
 - Los datos provienen de la simulación PaySim; no representan operaciones reales.
 - `step` no es una fecha calendario.
 - `row_id` identifica filas y nunca es predictor.

@@ -1,6 +1,6 @@
 # Pruebas y reproducción local
 
-> **Estado vigente — 20 de octubre:** los seis módulos existentes y sus artefactos locales están preparados. Regresión, asociaciones descubiertas y comparación de grafos requieren implementación según [pendientes y contratos](pendientes-cierre-2026-10-20.md). Los scripts actuales todavía no preparan/verifican esas ampliaciones. El historial del desempeño es recomendado; Docker/Compose es opcional. Gerardo mantiene preparación/entorno y Angel la verificación integrada.
+> **Estado vigente — 21 de octubre:** los seis módulos existentes y sus artefactos locales están preparados, y la tabla analítica D1 de TAC-01 ya está implementada, ejecutada y verificada. Regresión, asociaciones descubiertas y comparación de grafos requieren implementación según [pendientes y contratos](pendientes-cierre-2026-10-20.md). Los scripts actuales todavía no preparan/verifican esas ampliaciones. El historial del desempeño es recomendado; Docker/Compose es opcional. Gerardo mantiene preparación/entorno y Angel la verificación integrada.
 
 Los comandos se ejecutan en PowerShell desde la raíz. La [revisión histórica del 13 de octubre](revision-avance-2026-10-13.md) y [demo-local.md](demo-local.md) documentan 238 pruebas y 48 comprobaciones posteriores de las seis capacidades. Esos logs no certifican el alcance ampliado ni reproducción integral en otra PC. Los apartados de evidencia histórica al final conservan sus fechas y límites originales.
 
@@ -10,7 +10,7 @@ Los comandos se ejecutan en PowerShell desde la raíz. La [revisión histórica 
 | --- | --- | --- |
 | Fraude | Perfil, entrenamiento desde Bronze/Silver, scoring, patrones, API/página y comandos de reproducción/verificación. | Modelos locales presentes; aceptación humana cruzada y fuentes pendientes. Reproducción aislada documentada en el cierre de entrega. |
 | Grafos | Ingesta, métricas, patrones, servicios, API y página conectada mediante HTTP. | Demo con muestra acotada y referencia comparable por cerrar; no acredita la red completa. |
-| Transacciones | Silver, mart Gold, segmentación independiente de etiqueta, servicio/API/página; artefactos locales preparados. | Aceptación cruzada y reproducción; D1 nuevo de TAC-01 pendiente. |
+| Transacciones | Silver, mart Gold, tabla analítica D1, segmentación independiente de etiqueta, servicio/API/página; artefactos locales preparados. | Particiones D1 pendientes de revisión de Gerardo; aceptación cruzada y reproducción pendientes. |
 | Temporal | Gold, backtesting, Holt-Winters comparado, monitoreo histórico y API/página; artefactos locales preparados. | Aceptación visual/reproducción; historial de desempeño P2 aún no implementado. Naive sigue seleccionado por MAE. |
 | Reclamos | Silver/texto, clasificador, tendencias, ejemplos, servicio/API/página y artefactos locales preparados. | Lectura humana cruzada, fuente/condiciones de uso y reproducción pendientes. |
 | Crédito | Silver, modelo calibrado, explicaciones y API/página; artefactos locales preparados. | Semántica/fuente original, aceptación y reproducción pendientes. |
@@ -20,7 +20,7 @@ Los comandos se ejecutan en PowerShell desde la raíz. La [revisión histórica 
 
 | Prioridad | Falta o problema | Acción y responsable |
 | --- | --- | --- |
-| P0 | Regresión numérica y minería automática de asociaciones. | Taco prepara D1; Sevan implementa regresión; Cueva descubre/evalúa reglas. |
+| P0 | Regresión numérica y minería automática de asociaciones. | D1 entregada por Taco; Sevan implementa regresión; Cueva descubre/evalúa reglas. |
 | P1 | Comparación de alertas de grafos. | Rhamses compara red/referencia con igual universo y k y agrega consulta/vista. |
 | P1 | Preparación y verificación ampliadas. | Gerardo integra DAG/identidades; Angel registra routers, navegación y checks de las siete páginas. |
 | P1 | Versiones y reproducción integral. | Gerardo–Sevan validan lock y entorno nuevo; todos reproducen su módulo en el segundo entorno. |
@@ -89,7 +89,27 @@ El mart transaccional y la segmentación requieren Silver completo y se reconstr
 
 Estos comandos regeneran reportes versionados: revisar el diff antes de guardar. La configuración está en `configs/segments.json`. Se generan `data/gold/segments/account_segments.parquet` y `artifacts/reports/segments.json`, excluidos de Git. El reporte nuevo documenta 146,629 cuentas, k=2, silueta 0.2305 y ARI 0.7280; fraude queda fuera de `CLUSTER_COLUMNS`.
 
-Con API y panel iniciados, consultar `/api/segments/summary`, `/api/segments/0/accounts?limit=50&offset=0` y una cuenta existente de la respuesta; comprobar perfiles y cuentas en Segmentos. Sin artefactos, la API devuelve 503; recursos desconocidos devuelven 404 y límites inválidos 422. `BANKSHIELD_SEGMENTS_PARQUET` y `BANKSHIELD_SEGMENTS_REPORT` permiten rutas alternativas.
+Con API y panel iniciados, consultar `/api/segments/summary`, `/api/segments/0/accounts?limit=50&offset=0` y una cuenta existente de la respuesta; comprobar perfiles y cuentas en Segmentos. Sin artefactos, la API devuelve 503; recursos desconocidos devuelven 404 y límites inválidos 422. `BANKSHIELD_SEGMENTS_PARQUET` y `BANKSHIELD_SEGMENTS_REPORT` permiten rutas alternativas. Para ensayar esos endpoints sin abrir el panel:
+
+```powershell
+.venv-pruebas/Scripts/python.exe scripts/verify_segments.py
+```
+
+Deja 18 comprobaciones y la evidencia en `artifacts/reports/segments-http-check.json`.
+
+La tabla analítica compartida (D1) también parte del Silver completo y alimenta las ampliaciones de asociaciones y regresión:
+
+```powershell
+.venv-pruebas/Scripts/python.exe scripts/build_analytics_transactions.py --config configs/analytics.json
+```
+
+Se acepta cuando el reporte declara 6,362,620 filas, cero excluidas, nueve controles aprobados, particiones `train` 4,463,587 / `validation` 980,416 / `test` 918,321 / `stress` 296 y huellas Silver `47C786D9…C2E46C`, dataset `A4C6F55E…234960EA` y esquema de bins `54685F5B…1AD9386`. El proceso tarda ~21 s y es determinista: dos corridas seguidas dan la misma huella. Para desarrollo existe un fixture de 60 filas:
+
+```powershell
+.venv-pruebas/Scripts/python.exe scripts/build_analytics_transactions.py --write-fixture artifacts/reports/analytics/fixture
+```
+
+El contrato, las particiones y los controles están en el [contrato analítico](transacciones/contrato-analitico.md). La partición `stress` (steps 719–743) se informa aparte y no selecciona modelos, bins, reglas ni umbrales.
 
 ## 4. Probar fraude local
 
