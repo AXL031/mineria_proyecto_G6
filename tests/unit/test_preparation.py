@@ -45,6 +45,17 @@ class PreparationTests(unittest.TestCase):
         self.assertEqual([s["status"] for s in second["stages"]], ["reused", "reused"])
         self.assertTrue(all(s["inputs"] and s["outputs"] and s["duration_seconds"] >= 0 for s in second["stages"]))
 
+    def test_reuse_preserves_previous_run_logs(self):
+        script = self.root / "build.py"
+        script.write_text(script.read_text() + "\nprint('construccion verificada')\n", encoding="utf-8")
+        first = self.run_pipeline()
+        original_log = self.root / first["stages"][0]["log"]
+        previous = original_log.read_text(encoding="utf-8")
+        self.assertIn("construccion verificada", previous)
+        second = self.run_pipeline()
+        self.assertNotEqual(first["stages"][0]["log"], second["stages"][0]["log"])
+        self.assertEqual(original_log.read_text(encoding="utf-8"), previous)
+
     def test_input_and_configuration_changes_invalidate_receipt(self):
         self.run_pipeline()
         (self.root / "source.txt").write_text("otra entrada", encoding="utf-8")

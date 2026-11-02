@@ -4,6 +4,15 @@ Estado inicial: pendiente. Leer [contratos y prioridades](../pendientes-cierre-2
 
 ## GER-01 — preparación integral y entorno reproducible (P1)
 
+Avance del 2 de noviembre: [implementación y evidencia GER-01](../ger-01-reproduccion.md).
+DAG, recibos, manifiesto de fallos, `--force`, D1, lock de 83 paquetes,
+instalador `-UseLock` y CI implementados. Entornos nuevos: `pip check` y 285
+pruebas aprobadas; suite final con conservación de logs: 286. Preparación
+principal: 14 etapas; reuso verificado; clon aislado local con LFS, otros modelos
+regenerados y 48 comprobaciones HTTP/páginas aprobadas en ambas carpetas.
+Las ampliaciones de otros dueños, revisiones humanas y
+reproducción en otra PC no se consideran realizadas por esa evidencia.
+
 ### Archivos y propiedad
 
 Responsable de `scripts/prepare_demo.py`, `scripts/setup_env.ps1`, dependencias `requirements/*`, extras de `pyproject.toml`, workflow `.github/workflows/tests.yml` y guía `docs/pruebas-reproduccion.md`. Coordinar con Angel los scripts start/stop si necesitan variables nuevas. Cada dueño entrega su CLI y artefactos; Gerardo los integra, no reimplementa sus modelos.
@@ -68,7 +77,8 @@ Avance técnico del 2 de noviembre: [registro GER-03](../pronosticos/aceptacion-
 Hay verificación de artefactos/API/página con datos reales y contraste de cortes
 D1 sobre Silver. Se corrigió el aviso de proyección conservada tras cambiar
 controles. GER-03 sigue parcial: AppTest no sustituye revisión visual, aceptación
-humana ni validación del Parquet D1 completo, ausente en esta copia.
+humana. Durante GER-01 también se reconstruyó D1 completo: nueve controles y
+las tres huellas coinciden con la entrega de Taco; falta su aceptación cruzada.
 
 - [ ] Registrar revisión visual de cantidad/monto, horizontes y errores de API/página; los artefactos locales ya existen.
 - [ ] Revisar con Sevan comparación, versiones y limitaciones de Naive/Holt-Winters, intervalos descriptivos y monitoreo histórico.

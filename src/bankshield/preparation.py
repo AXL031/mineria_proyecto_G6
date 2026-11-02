@@ -211,6 +211,8 @@ class Preparation:
                     "disk_free_bytes_at_start": shutil.disk_usage(self.root).free,
                     "status": "running", "selected": list(selected), "stages": [],
                     "memory_measurement": "RSS aproximado sumado de proceso e hijos, muestreado cada 0.2 s; null si no se midió"}
+        run_logs = self.report_dir / "runs" / manifest["run_id"]
+        run_logs.mkdir(parents=True, exist_ok=True)
         active = None
         try:
             ordered = dependency_order(stages, selected)
@@ -226,14 +228,14 @@ class Preparation:
                 started = time.perf_counter()
                 active = {"stage": unavailable.name, "dependencies": list(unavailable.dependencies),
                           "started_at_utc": utc_now(), "status": "failed",
-                          "log": str((self.report_dir / (unavailable.name + ".log")).relative_to(self.root))}
+                          "log": str((run_logs / (unavailable.name + ".log")).relative_to(self.root))}
                 manifest["stages"].append(active)
                 raise RuntimeError(unavailable.unavailable_reason)
             for stage in ordered:
                 started = time.perf_counter()
                 active = {"stage": stage.name, "dependencies": list(stage.dependencies),
                           "started_at_utc": utc_now(), "status": "failed",
-                          "log": str((self.report_dir / (stage.name + ".log")).relative_to(self.root))}
+                          "log": str((run_logs / (stage.name + ".log")).relative_to(self.root))}
                 manifest["stages"].append(active)
                 blocked = [s["stage"] for s in manifest["stages"][:-1]
                            if s["stage"] in stage.dependencies and s["status"] not in ("built", "reused")]

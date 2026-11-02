@@ -1,5 +1,12 @@
 # Pruebas y reproducción local
 
+> **Actualización de GER-01 — 2 de noviembre:** el preparador incorpora DAG,
+> recibos por huellas y manifiesto de fallos. El instalador admite `-UseLock`
+> con versiones exactas validadas en un entorno nuevo. Consultar
+> [preparación y evidencias de GER-01](ger-01-reproduccion.md).
+> El alcance `current` conserva los seis módulos y agrega D1; `full` exige las
+> entregas todavía pendientes de asociaciones, regresión y comparación de grafos.
+
 > **Estado vigente — 21 de octubre:** los seis módulos existentes y sus artefactos locales están preparados, y la tabla analítica D1 de TAC-01 ya está implementada, ejecutada y verificada. Regresión, asociaciones descubiertas y comparación de grafos requieren implementación según [pendientes y contratos](pendientes-cierre-2026-10-20.md). Los scripts actuales todavía no preparan/verifican esas ampliaciones. El historial del desempeño es recomendado; Docker/Compose es opcional. Gerardo mantiene preparación/entorno y Angel la verificación integrada.
 
 Los comandos se ejecutan en PowerShell desde la raíz. La [revisión histórica del 13 de octubre](revision-avance-2026-10-13.md) y [demo-local.md](demo-local.md) documentan 238 pruebas y 48 comprobaciones posteriores de las seis capacidades. Esos logs no certifican el alcance ampliado ni reproducción integral en otra PC. Los apartados de evidencia histórica al final conservan sus fechas y límites originales.
@@ -44,7 +51,12 @@ si un paso falla. Admite `-PythonExecutable 'C:\ruta\python.exe'` cuando no
 existe el lanzador `py`, y `-SkipTests` para instalar sin verificar la suite.
 `ExecutionPolicy Bypass` solo afecta ese proceso de PowerShell.
 
-Los extras de `pyproject.toml` sirven para validar el conjunto con rangos compatibles. Esta instalación todavía no es un bloqueo exacto de versiones para reproducir las métricas históricas. Para recargar el modelo guardado, comprobar las versiones registradas en `artifacts/models/fraud/metrics.json`; usar `requirements/fraud.txt` en un entorno independiente si hace falta reproducir esa ejecución. No confiar en un `.venv` copiado de otro equipo: debe recrearse si su intérprete base ya no funciona.
+Los extras de `pyproject.toml` conservan los rangos compatibles de desarrollo.
+Para instalar el conjunto exacto validado en GER-01, añadir `-UseLock` al
+instalador; el proyecto local se instala después sin resolver versiones nuevas.
+Para recargar modelos históricos, contrastar también las versiones de sus
+`metrics.json`; el lock actual no promete reproducir cualquier entorno anterior.
+No copiar `.venv` entre equipos: recrearlo con el instalador.
 
 `.venv-pruebas/` debe permanecer fuera de Git. No es necesario activar el entorno si se usa su ejecutable explícitamente.
 
@@ -192,9 +204,9 @@ Si hay cambios locales sin guardar, resolverlos antes de cambiar de rama o
 actualizar. El script no descarga LFS ni genera Silver/Gold ni entrena modelos;
 seguir las secciones anteriores para probar esos recorridos.
 
-Una vez aprobada la suite en un entorno limpio, Sevan–Gerardo pueden registrar
-las versiones exactas en `requirements/lock-py312-windows.txt` mediante
-`pip freeze --exclude-editable`, revisar el archivo y validar su instalación en
-un segundo entorno antes de usarlo como contrato común. Hasta entonces, se
-comparte una configuración común con rangos, no una reproducción exacta de
-paquetes o de las métricas históricas.
+El lock `requirements/lock-py312-windows.txt` ya procede de un entorno nuevo
+validado con `pip check`, instalación local sin dependencias adicionales y
+285 pruebas; la suite final, con la prueba adicional de conservación de logs,
+pasó 286. Conserva los 83 paquetes exactos y excluye rutas editables.
+La revisión humana de Sevan, el CI remoto y la reproducción en otra PC siguen
+pendientes; ver el [registro GER-01](ger-01-reproduccion.md).

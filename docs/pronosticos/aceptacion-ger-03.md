@@ -101,10 +101,12 @@ Los recuentos coinciden con el contrato D1 y `test + stress = 918,617`,
 el universo de prueba histórico de fraude. Pasaron las pruebas de bordes
 323/324, 378/379 y 718/719, independencia de etiquetas y ajuste de bins solo en train.
 
-**Límite:** el Parquet D1 y sus metadatos no están generados en esta copia.
-Esta comprobación del Silver y del código no constituye aceptación del archivo
-D1 completo ni comparación de sus huellas. Su reconstrucción y revisión de
-procedencia quedan pendientes dentro de la preparación/reproducción.
+**Actualización durante GER-01 (2 de noviembre):** D1 y sus metadatos ya fueron
+reconstruidos desde Silver completo. Pasaron sus nueve controles y coincidieron
+las tres huellas documentadas por Taco: Silver `47C786D9…C2E46C`,
+D1 `A4C6F55E…234960EA` y discretización `54685F5B…1AD9386`.
+Esta evidencia técnica se suma al contraste inicial sobre Silver. La aceptación
+humana cruzada de Gerardo–Taco sigue pendiente; reconstruir no equivale a firmarla.
 
 ## Repetir la verificación
 
@@ -143,7 +145,9 @@ No marcar una revisión como realizada sin confirmación de quien la hace.
 - [ ] Sevan: confirmar revisión de comparación, versiones, intervalos descriptivos,
   exclusión de stress en evaluación y limitaciones del monitoreo histórico.
 - [ ] Gerardo/equipo: confirmar aceptación humana de integración central.
-- [ ] Gerardo–Taco: revisar D1 completo y sus metadatos después de reconstruirlo.
+- [x] Reconstrucción técnica de D1 completo, nueve controles y comparación de
+  las tres huellas con la entrega documentada por Taco (durante GER-01).
+- [ ] Gerardo–Taco: confirmar revisión humana de D1 y sus metadatos reconstruidos.
 
 GER-03 permanece **parcial** hasta esas revisiones. El avance técnico permite
 continuar GER-01 mientras se coordina la aceptación humana.
