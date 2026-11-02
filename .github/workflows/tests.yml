@@ -5,7 +5,19 @@ on:
   pull_request:
 
 jobs:
-  unit:
+  locked:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements/lock-py312-windows.txt
+      - name: Instalar lock, comprobar dependencias y ejecutar fixtures
+        shell: powershell
+        run: ./scripts/setup_env.ps1 -UseLock
+  ranges:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4

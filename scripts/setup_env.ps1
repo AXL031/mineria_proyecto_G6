@@ -1,12 +1,14 @@
 param(
     # Ruta o nombre de un intérprete Python 3.12; si se omite, usa py -3.12.
     [string]$PythonExecutable = "",
+    [switch]$UseLock,
+    [string]$EnvironmentDirectory = ".venv-pruebas",
     [switch]$SkipTests
 )
 
 $ErrorActionPreference = "Stop"
 $projectRoot = Split-Path -Parent $PSScriptRoot
-$environmentRoot = Join-Path $projectRoot ".venv-pruebas"
+$environmentRoot = [System.IO.Path]::GetFullPath((Join-Path $projectRoot $EnvironmentDirectory))
 $environmentPython = Join-Path $environmentRoot "Scripts/python.exe"
 
 function Invoke-Checked {
@@ -19,6 +21,9 @@ function Invoke-Checked {
 
 Push-Location $projectRoot
 try {
+    if ($UseLock -and -not (Test-Path -LiteralPath 'requirements/lock-py312-windows.txt')) {
+        throw 'Falta requirements/lock-py312-windows.txt; no se sustituye silenciosamente por rangos.'
+    }
     if (-not (Test-Path -LiteralPath $environmentPython)) {
         if ($PythonExecutable) {
             Invoke-Checked $PythonExecutable @("-c", "import sys; assert sys.version_info[:2] == (3, 12), 'Se requiere Python 3.12'")
@@ -29,14 +34,20 @@ try {
     }
 
     Invoke-Checked $environmentPython @("-c", "import sys; assert sys.version_info[:2] == (3, 12), 'El entorno existente debe usar Python 3.12'")
-    Invoke-Checked $environmentPython @("-m", "pip", "install", "--upgrade", "pip")
-    Invoke-Checked $environmentPython @("-m", "pip", "install", "-r", "requirements/common.txt")
+    if ($UseLock) {
+        # setuptools/wheel forman parte del lock; no crear otro entorno de build.
+        Invoke-Checked $environmentPython @("-m", "pip", "install", "-r", "requirements/lock-py312-windows.txt")
+        Invoke-Checked $environmentPython @("-m", "pip", "install", "--no-deps", "--no-build-isolation", "-e", ".")
+    } else {
+        Invoke-Checked $environmentPython @("-m", "pip", "install", "--upgrade", "pip")
+        Invoke-Checked $environmentPython @("-m", "pip", "install", "-r", "requirements/common.txt")
+    }
     Invoke-Checked $environmentPython @("-m", "pip", "check")
 
     if (-not $SkipTests) {
         Invoke-Checked $environmentPython @("-m", "unittest", "discover", "-s", "tests/unit", "-v")
     }
-    Write-Host "Entorno preparado. Usa .venv-pruebas/Scripts/python.exe para ejecutar el proyecto."
+    Write-Host "Entorno preparado. Usa $environmentPython para ejecutar el proyecto."
     if ($SkipTests) {
         Write-Host "Las pruebas se omitieron; ejecuta la suite antes de declarar validado el entorno."
     }
