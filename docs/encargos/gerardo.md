@@ -64,6 +64,12 @@ Pruebas: métricas manuales, límites de lote, resto corto, referencia cero, dat
 
 ## GER-03 — aceptación temporal pendiente (P1)
 
+Avance técnico del 2 de noviembre: [registro GER-03](../pronosticos/aceptacion-ger-03.md).
+Hay verificación de artefactos/API/página con datos reales y contraste de cortes
+D1 sobre Silver. Se corrigió el aviso de proyección conservada tras cambiar
+controles. GER-03 sigue parcial: AppTest no sustituye revisión visual, aceptación
+humana ni validación del Parquet D1 completo, ausente en esta copia.
+
 - [ ] Registrar revisión visual de cantidad/monto, horizontes y errores de API/página; los artefactos locales ya existen.
 - [ ] Revisar con Sevan comparación, versiones y limitaciones de Naive/Holt-Winters, intervalos descriptivos y monitoreo histórico.
 - [ ] Registrar aceptación humana real de integración, sin usar el commit en main como sustituto de revisión.

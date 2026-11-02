@@ -212,6 +212,13 @@ la selección final están en
 
 ## Monitoreo histórico de la serie transaccional
 
+La aceptación técnica del módulo puede comprobarse, con la API local iniciada,
+mediante `python scripts/verify_forecast_delivery.py`. Verifica los artefactos,
+cantidad/monto y horizontes por HTTP real, la página con AppTest y los cortes
+temporales sobre Silver; guarda evidencia bajo `artifacts/reports/ger-03/`.
+No entrena modelos ni acredita revisión visual o aceptación humana. Consultar
+el [registro de GER-03](../docs/pronosticos/aceptacion-ger-03.md).
+
 `monitor_forecast_shift.py` compara los 25 steps operativos recientes (694–718)
 con el tramo reservado 719–743. Mide volumen, monto, distribución de montos,
 mezcla de tipos y tasa de fraude usando umbrales versionados.
