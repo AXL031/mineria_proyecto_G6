@@ -4,6 +4,7 @@ import argparse
 from dataclasses import replace
 import json
 from pathlib import Path
+import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -146,6 +147,16 @@ def write_demo_configs(root):
             atomic_json(root / REPORTS / f"{name.replace('model_', '')}-config.json", config)
 
 
+def git_context(root):
+    try:
+        commit = subprocess.run(["git", "rev-parse", "HEAD"], cwd=root, capture_output=True, text=True)
+        dirty = subprocess.run(["git", "status", "--porcelain"], cwd=root, capture_output=True, text=True)
+        return {"commit": commit.stdout.strip() if commit.returncode == 0 else None,
+                "tree_dirty": bool(dirty.stdout.strip()) if dirty.returncode == 0 else None}
+    except OSError:
+        return {"commit": None, "tree_dirty": None}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--force", action="store_true", help="Reconstruir TODA etapa seleccionada y sus dependencias, incluido fraude")
@@ -165,7 +176,8 @@ def main():
                       (f" | {stage.unavailable_reason}" if stage.unavailable_reason else ""))
             return
         write_demo_configs(ROOT)
-        engine = Preparation(ROOT, context={"scope": args.scope, "limited_selection": bool(args.stage)})
+        engine = Preparation(ROOT, context={"scope": args.scope, "limited_selection": bool(args.stage),
+                                            **git_context(ROOT)})
         engine.run(stages, selected, force=args.force)
         print(f"Preparación scope={args.scope} terminada; manifiesto: {engine.manifest_path}")
         if args.scope == "current":
