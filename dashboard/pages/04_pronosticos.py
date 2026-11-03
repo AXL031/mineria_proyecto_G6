@@ -52,16 +52,23 @@ history_steps = right.slider(
 )
 
 if st.button("Generar proyección", type="primary"):
+    parameters = {"target": target, "horizon": horizon, "history_steps": history_steps}
     result = call_api(
         "projection",
-        {"target": target, "horizon": horizon, "history_steps": history_steps},
+        parameters,
     )
     st.session_state["forecast_projection"] = result
+    st.session_state["forecast_projection_parameters"] = parameters
 
 projection = st.session_state.get("forecast_projection")
 if projection:
-    if projection["target"] != target:
-        st.warning("La proyección mostrada corresponde al objetivo consultado anteriormente.")
+    if st.session_state.get("forecast_projection_parameters") != {
+        "target": target, "horizon": horizon, "history_steps": history_steps,
+    }:
+        st.warning(
+            "La proyección mostrada corresponde a controles anteriores. "
+            "Pulsa Generar proyección para actualizarla."
+        )
     metrics = st.columns(3)
     value_format = ",.0f" if projection["target"] == "transaction_count" else ",.2f"
     metrics[0].metric(

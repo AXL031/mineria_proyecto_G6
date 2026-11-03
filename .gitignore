@@ -28,6 +28,7 @@ __pycache__/
 
 # Copia aislada de verificación; incluye entorno, Bronze y derivados locales.
 /artifacts/reports/fraud-clean-reproduction/
+/artifacts/reports/ger-01/
 
 # SO y editores
 # Accesos locales con rutas absolutas; recrear con scripts/create_demo_shortcuts.ps1.

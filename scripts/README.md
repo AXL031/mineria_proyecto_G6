@@ -1,5 +1,18 @@
 # Scripts
 
+## Preparación reproducible de demo (GER-01)
+
+`python scripts/prepare_demo.py --plan` muestra el DAG sin entrenar.
+Sin flags prepara los seis módulos y D1 (`--scope current`); las ampliaciones
+pendientes quedan explícitas. `--scope full` exige asociaciones, regresión y
+comparación de grafos. `--stage analytics-d1` limita la selección e incluye
+dependencias; `--force` reconstruye toda esa selección, incluido fraude.
+El reuso exige recibos con huellas de entradas/configuración/código/entorno y
+salidas, y se publica `artifacts/reports/demo/preparation-manifest.json` incluso
+ante fallo. Los Markdown de demo se escriben bajo `artifacts/reports/demo/`.
+Consultar el [registro GER-01](../docs/ger-01-reproduccion.md) y el instalador
+`scripts/setup_env.ps1 -UseLock` para las versiones exactas validadas.
+
 Comandos reproducibles de ingesta, transformación, entrenamiento y evaluación. Cada comando deberá indicar entradas, salidas y forma de ejecución.
 
 ## Entrega completa de fraude
@@ -211,6 +224,13 @@ la selección final están en
 `docs/pronosticos/resultados-holt-winters.md`.
 
 ## Monitoreo histórico de la serie transaccional
+
+La aceptación técnica del módulo puede comprobarse, con la API local iniciada,
+mediante `python scripts/verify_forecast_delivery.py`. Verifica los artefactos,
+cantidad/monto y horizontes por HTTP real, la página con AppTest y los cortes
+temporales sobre Silver; guarda evidencia bajo `artifacts/reports/ger-03/`.
+No entrena modelos ni acredita revisión visual o aceptación humana. Consultar
+el [registro de GER-03](../docs/pronosticos/aceptacion-ger-03.md).
 
 `monitor_forecast_shift.py` compara los 25 steps operativos recientes (694–718)
 con el tramo reservado 719–743. Mide volumen, monto, distribución de montos,
