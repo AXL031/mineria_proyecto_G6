@@ -1,0 +1,1744 @@
+{
+  "schema_version": 1,
+  "analysis_id": "graph-comparison-72f834d1af957e50",
+  "simulation_data": true,
+  "scope": "sample_retrospective",
+  "generated_at": "2026-11-09T00:19:36+00:00",
+  "source": {
+    "path": "data/bronze/transactions/PS_20174392719_1491204439457_log.csv",
+    "sha256": "16910f90577b0d981bf8ff289714510bb89bc71bff7d3f220f024e287e4eea6b",
+    "size_bytes": 493534783
+  },
+  "sample": {
+    "requested_limit": 50000,
+    "rows_read": 50000,
+    "min_step": 1,
+    "max_step": 9,
+    "sampling_rule": "Prefijo del archivo: las primeras N filas en su orden original. No es una muestra aleatoria ni se afirma que sea representativa del dataset.",
+    "rows_fingerprint_sha256": "e3247d51e65a61ce3e330420ab5713e6f42df01af42b7353c37f00128d8036cb",
+    "fraud_transactions": 100,
+    "fraud_rate": 0.002
+  },
+  "configuration": {
+    "budgets_requested": [
+      10,
+      50,
+      100
+    ],
+    "default_sample_limit": 10000,
+    "fanout_percentile": 95.0,
+    "fanin_percentile": 95.0,
+    "flow_percentile": 95.0,
+    "network_ranking": "pattern_count desc, pagerank desc, account_id asc",
+    "reference_ranking": "total_amount_sent + total_amount_received desc, account_id asc"
+  },
+  "universe": {
+    "size": 78499,
+    "account_types": {
+      "cliente": 56587,
+      "comercio": 21912
+    },
+    "positive_accounts": 199,
+    "population_limits": [
+      "El universo contiene solo las cuentas que aparecen como origen o destino en las filas de la muestra; no incluye cuentas sin transacciones en ella.",
+      "En PaySim los comercios (prefijo M) solo aparecen como destino."
+    ]
+  },
+  "budgets": {
+    "requested": [
+      10,
+      50,
+      100
+    ],
+    "effective": [
+      10,
+      50,
+      100
+    ],
+    "requested_to_effective": {
+      "10": 10,
+      "50": 50,
+      "100": 100
+    }
+  },
+  "rankings": {
+    "network_indicators": {
+      "selected_by_budget": {
+        "10": [
+          "C985934102",
+          "C1286084959",
+          "C1590550415",
+          "C2083562754",
+          "C248609774",
+          "C977993101",
+          "C1360767589",
+          "C665576141",
+          "C1782113663",
+          "C451111351"
+        ],
+        "50": [
+          "C985934102",
+          "C1286084959",
+          "C1590550415",
+          "C2083562754",
+          "C248609774",
+          "C977993101",
+          "C1360767589",
+          "C665576141",
+          "C1782113663",
+          "C451111351",
+          "C1023714065",
+          "C97730845",
+          "C1816757085",
+          "C1899073220",
+          "C306206744",
+          "C667346055",
+          "C453211571",
+          "C1234776885",
+          "C716083600",
+          "C932583850",
+          "C1789550256",
+          "C1262822392",
+          "C1883840933",
+          "C392292416",
+          "C33524623",
+          "C564160838",
+          "C1504109395",
+          "C909295153",
+          "C1674899618",
+          "C11003494",
+          "C1721246982",
+          "C1916720513",
+          "C803116137",
+          "C1870252780",
+          "C481402298",
+          "C998351292",
+          "C1850180796",
+          "C662736689",
+          "C1303868418",
+          "C766681183",
+          "C769342184",
+          "C801142660",
+          "C1060041730",
+          "C1255024717",
+          "C1531333864",
+          "C728526866",
+          "C1297685781",
+          "C214774813",
+          "C1167066016",
+          "C2006081398"
+        ],
+        "100": [
+          "C985934102",
+          "C1286084959",
+          "C1590550415",
+          "C2083562754",
+          "C248609774",
+          "C977993101",
+          "C1360767589",
+          "C665576141",
+          "C1782113663",
+          "C451111351",
+          "C1023714065",
+          "C97730845",
+          "C1816757085",
+          "C1899073220",
+          "C306206744",
+          "C667346055",
+          "C453211571",
+          "C1234776885",
+          "C716083600",
+          "C932583850",
+          "C1789550256",
+          "C1262822392",
+          "C1883840933",
+          "C392292416",
+          "C33524623",
+          "C564160838",
+          "C1504109395",
+          "C909295153",
+          "C1674899618",
+          "C11003494",
+          "C1721246982",
+          "C1916720513",
+          "C803116137",
+          "C1870252780",
+          "C481402298",
+          "C998351292",
+          "C1850180796",
+          "C662736689",
+          "C1303868418",
+          "C766681183",
+          "C769342184",
+          "C801142660",
+          "C1060041730",
+          "C1255024717",
+          "C1531333864",
+          "C728526866",
+          "C1297685781",
+          "C214774813",
+          "C1167066016",
+          "C2006081398",
+          "C728885526",
+          "C991363637",
+          "C1778801068",
+          "C40075281",
+          "C885951223",
+          "C1477979030",
+          "C836514715",
+          "C1446521801",
+          "C1636786811",
+          "C1880332929",
+          "C991505714",
+          "C997608398",
+          "C1076835071",
+          "C1359484306",
+          "C1983747920",
+          "C1529115495",
+          "C2011996123",
+          "C401424608",
+          "C1068824137",
+          "C1838584624",
+          "C683605346",
+          "C747464370",
+          "C798678484",
+          "C863811613",
+          "C1013700132",
+          "C1220897602",
+          "C1419794148",
+          "C1515704208",
+          "C1538745405",
+          "C459857341",
+          "C657736958",
+          "C1313534832",
+          "C1335050193",
+          "C1335946878",
+          "C146305349",
+          "C1651945012",
+          "C1805683209",
+          "C515132998",
+          "C988138425",
+          "C1040847151",
+          "C1373172466",
+          "C265108079",
+          "C875761527",
+          "C1219273867",
+          "C1337741679",
+          "C1394526584",
+          "C1554540309",
+          "C1730752455",
+          "C173783788",
+          "C1740000325"
+        ]
+      },
+      "top_scores": [
+        {
+          "rank": 1,
+          "account": "C985934102",
+          "pattern_count": 2,
+          "pagerank": 0.0005520774301893217
+        },
+        {
+          "rank": 2,
+          "account": "C1286084959",
+          "pattern_count": 2,
+          "pagerank": 0.0005006159800253461
+        },
+        {
+          "rank": 3,
+          "account": "C1590550415",
+          "pattern_count": 2,
+          "pagerank": 0.00047856107281221374
+        },
+        {
+          "rank": 4,
+          "account": "C2083562754",
+          "pattern_count": 2,
+          "pagerank": 0.0004638578013367922
+        },
+        {
+          "rank": 5,
+          "account": "C248609774",
+          "pattern_count": 2,
+          "pagerank": 0.0004565061655990814
+        },
+        {
+          "rank": 6,
+          "account": "C977993101",
+          "pattern_count": 2,
+          "pagerank": 0.0004565061655990814
+        },
+        {
+          "rank": 7,
+          "account": "C1360767589",
+          "pattern_count": 2,
+          "pagerank": 0.0004491545298613706
+        },
+        {
+          "rank": 8,
+          "account": "C665576141",
+          "pattern_count": 2,
+          "pagerank": 0.0004270996226482382
+        },
+        {
+          "rank": 9,
+          "account": "C1782113663",
+          "pattern_count": 2,
+          "pagerank": 0.0003976930796973951
+        },
+        {
+          "rank": 10,
+          "account": "C451111351",
+          "pattern_count": 2,
+          "pagerank": 0.0003976930796973951
+        },
+        {
+          "rank": 11,
+          "account": "C1023714065",
+          "pattern_count": 2,
+          "pagerank": 0.0003903414439596843
+        },
+        {
+          "rank": 12,
+          "account": "C97730845",
+          "pattern_count": 2,
+          "pagerank": 0.0003903414439596843
+        },
+        {
+          "rank": 13,
+          "account": "C1816757085",
+          "pattern_count": 2,
+          "pagerank": 0.0003829898082219735
+        },
+        {
+          "rank": 14,
+          "account": "C1899073220",
+          "pattern_count": 2,
+          "pagerank": 0.0003829898082219735
+        },
+        {
+          "rank": 15,
+          "account": "C306206744",
+          "pattern_count": 2,
+          "pagerank": 0.0003829898082219735
+        },
+        {
+          "rank": 16,
+          "account": "C667346055",
+          "pattern_count": 2,
+          "pagerank": 0.0003609349010088411
+        },
+        {
+          "rank": 17,
+          "account": "C453211571",
+          "pattern_count": 2,
+          "pagerank": 0.0003535832652711303
+        },
+        {
+          "rank": 18,
+          "account": "C1234776885",
+          "pattern_count": 2,
+          "pagerank": 0.0003462316295334195
+        },
+        {
+          "rank": 19,
+          "account": "C716083600",
+          "pattern_count": 2,
+          "pagerank": 0.0003462316295334195
+        },
+        {
+          "rank": 20,
+          "account": "C932583850",
+          "pattern_count": 2,
+          "pagerank": 0.0003462316295334195
+        },
+        {
+          "rank": 21,
+          "account": "C1789550256",
+          "pattern_count": 2,
+          "pagerank": 0.0003388799937957087
+        },
+        {
+          "rank": 22,
+          "account": "C1262822392",
+          "pattern_count": 2,
+          "pagerank": 0.00033152835805799795
+        },
+        {
+          "rank": 23,
+          "account": "C1883840933",
+          "pattern_count": 2,
+          "pagerank": 0.00033152835805799795
+        },
+        {
+          "rank": 24,
+          "account": "C392292416",
+          "pattern_count": 2,
+          "pagerank": 0.00033152835805799795
+        },
+        {
+          "rank": 25,
+          "account": "C33524623",
+          "pattern_count": 2,
+          "pagerank": 0.00032417672232028715
+        },
+        {
+          "rank": 26,
+          "account": "C564160838",
+          "pattern_count": 2,
+          "pagerank": 0.00032417672232028715
+        },
+        {
+          "rank": 27,
+          "account": "C1504109395",
+          "pattern_count": 2,
+          "pagerank": 0.00031682508658257636
+        },
+        {
+          "rank": 28,
+          "account": "C909295153",
+          "pattern_count": 2,
+          "pagerank": 0.00031682508658257636
+        },
+        {
+          "rank": 29,
+          "account": "C1674899618",
+          "pattern_count": 2,
+          "pagerank": 0.00030947345084486556
+        },
+        {
+          "rank": 30,
+          "account": "C11003494",
+          "pattern_count": 2,
+          "pagerank": 0.00030212181510715476
+        },
+        {
+          "rank": 31,
+          "account": "C1721246982",
+          "pattern_count": 2,
+          "pagerank": 0.00030212181510715476
+        },
+        {
+          "rank": 32,
+          "account": "C1916720513",
+          "pattern_count": 2,
+          "pagerank": 0.00030212181510715476
+        },
+        {
+          "rank": 33,
+          "account": "C803116137",
+          "pattern_count": 2,
+          "pagerank": 0.00030212181510715476
+        },
+        {
+          "rank": 34,
+          "account": "C1870252780",
+          "pattern_count": 2,
+          "pagerank": 0.00029477017936944397
+        },
+        {
+          "rank": 35,
+          "account": "C481402298",
+          "pattern_count": 2,
+          "pagerank": 0.00029477017936944397
+        },
+        {
+          "rank": 36,
+          "account": "C998351292",
+          "pattern_count": 2,
+          "pagerank": 0.00028741854363173317
+        },
+        {
+          "rank": 37,
+          "account": "C1850180796",
+          "pattern_count": 2,
+          "pagerank": 0.00028006690789402237
+        },
+        {
+          "rank": 38,
+          "account": "C662736689",
+          "pattern_count": 2,
+          "pagerank": 0.00028006690789402237
+        },
+        {
+          "rank": 39,
+          "account": "C1303868418",
+          "pattern_count": 2,
+          "pagerank": 0.0002727152721563116
+        },
+        {
+          "rank": 40,
+          "account": "C766681183",
+          "pattern_count": 2,
+          "pagerank": 0.0002727152721563116
+        },
+        {
+          "rank": 41,
+          "account": "C769342184",
+          "pattern_count": 2,
+          "pagerank": 0.0002727152721563116
+        },
+        {
+          "rank": 42,
+          "account": "C801142660",
+          "pattern_count": 2,
+          "pagerank": 0.0002727152721563116
+        },
+        {
+          "rank": 43,
+          "account": "C1060041730",
+          "pattern_count": 2,
+          "pagerank": 0.00025801200068089003
+        },
+        {
+          "rank": 44,
+          "account": "C1255024717",
+          "pattern_count": 2,
+          "pagerank": 0.00025801200068089003
+        },
+        {
+          "rank": 45,
+          "account": "C1531333864",
+          "pattern_count": 2,
+          "pagerank": 0.00025801200068089003
+        },
+        {
+          "rank": 46,
+          "account": "C728526866",
+          "pattern_count": 2,
+          "pagerank": 0.00025801200068089003
+        },
+        {
+          "rank": 47,
+          "account": "C1297685781",
+          "pattern_count": 2,
+          "pagerank": 0.00025066036494317923
+        },
+        {
+          "rank": 48,
+          "account": "C214774813",
+          "pattern_count": 2,
+          "pagerank": 0.00025066036494317923
+        },
+        {
+          "rank": 49,
+          "account": "C1167066016",
+          "pattern_count": 2,
+          "pagerank": 0.0002433087292054684
+        },
+        {
+          "rank": 50,
+          "account": "C2006081398",
+          "pattern_count": 2,
+          "pagerank": 0.0002359570934677576
+        },
+        {
+          "rank": 51,
+          "account": "C728885526",
+          "pattern_count": 2,
+          "pagerank": 0.0002359570934677576
+        },
+        {
+          "rank": 52,
+          "account": "C991363637",
+          "pattern_count": 2,
+          "pagerank": 0.0002359570934677576
+        },
+        {
+          "rank": 53,
+          "account": "C1778801068",
+          "pattern_count": 2,
+          "pagerank": 0.00022860545773004682
+        },
+        {
+          "rank": 54,
+          "account": "C40075281",
+          "pattern_count": 2,
+          "pagerank": 0.00022860545773004682
+        },
+        {
+          "rank": 55,
+          "account": "C885951223",
+          "pattern_count": 2,
+          "pagerank": 0.00022860545773004682
+        },
+        {
+          "rank": 56,
+          "account": "C1477979030",
+          "pattern_count": 2,
+          "pagerank": 0.00022125382199233602
+        },
+        {
+          "rank": 57,
+          "account": "C836514715",
+          "pattern_count": 2,
+          "pagerank": 0.00022125382199233602
+        },
+        {
+          "rank": 58,
+          "account": "C1446521801",
+          "pattern_count": 2,
+          "pagerank": 0.00021390218625462522
+        },
+        {
+          "rank": 59,
+          "account": "C1636786811",
+          "pattern_count": 2,
+          "pagerank": 0.00021390218625462522
+        },
+        {
+          "rank": 60,
+          "account": "C1880332929",
+          "pattern_count": 2,
+          "pagerank": 0.00021390218625462522
+        },
+        {
+          "rank": 61,
+          "account": "C991505714",
+          "pattern_count": 2,
+          "pagerank": 0.00021390218625462522
+        },
+        {
+          "rank": 62,
+          "account": "C997608398",
+          "pattern_count": 2,
+          "pagerank": 0.00021390218625462522
+        },
+        {
+          "rank": 63,
+          "account": "C1076835071",
+          "pattern_count": 2,
+          "pagerank": 0.00020655055051691445
+        },
+        {
+          "rank": 64,
+          "account": "C1359484306",
+          "pattern_count": 2,
+          "pagerank": 0.00020655055051691445
+        },
+        {
+          "rank": 65,
+          "account": "C1983747920",
+          "pattern_count": 2,
+          "pagerank": 0.00020655055051691445
+        },
+        {
+          "rank": 66,
+          "account": "C1529115495",
+          "pattern_count": 2,
+          "pagerank": 0.00019919891477920368
+        },
+        {
+          "rank": 67,
+          "account": "C2011996123",
+          "pattern_count": 2,
+          "pagerank": 0.00019919891477920368
+        },
+        {
+          "rank": 68,
+          "account": "C401424608",
+          "pattern_count": 2,
+          "pagerank": 0.00019919891477920368
+        },
+        {
+          "rank": 69,
+          "account": "C1068824137",
+          "pattern_count": 2,
+          "pagerank": 0.00019184727904149288
+        },
+        {
+          "rank": 70,
+          "account": "C1838584624",
+          "pattern_count": 2,
+          "pagerank": 0.00019184727904149288
+        },
+        {
+          "rank": 71,
+          "account": "C683605346",
+          "pattern_count": 2,
+          "pagerank": 0.00019184727904149288
+        },
+        {
+          "rank": 72,
+          "account": "C747464370",
+          "pattern_count": 2,
+          "pagerank": 0.00019184727904149288
+        },
+        {
+          "rank": 73,
+          "account": "C798678484",
+          "pattern_count": 2,
+          "pagerank": 0.00019184727904149288
+        },
+        {
+          "rank": 74,
+          "account": "C863811613",
+          "pattern_count": 2,
+          "pagerank": 0.00019184727904149288
+        },
+        {
+          "rank": 75,
+          "account": "C1013700132",
+          "pattern_count": 2,
+          "pagerank": 0.00018449564330378209
+        },
+        {
+          "rank": 76,
+          "account": "C1220897602",
+          "pattern_count": 2,
+          "pagerank": 0.00018449564330378209
+        },
+        {
+          "rank": 77,
+          "account": "C1419794148",
+          "pattern_count": 2,
+          "pagerank": 0.00018449564330378209
+        },
+        {
+          "rank": 78,
+          "account": "C1515704208",
+          "pattern_count": 2,
+          "pagerank": 0.00018449564330378209
+        },
+        {
+          "rank": 79,
+          "account": "C1538745405",
+          "pattern_count": 2,
+          "pagerank": 0.00018449564330378209
+        },
+        {
+          "rank": 80,
+          "account": "C459857341",
+          "pattern_count": 2,
+          "pagerank": 0.00018449564330378209
+        },
+        {
+          "rank": 81,
+          "account": "C657736958",
+          "pattern_count": 2,
+          "pagerank": 0.00018449564330378209
+        },
+        {
+          "rank": 82,
+          "account": "C1313534832",
+          "pattern_count": 2,
+          "pagerank": 0.0001771440075660713
+        },
+        {
+          "rank": 83,
+          "account": "C1335050193",
+          "pattern_count": 2,
+          "pagerank": 0.0001771440075660713
+        },
+        {
+          "rank": 84,
+          "account": "C1335946878",
+          "pattern_count": 2,
+          "pagerank": 0.0001771440075660713
+        },
+        {
+          "rank": 85,
+          "account": "C146305349",
+          "pattern_count": 2,
+          "pagerank": 0.0001771440075660713
+        },
+        {
+          "rank": 86,
+          "account": "C1651945012",
+          "pattern_count": 2,
+          "pagerank": 0.0001771440075660713
+        },
+        {
+          "rank": 87,
+          "account": "C1805683209",
+          "pattern_count": 2,
+          "pagerank": 0.0001771440075660713
+        },
+        {
+          "rank": 88,
+          "account": "C515132998",
+          "pattern_count": 2,
+          "pagerank": 0.0001771440075660713
+        },
+        {
+          "rank": 89,
+          "account": "C988138425",
+          "pattern_count": 2,
+          "pagerank": 0.0001771440075660713
+        },
+        {
+          "rank": 90,
+          "account": "C1040847151",
+          "pattern_count": 2,
+          "pagerank": 0.0001697923718283605
+        },
+        {
+          "rank": 91,
+          "account": "C1373172466",
+          "pattern_count": 2,
+          "pagerank": 0.0001697923718283605
+        },
+        {
+          "rank": 92,
+          "account": "C265108079",
+          "pattern_count": 2,
+          "pagerank": 0.0001697923718283605
+        },
+        {
+          "rank": 93,
+          "account": "C875761527",
+          "pattern_count": 2,
+          "pagerank": 0.0001697923718283605
+        },
+        {
+          "rank": 94,
+          "account": "C1219273867",
+          "pattern_count": 2,
+          "pagerank": 0.00016244073609064972
+        },
+        {
+          "rank": 95,
+          "account": "C1337741679",
+          "pattern_count": 2,
+          "pagerank": 0.00016244073609064972
+        },
+        {
+          "rank": 96,
+          "account": "C1394526584",
+          "pattern_count": 2,
+          "pagerank": 0.00016244073609064972
+        },
+        {
+          "rank": 97,
+          "account": "C1554540309",
+          "pattern_count": 2,
+          "pagerank": 0.00016244073609064972
+        },
+        {
+          "rank": 98,
+          "account": "C1730752455",
+          "pattern_count": 2,
+          "pagerank": 0.00016244073609064972
+        },
+        {
+          "rank": 99,
+          "account": "C173783788",
+          "pattern_count": 2,
+          "pagerank": 0.00016244073609064972
+        },
+        {
+          "rank": 100,
+          "account": "C1740000325",
+          "pattern_count": 2,
+          "pagerank": 0.00016244073609064972
+        }
+      ]
+    },
+    "volume_reference": {
+      "selected_by_budget": {
+        "10": [
+          "C1590550415",
+          "C665576141",
+          "C985934102",
+          "C2083562754",
+          "C248609774",
+          "C1883840933",
+          "C1360767589",
+          "C1286084959",
+          "C97730845",
+          "C766681183"
+        ],
+        "50": [
+          "C1590550415",
+          "C665576141",
+          "C985934102",
+          "C2083562754",
+          "C248609774",
+          "C1883840933",
+          "C1360767589",
+          "C1286084959",
+          "C97730845",
+          "C766681183",
+          "C451111351",
+          "C1262822392",
+          "C803116137",
+          "C1816757085",
+          "C863811613",
+          "C1782113663",
+          "C1789550256",
+          "C1060041730",
+          "C1023714065",
+          "C801142660",
+          "C1916720513",
+          "C1674899618",
+          "C1721246982",
+          "C257999182",
+          "C306206744",
+          "C667346055",
+          "C716083600",
+          "C932583850",
+          "C453211571",
+          "C1787868648",
+          "C1856036778",
+          "C1899073220",
+          "C1255024717",
+          "C991505714",
+          "C1220897602",
+          "C1870252780",
+          "C1234776885",
+          "C392292416",
+          "C1303868418",
+          "C214774813",
+          "C909295153",
+          "C1359484306",
+          "C11003494",
+          "C728526866",
+          "C1504109395",
+          "C1636786811",
+          "C481402298",
+          "C2006081398",
+          "C1141137903",
+          "C1850180796"
+        ],
+        "100": [
+          "C1590550415",
+          "C665576141",
+          "C985934102",
+          "C2083562754",
+          "C248609774",
+          "C1883840933",
+          "C1360767589",
+          "C1286084959",
+          "C97730845",
+          "C766681183",
+          "C451111351",
+          "C1262822392",
+          "C803116137",
+          "C1816757085",
+          "C863811613",
+          "C1782113663",
+          "C1789550256",
+          "C1060041730",
+          "C1023714065",
+          "C801142660",
+          "C1916720513",
+          "C1674899618",
+          "C1721246982",
+          "C257999182",
+          "C306206744",
+          "C667346055",
+          "C716083600",
+          "C932583850",
+          "C453211571",
+          "C1787868648",
+          "C1856036778",
+          "C1899073220",
+          "C1255024717",
+          "C991505714",
+          "C1220897602",
+          "C1870252780",
+          "C1234776885",
+          "C392292416",
+          "C1303868418",
+          "C214774813",
+          "C909295153",
+          "C1359484306",
+          "C11003494",
+          "C728526866",
+          "C1504109395",
+          "C1636786811",
+          "C481402298",
+          "C2006081398",
+          "C1141137903",
+          "C1850180796",
+          "C423580937",
+          "C885951223",
+          "C1297685781",
+          "C991363637",
+          "C769342184",
+          "C683605346",
+          "C2011996123",
+          "C40075281",
+          "C662736689",
+          "C977993101",
+          "C1838584624",
+          "C1880332929",
+          "C1570256460",
+          "C1446521801",
+          "C465499079",
+          "C54142591",
+          "C1531333864",
+          "C188246551",
+          "C842729010",
+          "C33524623",
+          "C749013731",
+          "C1354725727",
+          "C1379031360",
+          "C1247600089",
+          "C470217116",
+          "C1552859894",
+          "C1040847151",
+          "C2040656033",
+          "C2109470512",
+          "C1816986148",
+          "C1034584766",
+          "C1554540309",
+          "C945327594",
+          "C1778801068",
+          "C351297720",
+          "C7162498",
+          "C1515704208",
+          "C345603257",
+          "C1508456612",
+          "C564160838",
+          "C2078250226",
+          "C1219273867",
+          "C1619402333",
+          "C1313534832",
+          "C1477979030",
+          "C627675433",
+          "C1505755152",
+          "C748014372",
+          "C1556875182",
+          "C1671386208"
+        ]
+      },
+      "top_scores": [
+        {
+          "rank": 1,
+          "account": "C1590550415",
+          "total_volume": 33750598.32000001
+        },
+        {
+          "rank": 2,
+          "account": "C665576141",
+          "total_volume": 28129852.169999998
+        },
+        {
+          "rank": 3,
+          "account": "C985934102",
+          "total_volume": 26765085.679999996
+        },
+        {
+          "rank": 4,
+          "account": "C2083562754",
+          "total_volume": 26686663.98999999
+        },
+        {
+          "rank": 5,
+          "account": "C248609774",
+          "total_volume": 26449807.78
+        },
+        {
+          "rank": 6,
+          "account": "C1883840933",
+          "total_volume": 25345694.790000003
+        },
+        {
+          "rank": 7,
+          "account": "C1360767589",
+          "total_volume": 25312434.54
+        },
+        {
+          "rank": 8,
+          "account": "C1286084959",
+          "total_volume": 24243448.510000005
+        },
+        {
+          "rank": 9,
+          "account": "C97730845",
+          "total_volume": 23455856.530000005
+        },
+        {
+          "rank": 10,
+          "account": "C766681183",
+          "total_volume": 23366627.3
+        },
+        {
+          "rank": 11,
+          "account": "C451111351",
+          "total_volume": 23044801.16
+        },
+        {
+          "rank": 12,
+          "account": "C1262822392",
+          "total_volume": 22326926.049999997
+        },
+        {
+          "rank": 13,
+          "account": "C803116137",
+          "total_volume": 21810928.950000007
+        },
+        {
+          "rank": 14,
+          "account": "C1816757085",
+          "total_volume": 20822558.88
+        },
+        {
+          "rank": 15,
+          "account": "C863811613",
+          "total_volume": 20667100.46
+        },
+        {
+          "rank": 16,
+          "account": "C1782113663",
+          "total_volume": 20510241.689999998
+        },
+        {
+          "rank": 17,
+          "account": "C1789550256",
+          "total_volume": 20208440.240000002
+        },
+        {
+          "rank": 18,
+          "account": "C1060041730",
+          "total_volume": 20040590.559999995
+        },
+        {
+          "rank": 19,
+          "account": "C1023714065",
+          "total_volume": 19882480.920000006
+        },
+        {
+          "rank": 20,
+          "account": "C801142660",
+          "total_volume": 19619575.72
+        },
+        {
+          "rank": 21,
+          "account": "C1916720513",
+          "total_volume": 18643704.380000003
+        },
+        {
+          "rank": 22,
+          "account": "C1674899618",
+          "total_volume": 18553846.729999997
+        },
+        {
+          "rank": 23,
+          "account": "C1721246982",
+          "total_volume": 18287987.000000004
+        },
+        {
+          "rank": 24,
+          "account": "C257999182",
+          "total_volume": 18110081.36
+        },
+        {
+          "rank": 25,
+          "account": "C306206744",
+          "total_volume": 18054865.160000004
+        },
+        {
+          "rank": 26,
+          "account": "C667346055",
+          "total_volume": 18049537.54000001
+        },
+        {
+          "rank": 27,
+          "account": "C716083600",
+          "total_volume": 17212169.54
+        },
+        {
+          "rank": 28,
+          "account": "C932583850",
+          "total_volume": 17097856.04
+        },
+        {
+          "rank": 29,
+          "account": "C453211571",
+          "total_volume": 16565118.709999995
+        },
+        {
+          "rank": 30,
+          "account": "C1787868648",
+          "total_volume": 16482731.16
+        },
+        {
+          "rank": 31,
+          "account": "C1856036778",
+          "total_volume": 16305934.780000001
+        },
+        {
+          "rank": 32,
+          "account": "C1899073220",
+          "total_volume": 16294774.589999996
+        },
+        {
+          "rank": 33,
+          "account": "C1255024717",
+          "total_volume": 16268087.660000002
+        },
+        {
+          "rank": 34,
+          "account": "C991505714",
+          "total_volume": 15839084.909999998
+        },
+        {
+          "rank": 35,
+          "account": "C1220897602",
+          "total_volume": 15758556.949999997
+        },
+        {
+          "rank": 36,
+          "account": "C1870252780",
+          "total_volume": 15590736.169999994
+        },
+        {
+          "rank": 37,
+          "account": "C1234776885",
+          "total_volume": 15373160.730000002
+        },
+        {
+          "rank": 38,
+          "account": "C392292416",
+          "total_volume": 14780203.399999999
+        },
+        {
+          "rank": 39,
+          "account": "C1303868418",
+          "total_volume": 14624010.75
+        },
+        {
+          "rank": 40,
+          "account": "C214774813",
+          "total_volume": 14488364.839999996
+        },
+        {
+          "rank": 41,
+          "account": "C909295153",
+          "total_volume": 14197991.54
+        },
+        {
+          "rank": 42,
+          "account": "C1359484306",
+          "total_volume": 14139511.860000001
+        },
+        {
+          "rank": 43,
+          "account": "C11003494",
+          "total_volume": 14061465.36
+        },
+        {
+          "rank": 44,
+          "account": "C728526866",
+          "total_volume": 14018720.139999999
+        },
+        {
+          "rank": 45,
+          "account": "C1504109395",
+          "total_volume": 13892878.05
+        },
+        {
+          "rank": 46,
+          "account": "C1636786811",
+          "total_volume": 13783554.82
+        },
+        {
+          "rank": 47,
+          "account": "C481402298",
+          "total_volume": 13562113.509999996
+        },
+        {
+          "rank": 48,
+          "account": "C2006081398",
+          "total_volume": 13501013.12
+        },
+        {
+          "rank": 49,
+          "account": "C1141137903",
+          "total_volume": 13491646.66
+        },
+        {
+          "rank": 50,
+          "account": "C1850180796",
+          "total_volume": 13467913.65
+        },
+        {
+          "rank": 51,
+          "account": "C423580937",
+          "total_volume": 13425168.08
+        },
+        {
+          "rank": 52,
+          "account": "C885951223",
+          "total_volume": 13042767.370000003
+        },
+        {
+          "rank": 53,
+          "account": "C1297685781",
+          "total_volume": 12956172.570000002
+        },
+        {
+          "rank": 54,
+          "account": "C991363637",
+          "total_volume": 12793252.699999997
+        },
+        {
+          "rank": 55,
+          "account": "C769342184",
+          "total_volume": 12785374.590000002
+        },
+        {
+          "rank": 56,
+          "account": "C683605346",
+          "total_volume": 12762747.67
+        },
+        {
+          "rank": 57,
+          "account": "C2011996123",
+          "total_volume": 12736941.45
+        },
+        {
+          "rank": 58,
+          "account": "C40075281",
+          "total_volume": 12699952.129999997
+        },
+        {
+          "rank": 59,
+          "account": "C662736689",
+          "total_volume": 12500654.940000001
+        },
+        {
+          "rank": 60,
+          "account": "C977993101",
+          "total_volume": 12344069.450000001
+        },
+        {
+          "rank": 61,
+          "account": "C1838584624",
+          "total_volume": 12197803.819999998
+        },
+        {
+          "rank": 62,
+          "account": "C1880332929",
+          "total_volume": 12194959.639999999
+        },
+        {
+          "rank": 63,
+          "account": "C1570256460",
+          "total_volume": 12084624.9
+        },
+        {
+          "rank": 64,
+          "account": "C1446521801",
+          "total_volume": 12058013.200000001
+        },
+        {
+          "rank": 65,
+          "account": "C465499079",
+          "total_volume": 11970710.579999998
+        },
+        {
+          "rank": 66,
+          "account": "C54142591",
+          "total_volume": 11929911.649999999
+        },
+        {
+          "rank": 67,
+          "account": "C1531333864",
+          "total_volume": 11784859.200000001
+        },
+        {
+          "rank": 68,
+          "account": "C188246551",
+          "total_volume": 11444442.89
+        },
+        {
+          "rank": 69,
+          "account": "C842729010",
+          "total_volume": 11368021.860000001
+        },
+        {
+          "rank": 70,
+          "account": "C33524623",
+          "total_volume": 11344722.93
+        },
+        {
+          "rank": 71,
+          "account": "C749013731",
+          "total_volume": 11336847.32
+        },
+        {
+          "rank": 72,
+          "account": "C1354725727",
+          "total_volume": 11071692.759999998
+        },
+        {
+          "rank": 73,
+          "account": "C1379031360",
+          "total_volume": 10990057.959999999
+        },
+        {
+          "rank": 74,
+          "account": "C1247600089",
+          "total_volume": 10844421.909999998
+        },
+        {
+          "rank": 75,
+          "account": "C470217116",
+          "total_volume": 10842485.81
+        },
+        {
+          "rank": 76,
+          "account": "C1552859894",
+          "total_volume": 10727889.089999998
+        },
+        {
+          "rank": 77,
+          "account": "C1040847151",
+          "total_volume": 10715764.18
+        },
+        {
+          "rank": 78,
+          "account": "C2040656033",
+          "total_volume": 10691165.74
+        },
+        {
+          "rank": 79,
+          "account": "C2109470512",
+          "total_volume": 10398744.07
+        },
+        {
+          "rank": 80,
+          "account": "C1816986148",
+          "total_volume": 10382914.83
+        },
+        {
+          "rank": 81,
+          "account": "C1034584766",
+          "total_volume": 10377357.379999999
+        },
+        {
+          "rank": 82,
+          "account": "C1554540309",
+          "total_volume": 10372526.1
+        },
+        {
+          "rank": 83,
+          "account": "C945327594",
+          "total_volume": 10169678.67
+        },
+        {
+          "rank": 84,
+          "account": "C1778801068",
+          "total_volume": 10045022.300000003
+        },
+        {
+          "rank": 85,
+          "account": "C351297720",
+          "total_volume": 10000000.0
+        },
+        {
+          "rank": 86,
+          "account": "C7162498",
+          "total_volume": 10000000.0
+        },
+        {
+          "rank": 87,
+          "account": "C1515704208",
+          "total_volume": 9929097.620000001
+        },
+        {
+          "rank": 88,
+          "account": "C345603257",
+          "total_volume": 9897444.99
+        },
+        {
+          "rank": 89,
+          "account": "C1508456612",
+          "total_volume": 9773848.530000001
+        },
+        {
+          "rank": 90,
+          "account": "C564160838",
+          "total_volume": 9633343.190000003
+        },
+        {
+          "rank": 91,
+          "account": "C2078250226",
+          "total_volume": 9521517.16
+        },
+        {
+          "rank": 92,
+          "account": "C1219273867",
+          "total_volume": 9470865.76
+        },
+        {
+          "rank": 93,
+          "account": "C1619402333",
+          "total_volume": 9379850.630000003
+        },
+        {
+          "rank": 94,
+          "account": "C1313534832",
+          "total_volume": 9377380.429999998
+        },
+        {
+          "rank": 95,
+          "account": "C1477979030",
+          "total_volume": 9306827.0
+        },
+        {
+          "rank": 96,
+          "account": "C627675433",
+          "total_volume": 9270754.629999999
+        },
+        {
+          "rank": 97,
+          "account": "C1505755152",
+          "total_volume": 9260977.489999998
+        },
+        {
+          "rank": 98,
+          "account": "C748014372",
+          "total_volume": 9085905.850000001
+        },
+        {
+          "rank": 99,
+          "account": "C1556875182",
+          "total_volume": 8904592.39
+        },
+        {
+          "rank": 100,
+          "account": "C1671386208",
+          "total_volume": 8881052.48
+        }
+      ]
+    }
+  },
+  "comparisons": [
+    {
+      "k": 10,
+      "requested_budgets": [
+        10
+      ],
+      "network_indicators": {
+        "selected_accounts": 10,
+        "positive_accounts_selected": 0,
+        "covered_transactions": 612,
+        "covered_fraud_transactions": 0,
+        "account_precision": {
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 10,
+          "null_reason": null
+        },
+        "account_recall": {
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 199,
+          "null_reason": null
+        },
+        "covered_transaction_precision": {
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 612,
+          "null_reason": null
+        },
+        "fraud_coverage": {
+          "value": 0.0,
+          "numerator": 0,
+          "denominator": 100,
+          "null_reason": null
+        }
+      },
+      "volume_reference": {
+        "selected_accounts": 10,
+        "positive_accounts_selected": 1,
+        "covered_transactions": 577,
+        "covered_fraud_transactions": 1,
+        "account_precision": {
+          "value": 0.1,
+          "numerator": 1,
+          "denominator": 10,
+          "null_reason": null
+        },
+        "account_recall": {
+          "value": 0.005025125628140704,
+          "numerator": 1,
+          "denominator": 199,
+          "null_reason": null
+        },
+        "covered_transaction_precision": {
+          "value": 0.0017331022530329288,
+          "numerator": 1,
+          "denominator": 577,
+          "null_reason": null
+        },
+        "fraud_coverage": {
+          "value": 0.01,
+          "numerator": 1,
+          "denominator": 100,
+          "null_reason": null
+        }
+      },
+      "difference": {
+        "account_precision": -0.1,
+        "account_recall": -0.005025125628140704,
+        "covered_transaction_precision": -0.0017331022530329288,
+        "fraud_coverage": -0.01
+      }
+    },
+    {
+      "k": 50,
+      "requested_budgets": [
+        50
+      ],
+      "network_indicators": {
+        "selected_accounts": 50,
+        "positive_accounts_selected": 5,
+        "covered_transactions": 2249,
+        "covered_fraud_transactions": 5,
+        "account_precision": {
+          "value": 0.1,
+          "numerator": 5,
+          "denominator": 50,
+          "null_reason": null
+        },
+        "account_recall": {
+          "value": 0.02512562814070352,
+          "numerator": 5,
+          "denominator": 199,
+          "null_reason": null
+        },
+        "covered_transaction_precision": {
+          "value": 0.0022232103156958646,
+          "numerator": 5,
+          "denominator": 2249,
+          "null_reason": null
+        },
+        "fraud_coverage": {
+          "value": 0.05,
+          "numerator": 5,
+          "denominator": 100,
+          "null_reason": null
+        }
+      },
+      "volume_reference": {
+        "selected_accounts": 50,
+        "positive_accounts_selected": 6,
+        "covered_transactions": 2097,
+        "covered_fraud_transactions": 6,
+        "account_precision": {
+          "value": 0.12,
+          "numerator": 6,
+          "denominator": 50,
+          "null_reason": null
+        },
+        "account_recall": {
+          "value": 0.03015075376884422,
+          "numerator": 6,
+          "denominator": 199,
+          "null_reason": null
+        },
+        "covered_transaction_precision": {
+          "value": 0.002861230329041488,
+          "numerator": 6,
+          "denominator": 2097,
+          "null_reason": null
+        },
+        "fraud_coverage": {
+          "value": 0.06,
+          "numerator": 6,
+          "denominator": 100,
+          "null_reason": null
+        }
+      },
+      "difference": {
+        "account_precision": -0.01999999999999999,
+        "account_recall": -0.005025125628140701,
+        "covered_transaction_precision": -0.0006380200133456232,
+        "fraud_coverage": -0.009999999999999995
+      }
+    },
+    {
+      "k": 100,
+      "requested_budgets": [
+        100
+      ],
+      "network_indicators": {
+        "selected_accounts": 100,
+        "positive_accounts_selected": 7,
+        "covered_transactions": 3495,
+        "covered_fraud_transactions": 7,
+        "account_precision": {
+          "value": 0.07,
+          "numerator": 7,
+          "denominator": 100,
+          "null_reason": null
+        },
+        "account_recall": {
+          "value": 0.035175879396984924,
+          "numerator": 7,
+          "denominator": 199,
+          "null_reason": null
+        },
+        "covered_transaction_precision": {
+          "value": 0.0020028612303290413,
+          "numerator": 7,
+          "denominator": 3495,
+          "null_reason": null
+        },
+        "fraud_coverage": {
+          "value": 0.07,
+          "numerator": 7,
+          "denominator": 100,
+          "null_reason": null
+        }
+      },
+      "volume_reference": {
+        "selected_accounts": 100,
+        "positive_accounts_selected": 10,
+        "covered_transactions": 3178,
+        "covered_fraud_transactions": 8,
+        "account_precision": {
+          "value": 0.1,
+          "numerator": 10,
+          "denominator": 100,
+          "null_reason": null
+        },
+        "account_recall": {
+          "value": 0.05025125628140704,
+          "numerator": 10,
+          "denominator": 199,
+          "null_reason": null
+        },
+        "covered_transaction_precision": {
+          "value": 0.0025173064820641915,
+          "numerator": 8,
+          "denominator": 3178,
+          "null_reason": null
+        },
+        "fraud_coverage": {
+          "value": 0.08,
+          "numerator": 8,
+          "denominator": 100,
+          "null_reason": null
+        }
+      },
+      "difference": {
+        "account_precision": -0.03,
+        "account_recall": -0.015075376884422113,
+        "covered_transaction_precision": -0.0005144452517351502,
+        "fraud_coverage": -0.009999999999999995
+      }
+    }
+  ],
+  "limitations": [
+    "Evaluación exploratoria y retrospectiva sobre la misma muestra observada; no es una predicción temporal ni evidencia sobre la red completa.",
+    "La muestra es un prefijo del archivo, no una muestra aleatoria; no se afirma que sea representativa del dataset.",
+    "Los datos provienen de PaySim (simulación); isFraud es una etiqueta del simulador y los resultados no describen fraude real.",
+    "Los rankings no usan etiquetas de fraude; las etiquetas solo se emplean para medir las cuentas ya seleccionadas. combine_suspicion_indicators incluye fraud_count con fines descriptivos y no se usa como puntaje.",
+    "No se selecciona el k ganador según el fraude observado y no se exige que el método de red supere a la referencia por volumen.",
+    "Los percentiles de los indicadores están fijados en la configuración antes de evaluar y no se calibran con las etiquetas.",
+    "Comunidades y evaluación predictiva temporal de grafos quedan fuera de esta comparación."
+  ],
+  "versions": {
+    "python": "3.10.12",
+    "pandas": "2.3.3",
+    "numpy": "2.2.6",
+    "networkx": "3.4.2",
+    "schema_version": 1
+  }
+}
