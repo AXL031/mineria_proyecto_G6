@@ -1,8 +1,12 @@
 """Pruebas unitarias para los endpoints de la API de grafos."""
 
+import json
+import os
 import sys
+import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
@@ -127,6 +131,112 @@ class TestGraphAPIEndpoints(unittest.TestCase):
         _GRAPH_CACHE["graph"] = original_graph
         _GRAPH_CACHE["sample_limit"] = original_limit
         self.assertIn("sample_limit", _GRAPH_CACHE)
+
+
+class TestGraphComparisonEndpoint(unittest.TestCase):
+    """GET /api/graphs/evaluation sirve el reporte preparado sin recalcular."""
+
+    @classmethod
+    def setUpClass(cls):
+        from tests.unit.test_graph_comparison import (
+            CONFIG, SOURCE, fixture_edges, prepared,
+        )
+        from bankshield.evaluation.graph import build_comparison_report
+
+        edges = fixture_edges()
+        cls.report = build_comparison_report(
+            edges, *prepared(edges), config=CONFIG, source=SOURCE, requested_limit=10_000,
+        )
+        cls.client = TestClient(app)
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        self.path = Path(self._tmp.name) / "comparison.json"
+        self._env = patch.dict(os.environ, {"BANKSHIELD_GRAPH_COMPARISON": str(self.path)})
+        self._env.start()
+        self.addCleanup(self._env.stop)
+
+    def write(self, report=None):
+        self.path.write_text(json.dumps(report or self.report), encoding="utf-8")
+
+    def get(self, limit=10_000):
+        return self.client.get(f"/api/graphs/evaluation?limit={limit}")
+
+    def test_serves_prepared_report_with_minimal_contract(self):
+        self.write()
+        response = self.get()
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        for key in ("schema_version", "analysis_id", "simulation_data", "scope",
+                    "sample", "universe_size", "comparisons", "limitations"):
+            self.assertIn(key, body)
+        self.assertIs(body["simulation_data"], True)
+        self.assertEqual(body["scope"], "sample_retrospective")
+        self.assertEqual(body["universe_size"], 7)
+        self.assertEqual(body["analysis_id"], self.report["analysis_id"])
+        self.assertEqual(body["sample"]["requested_limit"], 10_000)
+        self.assertEqual(len(body["comparisons"]), 3)
+
+    def test_does_not_load_graph_nor_modify_report(self):
+        self.write()
+        before = self.path.read_bytes()
+        with patch("api.routers.graphs._get_or_load_graph",
+                   side_effect=AssertionError("no debe cargar el grafo")), \
+             patch("api.routers.graphs.read_transaction_edges",
+                   side_effect=AssertionError("no debe leer el CSV")):
+            self.assertEqual(self.get().status_code, 200)
+        self.assertEqual(self.path.read_bytes(), before)
+
+    def test_missing_report_is_distinguished(self):
+        response = self.get()
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(response.json()["detail"]["code"], "report_missing")
+        self.assertFalse(self.path.exists())
+
+    def test_incompatible_version_is_distinguished(self):
+        self.write({**self.report, "schema_version": 99})
+        response = self.get()
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(response.json()["detail"]["code"], "incompatible_version")
+
+    def test_different_limit_is_rejected_without_serving_other_universe(self):
+        self.write()
+        response = self.get(limit=25_000)
+        self.assertEqual(response.status_code, 503)
+        detail = response.json()["detail"]
+        self.assertEqual(detail["code"], "sample_mismatch")
+        self.assertIn("Regenere", detail["message"])
+        self.assertNotIn("comparisons", response.json())
+
+    def test_limit_must_match_requested_size_not_rows_read(self):
+        # Se pidieron 50000 filas pero el archivo solo aportó 9 efectivas.
+        report = json.loads(json.dumps(self.report))
+        report["sample"]["requested_limit"] = 50_000
+        self.write(report)
+        self.assertEqual(self.get(limit=50_000).status_code, 200)
+        self.assertEqual(self.get(limit=9_000).status_code, 503)
+
+    def test_invalid_json_and_missing_fields_are_reported(self):
+        self.path.write_text("{no es json", encoding="utf-8")
+        self.assertEqual(self.get().json()["detail"]["code"], "report_invalid")
+        broken = {k: v for k, v in self.report.items() if k != "comparisons"}
+        self.write(broken)
+        self.assertEqual(self.get().json()["detail"]["code"], "report_invalid")
+
+    def test_limit_outside_allowed_range_is_validation_error(self):
+        self.write()
+        self.assertEqual(self.get(limit=999).status_code, 422)
+        self.assertEqual(self.get(limit=500_001).status_code, 422)
+
+    def test_other_graph_queries_stay_operational_without_report(self):
+        edges = _mock_edges_df()
+        graph = build_transaction_graph(edges)
+        with patch("api.routers.graphs._get_or_load_graph", return_value=graph):
+            self.assertEqual(self.get().status_code, 503)
+            self.assertEqual(self.client.get("/api/graphs/account/C100").status_code, 200)
+            self.assertEqual(self.client.get("/api/graphs/top").status_code, 200)
+            self.assertEqual(self.client.get("/api/graphs/subgraph/C100").status_code, 200)
 
 
 if __name__ == "__main__":
