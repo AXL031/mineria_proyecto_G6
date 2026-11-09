@@ -101,6 +101,66 @@ def _call_api(endpoint: str, params: dict | None = None) -> dict | None:
         return None
 
 
+COMPARISON_NOTICES = {
+    "report_missing": "Comparación no disponible",
+    "report_invalid": "Reporte de comparación inválido",
+    "incompatible_version": "Reporte de comparación con versión incompatible",
+    "sample_mismatch": "El reporte no corresponde a esta muestra",
+}
+
+
+def _fetch_comparison() -> tuple[dict | None, tuple[str, str] | None]:
+    """Consulta el reporte preparado de comparación sin afectar otras consultas.
+
+    Devuelve ``(datos, None)`` o ``(None, (título, detalle))``.  Un reporte
+    ausente o de otra muestra no es un error de la página: solo se avisa.
+    """
+    try:
+        response = requests.get(
+            f"{API_URL}/api/graphs/evaluation",
+            params={"limit": sample_size},
+            timeout=60,
+        )
+    except requests.ConnectionError:
+        return None, ("API no disponible", f"No se pudo conectar con `{API_URL}`.")
+    except requests.Timeout:
+        return None, ("API sin respuesta", "La solicitud excedió el tiempo de espera.")
+    except requests.RequestException as exc:
+        return None, ("Error al consultar la comparación", str(exc))
+
+    if response.status_code == 503:
+        try:
+            detail = response.json().get("detail", {})
+        except ValueError:
+            detail = {}
+        code = detail.get("code") if isinstance(detail, dict) else None
+        message = detail.get("message") if isinstance(detail, dict) else str(detail)
+        return None, (
+            COMPARISON_NOTICES.get(code, "Comparación no disponible"),
+            message or "Regenere la comparación para esta muestra.",
+        )
+    try:
+        response.raise_for_status()
+        payload = response.json()
+    except (requests.RequestException, ValueError) as exc:
+        return None, ("Error al consultar la comparación", str(exc))
+    if not isinstance(payload, dict) or not payload.get("comparisons"):
+        return None, (
+            "Comparación no disponible",
+            "La API no devolvió comparaciones para esta muestra.",
+        )
+    return payload, None
+
+
+def _format_metric(metric: dict | None) -> str:
+    """Muestra valor con numerador/denominador, o el motivo si es nulo."""
+    if not isinstance(metric, dict):
+        return "n/d"
+    if metric.get("value") is None:
+        return f"n/d ({metric.get('null_reason', 'sin motivo')})"
+    return f"{metric['value']:.2%} ({metric['numerator']:,}/{metric['denominator']:,})"
+
+
 # Barra lateral de configuración y filtros
 with st.sidebar:
     st.header("⚙ Parámetros de Análisis")
@@ -138,10 +198,11 @@ col5.metric("Aristas con Fraude", f"{summary['pares_con_fraude']:,}", delta=f"{e
 # SECCIÓN 2: PESTAÑAS DE ANÁLISIS
 # -------------------------------------------------------------
 with st.container(key="graph-tabs"):
-    tab_subgraph, tab_patterns, tab_ranking, tab_theory = st.tabs([
+    tab_subgraph, tab_patterns, tab_ranking, tab_compare, tab_theory = st.tabs([
         "🔍 Explorador Interactivo de Subgrafos",
         ":orange[⚠] Detección de Patrones Atípicos",
         "🏆 Ranking de Centralidad (PageRank)",
+        "⚖ Comparación Red vs Volumen",
         "📖 Metodología y Contrato",
     ])
 
@@ -334,7 +395,82 @@ with tab_ranking:
         st.dataframe(pd.DataFrame(top_resp["results"]), use_container_width=True)
 
 # -------------------------------------------------------------
-# TAB 4: METODOLOGÍA Y CONTRATO DE VARIABLES
+# TAB 4: COMPARACIÓN DE ALERTAS DE RED VS REFERENCIA POR VOLUMEN
+# -------------------------------------------------------------
+with tab_compare:
+    st.subheader("Comparación de alertas de red frente a una referencia por volumen")
+    st.markdown(
+        "Ambos métodos ordenan el **mismo universo de cuentas** y seleccionan **el mismo número "
+        "de cuentas (k)**. Es una evaluación exploratoria sobre la misma muestra observada; no "
+        "es una predicción temporal ni evidencia sobre la red completa."
+    )
+    comparison, comparison_notice = _fetch_comparison()
+    if comparison_notice:
+        status_notice("warning", *comparison_notice)
+        st.caption(
+            "Las demás pestañas siguen disponibles. Para esta muestra, ejecute "
+            "`scripts/evaluate_graph_alerts.py --limit <filas> --comparison-output ...`."
+        )
+    else:
+        sample = comparison.get("sample", {})
+        steps = f"steps {sample.get('min_step')}–{sample.get('max_step')}"
+        st.markdown(
+            f"**Muestra:** primeras {sample.get('requested_limit', 0):,} filas solicitadas "
+            f"({sample.get('rows_read', 0):,} leídas, {steps}) · "
+            f"**Universo:** {comparison.get('universe_size', 0):,} cuentas · "
+            f"**Análisis:** `{comparison.get('analysis_id', '')}`"
+        )
+        st.markdown('<span class="badge-sim">ℹ Datos Simulados — Evaluación retrospectiva</span>', unsafe_allow_html=True)
+
+        rows = []
+        for item in comparison["comparisons"]:
+            net = item.get("network_indicators", {})
+            ref = item.get("volume_reference", {})
+            levels = (
+                ("Precisión de cuentas", "cuenta", "account_precision"),
+                ("Recall de cuentas positivas", "cuenta", "account_recall"),
+                ("Precisión de transacciones cubiertas", "transacción", "covered_transaction_precision"),
+                ("Cobertura de fraude", "transacción", "fraud_coverage"),
+            )
+            for label, level, key in levels:
+                diff = (item.get("difference") or {}).get(key)
+                rows.append({
+                    "k": item.get("k"),
+                    "Métrica": label,
+                    "Nivel": level,
+                    "Red (indicadores)": _format_metric(net.get(key)),
+                    "Referencia por volumen": _format_metric(ref.get(key)),
+                    "Diferencia (pp)": "n/d" if diff is None else f"{diff * 100:+.2f}",
+                })
+        st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+        st.caption(
+            "Las métricas de **cuenta** cuentan cuentas positivas (origen o destino de un fraude "
+            "etiquetado); las de **transacción** cuentan cada fila cubierta una sola vez. "
+            "Diferencia = red − referencia a igual k; no se elige un k ganador por el fraude observado."
+        )
+
+        with st.expander("Presupuestos, cobertura y conteos"):
+            counts = []
+            for item in comparison["comparisons"]:
+                for name, label in (("network_indicators", "Red"), ("volume_reference", "Volumen")):
+                    block = item.get(name, {})
+                    counts.append({
+                        "k": item.get("k"),
+                        "k solicitado": ", ".join(str(v) for v in item.get("requested_budgets", [])),
+                        "Método": label,
+                        "Cuentas seleccionadas": block.get("selected_accounts"),
+                        "Cuentas positivas": block.get("positive_accounts_selected"),
+                        "Transacciones cubiertas": block.get("covered_transactions"),
+                        "Fraudes cubiertos": block.get("covered_fraud_transactions"),
+                    })
+            st.dataframe(pd.DataFrame(counts), use_container_width=True, hide_index=True)
+
+        with st.expander("Limitaciones"):
+            for limitation in comparison.get("limitations", []):
+                st.markdown(f"- {limitation}")
+
+# -------------------------------------------------------------
+# TAB 5: METODOLOGÍA Y CONTRATO DE VARIABLES
 # -------------------------------------------------------------
 with tab_theory:
     st.subheader("Especificación Metodológica y Límites")
