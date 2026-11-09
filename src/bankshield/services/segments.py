@@ -64,6 +64,7 @@ def get_summary(report_path: Optional[Path] = None) -> Dict[str, Any]:
         "metrics": report.get("metrics"),
         "profiles": report.get("profiles"),
         "baseline_profiles": report.get("baseline_profiles"),
+        "comparison": report.get("comparison"),
     }
 
 

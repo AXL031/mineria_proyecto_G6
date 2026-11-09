@@ -1,5 +1,7 @@
 # Pruebas y reproducción local
 
+> **Ruta de cierre — 9 de noviembre:** usar `prepare_demo.py --scope full` (ahora predeterminado) y `verify_demo.py --profile full`. El alcance incluye siete módulos, asociaciones descubiertas, comparación de grafos, backtesting temporal y evidencia académica; ver [cierre-semana13.md](cierre-semana13.md). `--scope current`/`--profile current` conservan el recorrido base de seis módulos, sin acreditar las ampliaciones. Las cifras y estados de los apartados anteriores mantienen su fecha histórica.
+
 > **Actualización de GER-01 — 2 de noviembre:** el preparador incorpora DAG,
 > recibos por huellas y manifiesto de fallos. El instalador admite `-UseLock`
 > con versiones exactas validadas en un entorno nuevo. Consultar

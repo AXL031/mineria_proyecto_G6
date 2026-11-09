@@ -69,8 +69,8 @@ Documento generado por `scripts/evaluate_graph_alerts.py` desde `artifacts/repor
 
 ## Versiones
 
-- python: 3.10.12
-- pandas: 2.3.3
-- numpy: 2.2.6
-- networkx: 3.4.2
+- python: 3.12.14
+- pandas: 3.0.6
+- numpy: 2.5.3
+- networkx: 3.7
 - schema_version: 1

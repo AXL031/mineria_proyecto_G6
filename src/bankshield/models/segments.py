@@ -154,6 +154,9 @@ def segment_accounts(
         matrix, chosen_k, seed, stability_iterations, stability_fraction
     )
     baseline_labels = baseline_segments(features, chosen_k)
+    baseline_silhouette = _silhouette_on_sample(matrix, baseline_labels, seed, sample_size)
+    baseline_stability = evaluate_baseline_stability(
+        features, baseline_labels, chosen_k, seed, stability_iterations, stability_fraction)
 
     baseline = features.assign(segment=baseline_labels).groupby(
         "segment", sort=True, observed=True
@@ -173,4 +176,28 @@ def segment_accounts(
         "profiles": profile_segments(features, labels),
         "baseline_profiles": baseline.reset_index(),
         "total_accounts": int(len(features)),
+        "comparison": {
+            "universe_accounts": int(len(features)), "k": chosen_k, "seed": seed,
+            "silhouette_sample_size": min(sample_size, len(features)),
+            "same_feature_space": list(CLUSTER_COLUMNS),
+            "kmeans": {"silhouette": scores[chosen_k], "mean_stability_ari": float(np.mean(stability))},
+            "activity_quantiles": {"silhouette": baseline_silhouette,
+                                   "mean_stability_ari": float(np.mean(baseline_stability))},
+            "baseline_stability_ari": baseline_stability,
+            "limitations": ["Comparación retrospectiva; k se seleccionó por silueta de KMeans.",
+                            "Silueta en la misma muestra y espacio estandarizado; ARI con igual tamaño y semilla de remuestra.",
+                            "La estabilidad depende del algoritmo; no demuestra categorías de riesgo validadas."],
+        },
     }
+
+
+def evaluate_baseline_stability(features, labels, k, seed, n_iterations, fraction):
+    """Mismos presupuestos de remuestra que KMeans; recalcula cuantiles sin etiquetas."""
+    rng = np.random.default_rng(seed + 1)
+    size = min(len(features), max(k, int(len(features) * fraction)))
+    scores = []
+    for _ in range(n_iterations):
+        index = np.sort(rng.choice(len(features), size=size, replace=False))
+        sampled = baseline_segments(features.iloc[index], k)
+        scores.append(float(adjusted_rand_score(labels[index], sampled)))
+    return scores

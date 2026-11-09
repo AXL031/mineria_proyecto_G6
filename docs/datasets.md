@@ -1,5 +1,7 @@
 # Inventario de datasets locales
 
+> **Revisión documental del 9 de noviembre de 2026:** ver también el [diccionario consolidado](diccionario-datos.md) y la [matriz de entregables](matriz-entregables.md). Las fuentes públicas de referencia están identificadas; eso no prueba la fecha de descarga ni la procedencia histórica exacta de cada copia aportada. Esas confirmaciones siguen separadas de la verificación técnica de huellas.
+
 Estos archivos fueron aportados por el equipo y se guardan en `data/bronze/` sin modificar su contenido. **Se versionan mediante Git LFS**, que almacena referencias pequeñas en Git y el contenido en el almacenamiento LFS del remoto. La procedencia exacta, versión y condiciones de uso de cada copia deben confirmarse antes de publicar resultados.
 
 | Dominio | Archivo local | Tamaño (bytes) | SHA-256 |
@@ -33,6 +35,16 @@ Este archivo **no tiene el esquema de Home Credit**. El [perfil](credito/perfil-
 El archivo incluye una columna de texto, pero la primera fila observada la tiene vacía. Antes del módulo NLP hay que medir cobertura, longitud y condiciones de uso de las narrativas. `complaint_id` identifica reclamos; no une este archivo con los otros dos.
 
 ## Reglas para el equipo
+
+### Fuentes consultadas en el cierre de semana 13
+
+| Copia / responsable | Referencia pública consultada | Evidencia y límite |
+| --- | --- | --- |
+| PaySim / Cueva–Taco | [Publicación ealaxi/paysim1](https://www.kaggle.com/datasets/ealaxi/paysim1), [autores del simulador](https://github.com/EdgarLopezPhD/PaySim). | El esquema, tamaño, recuentos y huella local están documentados. La referencia de CC BY-SA 4.0 procede del inventario previo; la página dinámica no entregó texto legible al lector web en esta revisión. No se declara una nueva validación de licencia ni la fecha de descarga de la copia. |
+| Crédito / Sevan | [Catálogo de Lao Tse](https://www.kaggle.com/laotse/credit-risk-dataset/activity). | La descripción indexada del publicador define loan_status 0 sin impago y 1 impago, coherente con OpenML. No se obtuvo una comprobación byte a byte contra una descarga del publicador ni una licencia legible; API/panel conservan semántica de copia no confirmada. |
+| Reclamos / Angel | [Consumer Complaint Database](https://www.consumerfinance.gov/data-research/consumer-complaints/), [campos oficiales](https://cfpb.github.io/api/ccdb/fields.html). | CFPB permite usar/analizar los datos publicados y advierte que no son una muestra representativa de todas las experiencias. La copia local es histórica (2011–2016), por lo que los campos históricos no se sustituyen por los actuales. Falta la fecha/origen exacto de descarga de esta copia. |
+
+Estas comprobaciones documentales no firman en nombre de los integrantes ni permiten afirmar ahorro económico, causalidad, representatividad de reclamos o validación bancaria real.
 
 1. Mantener los originales inmutables en Bronze. Cualquier limpieza va a Silver.
 2. Registrar la URL o institución de origen, fecha de obtención y licencia de cada archivo en esta página cuando se confirmen.

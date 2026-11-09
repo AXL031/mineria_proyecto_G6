@@ -1,5 +1,7 @@
 # Pendientes vigentes y contratos de cierre — 20 de octubre de 2026
 
+> **Actualización técnica del 9 de noviembre:** se implementaron CUE-01 y SEV-01 en `cierre-semana-13`, y se ampliaron comparación/integración/evidencia para semana 13. Estado actualizado por requisito en [matriz](matriz-entregables.md); comandos, corridas y límites en [cierre](cierre-semana13.md). Este documento conserva los contratos y el punto de partida; sus checklists de aceptación humana no se cierran por ejecutar código. GER-02 y Docker siguen P2.
+
 Este es el punto de entrada vigente para continuar BankShield. Reemplaza las listas de trabajo del 9, 12 y 13 de octubre cuando se contradigan. Los documentos anteriores conservan evidencia histórica; sus porcentajes no se trasladan al alcance ampliado. Este documento asigna trabajo futuro: no declara implementadas las ampliaciones.
 
 ## Objetivo y evidencia de partida
@@ -119,16 +121,16 @@ Cada agente entrega: lista de cambios, comando reproducible, resultado de prueba
 ## Checklist de cierre compartido
 
 - [x] D1 completo, controles aprobados y procedencia vinculada a Silver. Hecho el 21 de octubre de 2026 por Taco: `scripts/build_analytics_transactions.py`, 6,362,620 filas, cero excluidas, nueve controles aprobados, huellas Silver `47C786D9…C2E46C` y dataset `A4C6F55E…234960EA`. Queda la revisión de particiones a cargo de Gerardo y la aceptación cruzada de Cueva.
-- [ ] Regresión numérica con referencia, evaluación independiente, artefacto, HTTP y panel.
-- [ ] Asociaciones descubiertas automáticamente, selección sin test y evaluación posterior.
-- [ ] Comparación de grafos con igual universo y presupuesto de alertas.
-- [ ] Preparación y verificación recorren las seis capacidades existentes y regresión.
-- [ ] Pruebas relevantes y suite completa aprobadas para la revisión final del código.
+- [x] Regresión numérica con referencia, evaluación independiente, artefacto, HTTP y panel. Implementada en el cierre del 9 de noviembre; revisión humana pendiente.
+- [x] Asociaciones descubiertas automáticamente, selección sin test y evaluación posterior. 18 reglas seleccionadas; ver reporte generado.
+- [x] Comparación de grafos con igual universo y presupuesto de alertas. Repetida en Python 3.12; aceptación humana pendiente.
+- [x] Preparación y verificación recorren las seis capacidades existentes y regresión. Perfil full; 71 comprobaciones HTTP/páginas.
+- [x] Pruebas relevantes y suite completa aprobadas para la implementación de cierre: 365 pruebas; 16 del preparador final repetidas. Evidencia en cierre-semana13.md.
 - [ ] Reproducción integral desde otro clon/entorno, con LFS y evidencia de recursos/tiempos.
 - [ ] Fuentes y condiciones de uso de los tres CSV; semántica original de `loan_status`.
 - [ ] Aceptaciones cruzadas y lectura humana de errores registradas.
 - [ ] Cambios locales revisados e integrados; CI remoto comprobado cuando se publique.
-- [ ] Matriz requisito → evidencia y material final coherentes con resultados reales.
+- [x] Matriz requisito → evidencia y guion hasta semana 13 coherentes con resultados reales. No declara sustentación ni aceptación docente realizadas.
 - [ ] P2: historial de desempeño, si se implementa; informar estado sin confundirlo con monitoreo histórico ya existente.
 - [ ] P2: Docker/Compose, solo si se conserva dentro de la entrega acordada.
 

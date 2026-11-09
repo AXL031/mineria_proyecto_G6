@@ -1,5 +1,18 @@
 # API de Demostración — BankShield Analytics
 
+## Cierre de semana 13
+
+La raíz registra siete módulos y capacidades `association_mining`, `numeric_regression` y `graph_comparison`. El registro de una capacidad no garantiza que su artefacto esté preparado.
+
+| Método | Ruta | Contrato |
+| --- | --- | --- |
+| GET | `/api/fraud/associations` | partition=train/validation/test/stress, limit 1–100, offset >=0; identidad de análisis y reglas congeladas. Variable BANKSHIELD_ASSOCIATIONS_REPORT. |
+| POST | `/api/regression/predict` | Cuerpo exacto type y oldbalanceOrg finito no negativo; salida amount estimado, model_id y limitaciones. |
+| GET | `/api/regression/model` | Comparación, particiones, muestreo y versiones del mismo pipeline. |
+| GET | `/api/regression/examples` | limit 1–100, offset >=0, muestra de test con model_id verificado. |
+
+Regresión usa BANKSHIELD_REGRESSION_MODEL y artefactos hermanos. Nuevos contratos: 422 entrada inválida; 503 ausente/incompatible; página vacía válida 200. Ninguna ruta entrena modelos. [Contrato de regresión](../docs/regresion/contrato-variables.md), [matriz](../docs/matriz-entregables.md) y [cierre](../docs/cierre-semana13.md).
+
 Servicio web backend construido con **FastAPI** que expone endpoints analíticos para consumo de la plataforma y el dashboard interactivo.
 
 ## Estructura del Módulo

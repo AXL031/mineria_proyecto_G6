@@ -121,6 +121,12 @@ class SegmentationModelTests(unittest.TestCase):
             set(result["silhouette_by_k"]), {2, 3, 4, 5}
         )
         self.assertEqual(len(result["stability_ari"]), 3)
+        comparison = result["comparison"]
+        self.assertEqual(comparison["universe_accounts"], len(self.features))
+        self.assertEqual(comparison["k"], result["chosen_k"])
+        self.assertEqual(comparison["kmeans"]["silhouette"], result["silhouette"])
+        self.assertTrue(np.isfinite(comparison["activity_quantiles"]["silhouette"]))
+        self.assertEqual(len(comparison["baseline_stability_ari"]), 3)
 
     def test_profiles_match_labels(self):
         labels = np.array([0, 1] * (len(self.features) // 2))

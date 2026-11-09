@@ -19,7 +19,9 @@ def call_api(method, endpoint, **kwargs):
     try:
         response = requests.request(method, f"{API_URL}/api/fraud/{endpoint}", timeout=20, **kwargs)
         if response.status_code == 503:
-            if endpoint == "patterns":
+            if endpoint == "associations":
+                st.error("Las asociaciones descubiertas no están disponibles. Ejecuta la minería offline y revisa su reporte.")
+            elif endpoint == "patterns":
                 st.error("Los patrones no están disponibles. Genera el reporte para el modelo vigente y revisa que el modelo pueda cargarse.")
             else:
                 st.error("El modelo no está disponible. Revisa su generación y las versiones del entorno del servidor.")
@@ -105,3 +107,24 @@ if st.button("Consultar patrones históricos"):
                      "Cobertura": f"{row['fraud_coverage']:.2%}" if row["fraud_coverage"] is not None else "N/D"} for row in part["rules"]
                 ]), hide_index=True)
         st.caption("Soporte: fracción de operaciones que cumplen la regla. Confianza: proporción de fraude entre coincidencias. Lift: confianza / prevalencia. Cobertura: fracción de fraudes cubiertos. Las reglas se solapan y no se suman. Se definieron sin seleccionar por resultados en prueba.")
+
+st.subheader("Asociaciones descubiertas automáticamente")
+st.caption("Apriori sobre D1: candidatos en entrenamiento, selección en validación y evaluación posterior con reglas congeladas. No modifica el clasificador.")
+partition = st.selectbox("Partición de asociaciones", ["test", "validation", "train", "stress"], key="associations_partition")
+offset = st.number_input("Desplazamiento de reglas", min_value=0, value=0, step=20, key="associations_offset")
+if st.button("Consultar asociaciones descubiertas", key="associations_query"):
+    result = call_api("GET", "associations", params={"partition": partition, "limit": 20, "offset": offset})
+    st.session_state["associations_result"] = result
+associations = st.session_state.get("associations_result")
+if associations:
+    if associations["partition"] != partition or associations["offset"] != offset:
+        st.warning("Las reglas conservadas corresponden a filtros anteriores; vuelve a consultar.")
+    st.caption(f"Análisis: {associations['analysis_id']} · partición {associations['partition']} · {associations['total_rules']} reglas seleccionadas")
+    if associations["rules"]:
+        st.dataframe(pd.DataFrame([{"Regla": " y ".join(row["antecedent"]), "Soporte conjunto": row["support"],
+                                   "Confianza": row["confidence"], "Lift": row["lift"],
+                                   "Cobertura": row["fraud_coverage"]} for row in associations["rules"]]), hide_index=True)
+    else:
+        st.info("No hay reglas en esta página. Una selección vacía es un resultado válido con los umbrales fijados.")
+    st.caption("Soporte conjunto: antecedente y fraude / filas. Las coberturas se solapan; la evaluación de la unión cuenta cada fila una vez.")
+    st.json({key: associations[key] for key in ("evaluation", "dataset", "config", "diagnostic", "limitations")})

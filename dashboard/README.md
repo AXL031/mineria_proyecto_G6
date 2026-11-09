@@ -1,5 +1,11 @@
 # Panel Analítico — BankShield Analytics
 
+## Cierre de semana 13
+
+Siete páginas mediante HTTP. Fraude conserva el clasificador/patrones manuales y agrega asociaciones descubiertas con partición/paginación. Segmentos compara KMeans y cuantiles en el mismo universo. Redes muestra la comparación preparada para su muestra. La página `07_regresion.py` estima montos desde tipo/saldo, conserva la predicción, diferencia validation/test/stress y muestra ejemplos con identidad verificada. Avisos explícitos ante ausencia de artefactos y resultados conservados de otro modelo/filtro.
+
+Preparar con `scripts/prepare_demo.py --scope full` y verificar con `scripts/verify_local_delivery.py`, que inicia procesos aislados sin reemplazar el estado de una demo existente. [Guion de exposición](../docs/guion-tercera-presentacion.md).
+
 ## Estilo de iconos
 
 Los emojis usan [Google Noto Emoji](https://github.com/google/fonts/tree/main/ofl/notoemoji) en su variante monocromática. Cada pantalla debe llamar a `bankshield.ui.configure_page`, que aplica la fuente local y un favicon del mismo diseño. Los assets y su licencia OFL están en `dashboard/assets/noto-emoji/`; no hay descargas de fuentes durante la demo. Evitar selectores de presentación en color (`U+FE0F`) en las etiquetas para conservar los contornos minimalistas.

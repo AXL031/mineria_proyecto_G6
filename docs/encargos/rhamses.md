@@ -1,5 +1,7 @@
 # Encargo de Rhamses — comparación de grafos y contratos HTTP
 
+> **Ampliación técnica del 9 de noviembre en `cierre-semana-13`:** el cierre registra regresión y asociaciones en API/panel y verificación integral. La repetición técnica de grafos en Python 3.12 se registra en [cierre](../cierre-semana13.md), junto con los resultados de la ejecución. RHA-02 y las aceptaciones humanas de Cueva/Angel no se firman por esas comprobaciones automáticas.
+
 Estado: RHA-01 implementado en la rama `rhamses` y pendiente de revisión (Cueva la evaluación, Angel la interfaz); RHA-02 pendiente. Leer [contratos y prioridades](../pendientes-cierre-2026-10-20.md). La red, indicadores, patrones, API, consultas acotadas y página HTTP ya existen. No reconstruir estos módulos ni volver a introducir caché que ignore el límite de muestra.
 
 ## RHA-01 — comparación justa de alertas de red (P1)

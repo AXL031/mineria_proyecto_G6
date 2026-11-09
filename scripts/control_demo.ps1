@@ -27,7 +27,7 @@ function Test-DemoState {
     try {
         $api = Invoke-RestMethod "$($State.apiUrl)/" -TimeoutSec 3
         $panel = Invoke-RestMethod "$($State.dashboardUrl)/_stcore/health" -TimeoutSec 3
-        return $api.status -eq 'online' -and $api.modules.Count -eq 6 -and $panel -eq 'ok'
+        return $api.status -eq 'online' -and $api.modules -contains 'regression' -and $panel -eq 'ok'
     } catch { return $false }
 }
 

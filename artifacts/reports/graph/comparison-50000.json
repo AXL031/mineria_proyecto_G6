@@ -3,7 +3,7 @@
   "analysis_id": "graph-comparison-72f834d1af957e50",
   "simulation_data": true,
   "scope": "sample_retrospective",
-  "generated_at": "2026-11-09T00:19:36+00:00",
+  "generated_at": "2026-11-09T15:45:27+00:00",
   "source": {
     "path": "data/bronze/transactions/PS_20174392719_1491204439457_log.csv",
     "sha256": "16910f90577b0d981bf8ff289714510bb89bc71bff7d3f220f024e287e4eea6b",
@@ -236,601 +236,601 @@
           "rank": 1,
           "account": "C985934102",
           "pattern_count": 2,
-          "pagerank": 0.0005520774301893217
+          "pagerank": 0.0005520774301893906
         },
         {
           "rank": 2,
           "account": "C1286084959",
           "pattern_count": 2,
-          "pagerank": 0.0005006159800253461
+          "pagerank": 0.0005006159800254085
         },
         {
           "rank": 3,
           "account": "C1590550415",
           "pattern_count": 2,
-          "pagerank": 0.00047856107281221374
+          "pagerank": 0.0004785610728122735
         },
         {
           "rank": 4,
           "account": "C2083562754",
           "pattern_count": 2,
-          "pagerank": 0.0004638578013367922
+          "pagerank": 0.00046385780133685004
         },
         {
           "rank": 5,
           "account": "C248609774",
           "pattern_count": 2,
-          "pagerank": 0.0004565061655990814
+          "pagerank": 0.0004565061655991383
         },
         {
           "rank": 6,
           "account": "C977993101",
           "pattern_count": 2,
-          "pagerank": 0.0004565061655990814
+          "pagerank": 0.0004565061655991383
         },
         {
           "rank": 7,
           "account": "C1360767589",
           "pattern_count": 2,
-          "pagerank": 0.0004491545298613706
+          "pagerank": 0.0004491545298614266
         },
         {
           "rank": 8,
           "account": "C665576141",
           "pattern_count": 2,
-          "pagerank": 0.0004270996226482382
+          "pagerank": 0.0004270996226482915
         },
         {
           "rank": 9,
           "account": "C1782113663",
           "pattern_count": 2,
-          "pagerank": 0.0003976930796973951
+          "pagerank": 0.00039769307969744484
         },
         {
           "rank": 10,
           "account": "C451111351",
           "pattern_count": 2,
-          "pagerank": 0.0003976930796973951
+          "pagerank": 0.00039769307969744484
         },
         {
           "rank": 11,
           "account": "C1023714065",
           "pattern_count": 2,
-          "pagerank": 0.0003903414439596843
+          "pagerank": 0.0003903414439597332
         },
         {
           "rank": 12,
           "account": "C97730845",
           "pattern_count": 2,
-          "pagerank": 0.0003903414439596843
+          "pagerank": 0.0003903414439597332
         },
         {
           "rank": 13,
           "account": "C1816757085",
           "pattern_count": 2,
-          "pagerank": 0.0003829898082219735
+          "pagerank": 0.0003829898082220215
         },
         {
           "rank": 14,
           "account": "C1899073220",
           "pattern_count": 2,
-          "pagerank": 0.0003829898082219735
+          "pagerank": 0.0003829898082220215
         },
         {
           "rank": 15,
           "account": "C306206744",
           "pattern_count": 2,
-          "pagerank": 0.0003829898082219735
+          "pagerank": 0.0003829898082220215
         },
         {
           "rank": 16,
           "account": "C667346055",
           "pattern_count": 2,
-          "pagerank": 0.0003609349010088411
+          "pagerank": 0.00036093490100888646
         },
         {
           "rank": 17,
           "account": "C453211571",
           "pattern_count": 2,
-          "pagerank": 0.0003535832652711303
+          "pagerank": 0.0003535832652711748
         },
         {
           "rank": 18,
           "account": "C1234776885",
           "pattern_count": 2,
-          "pagerank": 0.0003462316295334195
+          "pagerank": 0.00034623162953346313
         },
         {
           "rank": 19,
           "account": "C716083600",
           "pattern_count": 2,
-          "pagerank": 0.0003462316295334195
+          "pagerank": 0.00034623162953346313
         },
         {
           "rank": 20,
           "account": "C932583850",
           "pattern_count": 2,
-          "pagerank": 0.0003462316295334195
+          "pagerank": 0.00034623162953346313
         },
         {
           "rank": 21,
           "account": "C1789550256",
           "pattern_count": 2,
-          "pagerank": 0.0003388799937957087
+          "pagerank": 0.00033887999379575147
         },
         {
           "rank": 22,
           "account": "C1262822392",
           "pattern_count": 2,
-          "pagerank": 0.00033152835805799795
+          "pagerank": 0.0003315283580580398
         },
         {
           "rank": 23,
           "account": "C1883840933",
           "pattern_count": 2,
-          "pagerank": 0.00033152835805799795
+          "pagerank": 0.0003315283580580398
         },
         {
           "rank": 24,
           "account": "C392292416",
           "pattern_count": 2,
-          "pagerank": 0.00033152835805799795
+          "pagerank": 0.0003315283580580398
         },
         {
           "rank": 25,
           "account": "C33524623",
           "pattern_count": 2,
-          "pagerank": 0.00032417672232028715
+          "pagerank": 0.00032417672232032814
         },
         {
           "rank": 26,
           "account": "C564160838",
           "pattern_count": 2,
-          "pagerank": 0.00032417672232028715
+          "pagerank": 0.00032417672232032814
         },
         {
           "rank": 27,
           "account": "C1504109395",
           "pattern_count": 2,
-          "pagerank": 0.00031682508658257636
+          "pagerank": 0.0003168250865826165
         },
         {
           "rank": 28,
           "account": "C909295153",
           "pattern_count": 2,
-          "pagerank": 0.00031682508658257636
+          "pagerank": 0.0003168250865826165
         },
         {
           "rank": 29,
           "account": "C1674899618",
           "pattern_count": 2,
-          "pagerank": 0.00030947345084486556
+          "pagerank": 0.0003094734508449048
         },
         {
           "rank": 30,
           "account": "C11003494",
           "pattern_count": 2,
-          "pagerank": 0.00030212181510715476
+          "pagerank": 0.00030212181510719314
         },
         {
           "rank": 31,
           "account": "C1721246982",
           "pattern_count": 2,
-          "pagerank": 0.00030212181510715476
+          "pagerank": 0.00030212181510719314
         },
         {
           "rank": 32,
           "account": "C1916720513",
           "pattern_count": 2,
-          "pagerank": 0.00030212181510715476
+          "pagerank": 0.00030212181510719314
         },
         {
           "rank": 33,
           "account": "C803116137",
           "pattern_count": 2,
-          "pagerank": 0.00030212181510715476
+          "pagerank": 0.00030212181510719314
         },
         {
           "rank": 34,
           "account": "C1870252780",
           "pattern_count": 2,
-          "pagerank": 0.00029477017936944397
+          "pagerank": 0.0002947701793694815
         },
         {
           "rank": 35,
           "account": "C481402298",
           "pattern_count": 2,
-          "pagerank": 0.00029477017936944397
+          "pagerank": 0.0002947701793694815
         },
         {
           "rank": 36,
           "account": "C998351292",
           "pattern_count": 2,
-          "pagerank": 0.00028741854363173317
+          "pagerank": 0.0002874185436317698
         },
         {
           "rank": 37,
           "account": "C1850180796",
           "pattern_count": 2,
-          "pagerank": 0.00028006690789402237
+          "pagerank": 0.00028006690789405815
         },
         {
           "rank": 38,
           "account": "C662736689",
           "pattern_count": 2,
-          "pagerank": 0.00028006690789402237
+          "pagerank": 0.00028006690789405815
         },
         {
           "rank": 39,
           "account": "C1303868418",
           "pattern_count": 2,
-          "pagerank": 0.0002727152721563116
+          "pagerank": 0.0002727152721563465
         },
         {
           "rank": 40,
           "account": "C766681183",
           "pattern_count": 2,
-          "pagerank": 0.0002727152721563116
+          "pagerank": 0.0002727152721563465
         },
         {
           "rank": 41,
           "account": "C769342184",
           "pattern_count": 2,
-          "pagerank": 0.0002727152721563116
+          "pagerank": 0.0002727152721563465
         },
         {
           "rank": 42,
           "account": "C801142660",
           "pattern_count": 2,
-          "pagerank": 0.0002727152721563116
+          "pagerank": 0.0002727152721563465
         },
         {
           "rank": 43,
           "account": "C1060041730",
           "pattern_count": 2,
-          "pagerank": 0.00025801200068089003
+          "pagerank": 0.00025801200068092315
         },
         {
           "rank": 44,
           "account": "C1255024717",
           "pattern_count": 2,
-          "pagerank": 0.00025801200068089003
+          "pagerank": 0.00025801200068092315
         },
         {
           "rank": 45,
           "account": "C1531333864",
           "pattern_count": 2,
-          "pagerank": 0.00025801200068089003
+          "pagerank": 0.00025801200068092315
         },
         {
           "rank": 46,
           "account": "C728526866",
           "pattern_count": 2,
-          "pagerank": 0.00025801200068089003
+          "pagerank": 0.00025801200068092315
         },
         {
           "rank": 47,
           "account": "C1297685781",
           "pattern_count": 2,
-          "pagerank": 0.00025066036494317923
+          "pagerank": 0.0002506603649432115
         },
         {
           "rank": 48,
           "account": "C214774813",
           "pattern_count": 2,
-          "pagerank": 0.00025066036494317923
+          "pagerank": 0.0002506603649432115
         },
         {
           "rank": 49,
           "account": "C1167066016",
           "pattern_count": 2,
-          "pagerank": 0.0002433087292054684
+          "pagerank": 0.00024330872920549977
         },
         {
           "rank": 50,
           "account": "C2006081398",
           "pattern_count": 2,
-          "pagerank": 0.0002359570934677576
+          "pagerank": 0.0002359570934677881
         },
         {
           "rank": 51,
           "account": "C728885526",
           "pattern_count": 2,
-          "pagerank": 0.0002359570934677576
+          "pagerank": 0.0002359570934677881
         },
         {
           "rank": 52,
           "account": "C991363637",
           "pattern_count": 2,
-          "pagerank": 0.0002359570934677576
+          "pagerank": 0.0002359570934677881
         },
         {
           "rank": 53,
           "account": "C1778801068",
           "pattern_count": 2,
-          "pagerank": 0.00022860545773004682
+          "pagerank": 0.00022860545773007644
         },
         {
           "rank": 54,
           "account": "C40075281",
           "pattern_count": 2,
-          "pagerank": 0.00022860545773004682
+          "pagerank": 0.00022860545773007644
         },
         {
           "rank": 55,
           "account": "C885951223",
           "pattern_count": 2,
-          "pagerank": 0.00022860545773004682
+          "pagerank": 0.00022860545773007644
         },
         {
           "rank": 56,
           "account": "C1477979030",
           "pattern_count": 2,
-          "pagerank": 0.00022125382199233602
+          "pagerank": 0.00022125382199236478
         },
         {
           "rank": 57,
           "account": "C836514715",
           "pattern_count": 2,
-          "pagerank": 0.00022125382199233602
+          "pagerank": 0.00022125382199236478
         },
         {
           "rank": 58,
           "account": "C1446521801",
           "pattern_count": 2,
-          "pagerank": 0.00021390218625462522
+          "pagerank": 0.0002139021862546531
         },
         {
           "rank": 59,
           "account": "C1636786811",
           "pattern_count": 2,
-          "pagerank": 0.00021390218625462522
+          "pagerank": 0.0002139021862546531
         },
         {
           "rank": 60,
           "account": "C1880332929",
           "pattern_count": 2,
-          "pagerank": 0.00021390218625462522
+          "pagerank": 0.0002139021862546531
         },
         {
           "rank": 61,
           "account": "C991505714",
           "pattern_count": 2,
-          "pagerank": 0.00021390218625462522
+          "pagerank": 0.0002139021862546531
         },
         {
           "rank": 62,
           "account": "C997608398",
           "pattern_count": 2,
-          "pagerank": 0.00021390218625462522
+          "pagerank": 0.0002139021862546531
         },
         {
           "rank": 63,
           "account": "C1076835071",
           "pattern_count": 2,
-          "pagerank": 0.00020655055051691445
+          "pagerank": 0.00020655055051694147
         },
         {
           "rank": 64,
           "account": "C1359484306",
           "pattern_count": 2,
-          "pagerank": 0.00020655055051691445
+          "pagerank": 0.00020655055051694147
         },
         {
           "rank": 65,
           "account": "C1983747920",
           "pattern_count": 2,
-          "pagerank": 0.00020655055051691445
+          "pagerank": 0.00020655055051694147
         },
         {
           "rank": 66,
           "account": "C1529115495",
           "pattern_count": 2,
-          "pagerank": 0.00019919891477920368
+          "pagerank": 0.0001991989147792298
         },
         {
           "rank": 67,
           "account": "C2011996123",
           "pattern_count": 2,
-          "pagerank": 0.00019919891477920368
+          "pagerank": 0.0001991989147792298
         },
         {
           "rank": 68,
           "account": "C401424608",
           "pattern_count": 2,
-          "pagerank": 0.00019919891477920368
+          "pagerank": 0.0001991989147792298
         },
         {
           "rank": 69,
           "account": "C1068824137",
           "pattern_count": 2,
-          "pagerank": 0.00019184727904149288
+          "pagerank": 0.00019184727904151812
         },
         {
           "rank": 70,
           "account": "C1838584624",
           "pattern_count": 2,
-          "pagerank": 0.00019184727904149288
+          "pagerank": 0.00019184727904151812
         },
         {
           "rank": 71,
           "account": "C683605346",
           "pattern_count": 2,
-          "pagerank": 0.00019184727904149288
+          "pagerank": 0.00019184727904151812
         },
         {
           "rank": 72,
           "account": "C747464370",
           "pattern_count": 2,
-          "pagerank": 0.00019184727904149288
+          "pagerank": 0.00019184727904151812
         },
         {
           "rank": 73,
           "account": "C798678484",
           "pattern_count": 2,
-          "pagerank": 0.00019184727904149288
+          "pagerank": 0.00019184727904151812
         },
         {
           "rank": 74,
           "account": "C863811613",
           "pattern_count": 2,
-          "pagerank": 0.00019184727904149288
+          "pagerank": 0.00019184727904151812
         },
         {
           "rank": 75,
           "account": "C1013700132",
           "pattern_count": 2,
-          "pagerank": 0.00018449564330378209
+          "pagerank": 0.00018449564330380645
         },
         {
           "rank": 76,
           "account": "C1220897602",
           "pattern_count": 2,
-          "pagerank": 0.00018449564330378209
+          "pagerank": 0.00018449564330380645
         },
         {
           "rank": 77,
           "account": "C1419794148",
           "pattern_count": 2,
-          "pagerank": 0.00018449564330378209
+          "pagerank": 0.00018449564330380645
         },
         {
           "rank": 78,
           "account": "C1515704208",
           "pattern_count": 2,
-          "pagerank": 0.00018449564330378209
+          "pagerank": 0.00018449564330380645
         },
         {
           "rank": 79,
           "account": "C1538745405",
           "pattern_count": 2,
-          "pagerank": 0.00018449564330378209
+          "pagerank": 0.00018449564330380645
         },
         {
           "rank": 80,
           "account": "C459857341",
           "pattern_count": 2,
-          "pagerank": 0.00018449564330378209
+          "pagerank": 0.00018449564330380645
         },
         {
           "rank": 81,
           "account": "C657736958",
           "pattern_count": 2,
-          "pagerank": 0.00018449564330378209
+          "pagerank": 0.00018449564330380645
         },
         {
           "rank": 82,
           "account": "C1313534832",
           "pattern_count": 2,
-          "pagerank": 0.0001771440075660713
+          "pagerank": 0.0001771440075660948
         },
         {
           "rank": 83,
           "account": "C1335050193",
           "pattern_count": 2,
-          "pagerank": 0.0001771440075660713
+          "pagerank": 0.0001771440075660948
         },
         {
           "rank": 84,
           "account": "C1335946878",
           "pattern_count": 2,
-          "pagerank": 0.0001771440075660713
+          "pagerank": 0.0001771440075660948
         },
         {
           "rank": 85,
           "account": "C146305349",
           "pattern_count": 2,
-          "pagerank": 0.0001771440075660713
+          "pagerank": 0.0001771440075660948
         },
         {
           "rank": 86,
           "account": "C1651945012",
           "pattern_count": 2,
-          "pagerank": 0.0001771440075660713
+          "pagerank": 0.0001771440075660948
         },
         {
           "rank": 87,
           "account": "C1805683209",
           "pattern_count": 2,
-          "pagerank": 0.0001771440075660713
+          "pagerank": 0.0001771440075660948
         },
         {
           "rank": 88,
           "account": "C515132998",
           "pattern_count": 2,
-          "pagerank": 0.0001771440075660713
+          "pagerank": 0.0001771440075660948
         },
         {
           "rank": 89,
           "account": "C988138425",
           "pattern_count": 2,
-          "pagerank": 0.0001771440075660713
+          "pagerank": 0.0001771440075660948
         },
         {
           "rank": 90,
           "account": "C1040847151",
           "pattern_count": 2,
-          "pagerank": 0.0001697923718283605
+          "pagerank": 0.00016979237182838312
         },
         {
           "rank": 91,
           "account": "C1373172466",
           "pattern_count": 2,
-          "pagerank": 0.0001697923718283605
+          "pagerank": 0.00016979237182838312
         },
         {
           "rank": 92,
           "account": "C265108079",
           "pattern_count": 2,
-          "pagerank": 0.0001697923718283605
+          "pagerank": 0.00016979237182838312
         },
         {
           "rank": 93,
           "account": "C875761527",
           "pattern_count": 2,
-          "pagerank": 0.0001697923718283605
+          "pagerank": 0.00016979237182838312
         },
         {
           "rank": 94,
           "account": "C1219273867",
           "pattern_count": 2,
-          "pagerank": 0.00016244073609064972
+          "pagerank": 0.00016244073609067146
         },
         {
           "rank": 95,
           "account": "C1337741679",
           "pattern_count": 2,
-          "pagerank": 0.00016244073609064972
+          "pagerank": 0.00016244073609067146
         },
         {
           "rank": 96,
           "account": "C1394526584",
           "pattern_count": 2,
-          "pagerank": 0.00016244073609064972
+          "pagerank": 0.00016244073609067146
         },
         {
           "rank": 97,
           "account": "C1554540309",
           "pattern_count": 2,
-          "pagerank": 0.00016244073609064972
+          "pagerank": 0.00016244073609067146
         },
         {
           "rank": 98,
           "account": "C1730752455",
           "pattern_count": 2,
-          "pagerank": 0.00016244073609064972
+          "pagerank": 0.00016244073609067146
         },
         {
           "rank": 99,
           "account": "C173783788",
           "pattern_count": 2,
-          "pagerank": 0.00016244073609064972
+          "pagerank": 0.00016244073609067146
         },
         {
           "rank": 100,
           "account": "C1740000325",
           "pattern_count": 2,
-          "pagerank": 0.00016244073609064972
+          "pagerank": 0.00016244073609067146
         }
       ]
     },
@@ -1007,7 +1007,7 @@
         {
           "rank": 1,
           "account": "C1590550415",
-          "total_volume": 33750598.32000001
+          "total_volume": 33750598.32
         },
         {
           "rank": 2,
@@ -1017,12 +1017,12 @@
         {
           "rank": 3,
           "account": "C985934102",
-          "total_volume": 26765085.679999996
+          "total_volume": 26765085.68
         },
         {
           "rank": 4,
           "account": "C2083562754",
-          "total_volume": 26686663.98999999
+          "total_volume": 26686663.99
         },
         {
           "rank": 5,
@@ -1032,7 +1032,7 @@
         {
           "rank": 6,
           "account": "C1883840933",
-          "total_volume": 25345694.790000003
+          "total_volume": 25345694.79
         },
         {
           "rank": 7,
@@ -1042,12 +1042,12 @@
         {
           "rank": 8,
           "account": "C1286084959",
-          "total_volume": 24243448.510000005
+          "total_volume": 24243448.51
         },
         {
           "rank": 9,
           "account": "C97730845",
-          "total_volume": 23455856.530000005
+          "total_volume": 23455856.53
         },
         {
           "rank": 10,
@@ -1062,12 +1062,12 @@
         {
           "rank": 12,
           "account": "C1262822392",
-          "total_volume": 22326926.049999997
+          "total_volume": 22326926.05
         },
         {
           "rank": 13,
           "account": "C803116137",
-          "total_volume": 21810928.950000007
+          "total_volume": 21810928.95
         },
         {
           "rank": 14,
@@ -1082,22 +1082,22 @@
         {
           "rank": 16,
           "account": "C1782113663",
-          "total_volume": 20510241.689999998
+          "total_volume": 20510241.69
         },
         {
           "rank": 17,
           "account": "C1789550256",
-          "total_volume": 20208440.240000002
+          "total_volume": 20208440.24
         },
         {
           "rank": 18,
           "account": "C1060041730",
-          "total_volume": 20040590.559999995
+          "total_volume": 20040590.56
         },
         {
           "rank": 19,
           "account": "C1023714065",
-          "total_volume": 19882480.920000006
+          "total_volume": 19882480.919999998
         },
         {
           "rank": 20,
@@ -1107,17 +1107,17 @@
         {
           "rank": 21,
           "account": "C1916720513",
-          "total_volume": 18643704.380000003
+          "total_volume": 18643704.38
         },
         {
           "rank": 22,
           "account": "C1674899618",
-          "total_volume": 18553846.729999997
+          "total_volume": 18553846.73
         },
         {
           "rank": 23,
           "account": "C1721246982",
-          "total_volume": 18287987.000000004
+          "total_volume": 18287987.0
         },
         {
           "rank": 24,
@@ -1127,12 +1127,12 @@
         {
           "rank": 25,
           "account": "C306206744",
-          "total_volume": 18054865.160000004
+          "total_volume": 18054865.16
         },
         {
           "rank": 26,
           "account": "C667346055",
-          "total_volume": 18049537.54000001
+          "total_volume": 18049537.54
         },
         {
           "rank": 27,
@@ -1147,7 +1147,7 @@
         {
           "rank": 29,
           "account": "C453211571",
-          "total_volume": 16565118.709999995
+          "total_volume": 16565118.71
         },
         {
           "rank": 30,
@@ -1157,42 +1157,42 @@
         {
           "rank": 31,
           "account": "C1856036778",
-          "total_volume": 16305934.780000001
+          "total_volume": 16305934.78
         },
         {
           "rank": 32,
           "account": "C1899073220",
-          "total_volume": 16294774.589999996
+          "total_volume": 16294774.59
         },
         {
           "rank": 33,
           "account": "C1255024717",
-          "total_volume": 16268087.660000002
+          "total_volume": 16268087.66
         },
         {
           "rank": 34,
           "account": "C991505714",
-          "total_volume": 15839084.909999998
+          "total_volume": 15839084.91
         },
         {
           "rank": 35,
           "account": "C1220897602",
-          "total_volume": 15758556.949999997
+          "total_volume": 15758556.95
         },
         {
           "rank": 36,
           "account": "C1870252780",
-          "total_volume": 15590736.169999994
+          "total_volume": 15590736.17
         },
         {
           "rank": 37,
           "account": "C1234776885",
-          "total_volume": 15373160.730000002
+          "total_volume": 15373160.73
         },
         {
           "rank": 38,
           "account": "C392292416",
-          "total_volume": 14780203.399999999
+          "total_volume": 14780203.4
         },
         {
           "rank": 39,
@@ -1202,7 +1202,7 @@
         {
           "rank": 40,
           "account": "C214774813",
-          "total_volume": 14488364.839999996
+          "total_volume": 14488364.84
         },
         {
           "rank": 41,
@@ -1212,7 +1212,7 @@
         {
           "rank": 42,
           "account": "C1359484306",
-          "total_volume": 14139511.860000001
+          "total_volume": 14139511.86
         },
         {
           "rank": 43,
@@ -1222,7 +1222,7 @@
         {
           "rank": 44,
           "account": "C728526866",
-          "total_volume": 14018720.139999999
+          "total_volume": 14018720.14
         },
         {
           "rank": 45,
@@ -1237,7 +1237,7 @@
         {
           "rank": 47,
           "account": "C481402298",
-          "total_volume": 13562113.509999996
+          "total_volume": 13562113.51
         },
         {
           "rank": 48,
@@ -1262,22 +1262,22 @@
         {
           "rank": 52,
           "account": "C885951223",
-          "total_volume": 13042767.370000003
+          "total_volume": 13042767.37
         },
         {
           "rank": 53,
           "account": "C1297685781",
-          "total_volume": 12956172.570000002
+          "total_volume": 12956172.57
         },
         {
           "rank": 54,
           "account": "C991363637",
-          "total_volume": 12793252.699999997
+          "total_volume": 12793252.7
         },
         {
           "rank": 55,
           "account": "C769342184",
-          "total_volume": 12785374.590000002
+          "total_volume": 12785374.59
         },
         {
           "rank": 56,
@@ -1292,22 +1292,22 @@
         {
           "rank": 58,
           "account": "C40075281",
-          "total_volume": 12699952.129999997
+          "total_volume": 12699952.13
         },
         {
           "rank": 59,
           "account": "C662736689",
-          "total_volume": 12500654.940000001
+          "total_volume": 12500654.94
         },
         {
           "rank": 60,
           "account": "C977993101",
-          "total_volume": 12344069.450000001
+          "total_volume": 12344069.45
         },
         {
           "rank": 61,
           "account": "C1838584624",
-          "total_volume": 12197803.819999998
+          "total_volume": 12197803.82
         },
         {
           "rank": 62,
@@ -1322,22 +1322,22 @@
         {
           "rank": 64,
           "account": "C1446521801",
-          "total_volume": 12058013.200000001
+          "total_volume": 12058013.2
         },
         {
           "rank": 65,
           "account": "C465499079",
-          "total_volume": 11970710.579999998
+          "total_volume": 11970710.58
         },
         {
           "rank": 66,
           "account": "C54142591",
-          "total_volume": 11929911.649999999
+          "total_volume": 11929911.65
         },
         {
           "rank": 67,
           "account": "C1531333864",
-          "total_volume": 11784859.200000001
+          "total_volume": 11784859.2
         },
         {
           "rank": 68,
@@ -1347,7 +1347,7 @@
         {
           "rank": 69,
           "account": "C842729010",
-          "total_volume": 11368021.860000001
+          "total_volume": 11368021.86
         },
         {
           "rank": 70,
@@ -1362,7 +1362,7 @@
         {
           "rank": 72,
           "account": "C1354725727",
-          "total_volume": 11071692.759999998
+          "total_volume": 11071692.76
         },
         {
           "rank": 73,
@@ -1372,7 +1372,7 @@
         {
           "rank": 74,
           "account": "C1247600089",
-          "total_volume": 10844421.909999998
+          "total_volume": 10844421.91
         },
         {
           "rank": 75,
@@ -1382,7 +1382,7 @@
         {
           "rank": 76,
           "account": "C1552859894",
-          "total_volume": 10727889.089999998
+          "total_volume": 10727889.09
         },
         {
           "rank": 77,
@@ -1422,7 +1422,7 @@
         {
           "rank": 84,
           "account": "C1778801068",
-          "total_volume": 10045022.300000003
+          "total_volume": 10045022.3
         },
         {
           "rank": 85,
@@ -1447,12 +1447,12 @@
         {
           "rank": 89,
           "account": "C1508456612",
-          "total_volume": 9773848.530000001
+          "total_volume": 9773848.53
         },
         {
           "rank": 90,
           "account": "C564160838",
-          "total_volume": 9633343.190000003
+          "total_volume": 9633343.19
         },
         {
           "rank": 91,
@@ -1467,12 +1467,12 @@
         {
           "rank": 93,
           "account": "C1619402333",
-          "total_volume": 9379850.630000003
+          "total_volume": 9379850.63
         },
         {
           "rank": 94,
           "account": "C1313534832",
-          "total_volume": 9377380.429999998
+          "total_volume": 9377380.43
         },
         {
           "rank": 95,
@@ -1482,17 +1482,17 @@
         {
           "rank": 96,
           "account": "C627675433",
-          "total_volume": 9270754.629999999
+          "total_volume": 9270754.63
         },
         {
           "rank": 97,
           "account": "C1505755152",
-          "total_volume": 9260977.489999998
+          "total_volume": 9260977.49
         },
         {
           "rank": 98,
           "account": "C748014372",
-          "total_volume": 9085905.850000001
+          "total_volume": 9085905.85
         },
         {
           "rank": 99,
@@ -1735,10 +1735,10 @@
     "Comunidades y evaluación predictiva temporal de grafos quedan fuera de esta comparación."
   ],
   "versions": {
-    "python": "3.10.12",
-    "pandas": "2.3.3",
-    "numpy": "2.2.6",
-    "networkx": "3.4.2",
+    "python": "3.12.14",
+    "pandas": "3.0.6",
+    "numpy": "2.5.3",
+    "networkx": "3.7",
     "schema_version": 1
   }
 }

@@ -1,5 +1,7 @@
 # Plan de desarrollo y responsabilidades
 
+> **Estado de cierre del 9 de noviembre de 2026:** el alcance hasta semana 13 se desarrolla en `cierre-semana-13`. Consultar la [matriz de 19 entregables con responsables](matriz-entregables.md), el [registro de ejecución y pendientes humanos](cierre-semana13.md) y el [guion](guion-tercera-presentacion.md). Asociaciones/regresión ya tienen implementación y corrida real; las declaraciones de «trabajo futuro» del plan de octubre describen su estado de partida. Los encargos siguen siendo especificaciones y reparto, no evidencia de aprobación de personas.
+
 Este documento concreta las etapas y entregas de los seis integrantes. Complementa las [bases del proyecto](bases-del-proyecto.md) y el [inventario de datasets](datasets.md). Las fechas se acordarán cuando el equipo confirme su disponibilidad y los requisitos del curso.
 
 ## Pendientes vigentes — 20 de octubre de 2026

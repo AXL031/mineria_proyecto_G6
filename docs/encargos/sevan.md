@@ -1,5 +1,7 @@
 # Encargo de Sevan — regresión numérica y cierre crediticio
 
+> **Cierre técnico del 9 de noviembre, rama `cierre-semana-13`:** SEV-01 implementado con referencia por tipo, Ridge/boosting, evaluación completa y artefactos vinculados, API y página 07. La corrida real conserva la mediana por tipo, ganadora por MAE de validation; [contrato](../regresion/contrato-variables.md) y [resultados](../regresion/resultados-modelo.md). Implementación realizada en la rama común; revisiones humanas de Rhamses/Gerardo y confirmación de la copia crediticia siguen pendientes. El estado inicial que sigue se conserva como especificación histórica.
+
 Estado inicial: pendiente. Leer [contratos y prioridades](../pendientes-cierre-2026-10-20.md) y [D1/Taco](taco.md). El modelo de crédito, calibración, explicaciones, API y página ya existen; la regresión numérica será una capacidad nueva y separada de la regresión logística.
 
 ## SEV-01 — estimación del monto transaccional (P0)

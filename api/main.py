@@ -11,6 +11,7 @@ from api.routers.credit import router as credit_router
 from api.routers.forecast import router as forecast_router
 from api.routers.segments import router as segments_router
 from api.routers.complaints import router as complaints_router
+from api.routers.regression import router as regression_router
 
 app = FastAPI(
     title="BankShield Analytics API",
@@ -38,6 +39,7 @@ app.include_router(credit_router, prefix="/api")
 app.include_router(forecast_router, prefix="/api")
 app.include_router(segments_router, prefix="/api")
 app.include_router(complaints_router, prefix="/api")
+app.include_router(regression_router, prefix="/api")
 
 
 @app.exception_handler(RequestValidationError)
@@ -56,7 +58,11 @@ def health_check():
         "status": "online",
         "service": "BankShield Analytics API",
         "version": "0.1.0",
-        "modules": ["graphs", "fraud", "credit", "forecast", "segments", "complaints"],
+        "modules": ["graphs", "fraud", "credit", "forecast", "segments", "complaints", "regression"],
+        "capabilities": ["association_mining", "graph_comparison", "numeric_regression"],
+        "regression_status": "consultar /api/regression/model",
+        "association_mining_status": "consultar /api/fraud/associations",
+        "graph_comparison_status": "consultar /api/graphs/evaluation?limit=10000",
         "fraud_model_status": "consultar /api/fraud/model",
         "credit_model_status": "consultar /api/credit/model",
         "forecast_status": "consultar /api/forecast/projection",

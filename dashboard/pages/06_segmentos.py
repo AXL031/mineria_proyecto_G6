@@ -69,6 +69,12 @@ st.dataframe(pd.DataFrame(summary["profiles"]), hide_index=True, use_container_w
 
 st.subheader("Línea base (cuantiles de actividad)")
 st.dataframe(pd.DataFrame(summary["baseline_profiles"]), hide_index=True, use_container_width=True)
+if summary.get("comparison"):
+    comparison = summary["comparison"]
+    st.subheader("Comparación en el mismo universo")
+    st.dataframe(pd.DataFrame([{"Método": name, **comparison[name]}
+                              for name in ("kmeans", "activity_quantiles")]), hide_index=True)
+    st.caption("Mismo k y muestra de silueta. La selección de k favorece a KMeans; es una comparación exploratoria.")
 
 st.subheader("Explorar cuentas del segmento")
 segments = sorted({row["segment"] for row in summary["profiles"]})

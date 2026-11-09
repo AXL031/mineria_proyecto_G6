@@ -76,6 +76,7 @@ with col1:
         - 🧩 **Segmentos de Cuentas** (*Disponible mediante API*): Agrupamiento de cuentas destino reincidentes sin usar la etiqueta de fraude.
         - 🗣 **Reclamos y NLP** (*Disponible mediante API*): Producto sugerido por narrativa, tendencias, evaluación y ejemplos de errores de CFPB.
         - 📈 **Pronósticos de Flujo** (*Disponible*): Proyección Naive de volumen o monto y monitoreo histórico de cambios.
+        - **Regresión del Monto** (*Mediante API*): Estimación numérica, comparación de candidatos y ejemplos de prueba; requiere artefactos preparados.
         """
     )
 
@@ -83,9 +84,10 @@ with col2:
     st.markdown("### 🧭 Cómo Navegar")
     st.markdown(
         """
-        Utiliza el menú lateral para acceder a **Fraude**, **Crédito**, **Redes**, **Pronósticos**, **Reclamos** y **Segmentos**.
+        Utiliza el menú lateral para acceder a **Fraude**, **Crédito**, **Redes**, **Pronósticos**, **Reclamos**, **Segmentos** y **Regresión**.
         En Pronósticos puedes proyectar cantidad o monto y consultar el cambio histórico del tramo final.
-        En Fraude puedes evaluar una operación y consultar las métricas del modelo mediante la API.
+        En Fraude puedes evaluar una operación, consultar sus métricas y explorar asociaciones descubiertas automáticamente.
+        En Regresión puedes estimar el monto desde tipo/saldo y comparar candidatos en validación, prueba y stress.
         En Segmentos puedes revisar los perfiles, la línea base y las cuentas de cada grupo.
         En Redes y Grafos encontrarás:
         
@@ -93,6 +95,7 @@ with col2:
         2. **Explorador Interactivo de Subgrafos:** Búsqueda por cuenta y renderizado con física en tiempo real.
         3. **Detección de Patrones de Alerta:** Monitoreo de anomalías tipo abanico (*fan-out*), concentración (*fan-in*) y circularidad.
         4. **Ranking de Centralidad:** Identificación de nodos clave mediante PageRank.
+        5. **Comparación Red vs Volumen:** Evaluación retrospectiva con el mismo universo y presupuesto de cuentas.
         """
     )
 

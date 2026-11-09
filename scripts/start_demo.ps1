@@ -10,7 +10,10 @@ $required = @(
     'artifacts/models/credit/model.joblib', 'data/gold/forecast/transactions_hourly.parquet',
     'artifacts/reports/forecast_monitoring.json', 'data/gold/segments/account_segments.parquet',
     'artifacts/reports/segments.json', 'artifacts/models/complaints/model.joblib',
-    'data/silver/complaints/complaints.parquet', 'artifacts/reports/complaints/error_examples.json'
+    'data/silver/complaints/complaints.parquet', 'artifacts/reports/complaints/error_examples.json',
+    'artifacts/models/regression/model.joblib', 'artifacts/models/regression/metrics.json',
+    'artifacts/models/regression/examples.json', 'artifacts/models/associations/rules.json',
+    'artifacts/reports/graph/comparison.json'
 )
 if (-not (Test-Path -LiteralPath $demoPython)) { throw 'Ejecuta scripts/setup_env.ps1 para preparar Python.' }
 foreach ($relative in $required) {
@@ -41,7 +44,7 @@ try {
     $ready = $false
     do {
         if ($api.HasExited) { throw 'La API terminó; revisar artifacts/reports/demo/api.stderr.log' }
-        try { $health = Invoke-RestMethod "$env:BANKSHIELD_API_URL/" -TimeoutSec 2; $ready = $health.modules.Count -eq 6 } catch { }
+        try { $health = Invoke-RestMethod "$env:BANKSHIELD_API_URL/" -TimeoutSec 2; $ready = $health.modules -contains 'regression' } catch { }
         if (-not $ready) { Start-Sleep -Milliseconds 300 }
     } while (-not $ready -and (Get-Date) -lt $deadline)
     if (-not $ready) { throw 'La API no quedó disponible.' }

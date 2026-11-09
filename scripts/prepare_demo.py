@@ -55,6 +55,13 @@ def stages_for(root=ROOT, scope="current"):
     add("forecast-monitoring", "monitor_forecast_shift.py", arguments=md("forecast-monitoring"),
         dependencies=("transactions-silver",), inputs=(SILVER,), outputs=("artifacts/reports/forecast_monitoring.json",),
         configs=("configs/forecast.json",), sources=("src/bankshield/models/monitoring.py",))
+    for stage_name, script, output in (
+        ("forecast-baselines", "evaluate_forecast_baselines.py", "artifacts/reports/forecast_baselines.json"),
+        ("forecast-comparison", "evaluate_forecast_models.py", "artifacts/reports/forecast_holt_winters.json")):
+        add(stage_name, script, dependencies=("forecast-gold",),
+            inputs=("data/gold/forecast/transactions_hourly.parquet",), outputs=(output,),
+            configs=("configs/forecast.json",), sources=("src/bankshield/evaluation/forecast.py", "src/bankshield/models/forecast.py"))
+        stages[-1] = replace(stages[-1], json_versions={output: 2})
     mart = "data/gold/transactions/transactions_mart.parquet"
     add("transactions-gold", "build_gold_transactions.py", arguments=md("transactions-gold", "--quality-markdown"),
         dependencies=("transactions-silver",), inputs=(SILVER,),
@@ -95,22 +102,33 @@ def stages_for(root=ROOT, scope="current"):
     add("associations", "mine_associations.py", arguments=("--config", f"{REPORTS}/associations-config.json", *md("associations")),
         dependencies=("analytics-d1",), inputs=(D1, *D1_REPORTS), configs=("configs/associations.json",),
         outputs=("artifacts/models/associations/rules.json",), sources=("src/bankshield/models/associations.py",
-                "src/bankshield/features/association_transactions.py"))
+                "src/bankshield/features/association_transactions.py", "src/bankshield/analytics_contract.py"))
     add("regression", "train_regression.py", arguments=("--config", f"{REPORTS}/regression-config.json", *md("regression")),
         dependencies=("analytics-d1",), inputs=(D1, *D1_REPORTS), configs=("configs/regression.json",),
         outputs=("artifacts/models/regression/model.joblib", "artifacts/models/regression/metrics.json",
                  "artifacts/models/regression/predictions.parquet", "artifacts/models/regression/examples.json"),
-        sources=("src/bankshield/models/regression.py", "src/bankshield/features/regression.py"))
+        sources=("src/bankshield/models/regression.py", "src/bankshield/features/regression.py", "src/bankshield/analytics_contract.py"))
     add("graph-comparison", "evaluate_graph_alerts.py", arguments=("--limit", "10000",
         "--output", f"{REPORTS}/graph-alert-evaluation.json", "--comparison-output", "artifacts/reports/graph/comparison.json",
         "--comparison-markdown", f"{REPORTS}/graph-comparison.md"), inputs=(BRONZE,),
         configs=("configs/graph.json",), outputs=("artifacts/reports/graph/comparison.json",),
         sources=("src/bankshield/ingestion/graph_dataset.py", "src/bankshield/features/graph.py",
-                 "src/bankshield/features/graph_patterns.py"))
+                 "src/bankshield/features/graph_patterns.py", "src/bankshield/evaluation/graph.py"))
     add("model-monitoring", "monitor_model_performance.py", arguments=("--config", f"{REPORTS}/monitoring-config.json"),
         dependencies=("regression",), inputs=("artifacts/models/regression/predictions.parquet",
         "artifacts/models/regression/model.joblib", "artifacts/models/regression/metrics.json", *D1_REPORTS),
         configs=("configs/model_monitoring.json",))
+    academic_reports = (QUALITY, "artifacts/models/fraud-silver/metrics.json", "artifacts/models/credit/metrics.json",
+        "artifacts/reports/segments.json", "artifacts/reports/forecast_holt_winters.json",
+        "artifacts/reports/graph/comparison.json", "artifacts/models/regression/metrics.json",
+        "artifacts/models/associations/rules.json", credit_bronze, complaints_bronze)
+    add("academic-evidence", "build_academic_evidence.py", arguments=("--markdown-dir", f"{REPORTS}/academic"),
+        dependencies=("fraud-training", "credit-training", "segments-build", "forecast-comparison", "graph-comparison", "regression", "associations"),
+        inputs=academic_reports, outputs=("artifacts/reports/academic/summary.json", f"{REPORTS}/academic/kpis-negocio.md",
+                                         f"{REPORTS}/academic/evaluacion-comparativa.md"),
+        sources=("src/bankshield/analytics_contract.py",))
+    if scope == "current":
+        stages[-1] = replace(stages[-1], optional=True, unavailable_reason="La síntesis académica requiere las ampliaciones del alcance full.")
     extensions = {"associations": "CUE-01", "regression": "SEV-01", "graph-comparison": "RHA-01",
                   "model-monitoring": "GER-02 (P2)"}
     result = []
@@ -160,7 +178,7 @@ def git_context(root):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--force", action="store_true", help="Reconstruir TODA etapa seleccionada y sus dependencias, incluido fraude")
-    parser.add_argument("--scope", choices=("current", "full"), default="current",
+    parser.add_argument("--scope", choices=("current", "full"), default="full",
                         help="current: seis módulos + D1; full: exige también entregas CUE-01/SEV-01/RHA-01")
     parser.add_argument("--stage", action="append", help="Preparar solo esta etapa y sus dependencias; repetible")
     parser.add_argument("--plan", action="store_true", help="Mostrar orden y entregas pendientes, sin generar datos ni entrenar")

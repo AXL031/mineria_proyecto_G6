@@ -1,5 +1,7 @@
 # Encargo de Gerardo — reproducción, versiones y monitoreo
 
+> **Ampliación técnica del 9 de noviembre en `cierre-semana-13`:** el alcance full incorpora asociaciones/regresión, comparación temporal y síntesis académica; el registro de siete módulos ya no rompe scripts de inicio/control/verificación. Recursos y evidencia de ejecución están en [cierre](../cierre-semana13.md). GER-02 (P2), otra PC y firmas humanas siguen pendientes; los registros anteriores se conservan con su fecha.
+
 Estado inicial: pendiente. Leer [contratos y prioridades](../pendientes-cierre-2026-10-20.md). Pronósticos, comparación Holt-Winters, Naive seleccionado y monitoreo histórico ya existen. No sustituirlos ni volver a entrenarlos sin una causa documentada.
 
 ## GER-01 — preparación integral y entorno reproducible (P1)

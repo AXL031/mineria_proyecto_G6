@@ -1,0 +1,11 @@
+{
+  "input": "data/gold/analytics/transactions.parquet",
+  "dataset_report": "artifacts/reports/analytics/dataset.json",
+  "discretization_report": "artifacts/reports/analytics/discretization.json",
+  "output": "artifacts/models/regression",
+  "markdown": "docs/regresion/resultados-modelo.md",
+  "chunksize": 250000,
+  "max_train_rows": 200000,
+  "seed": 42,
+  "examples_limit": 200
+}

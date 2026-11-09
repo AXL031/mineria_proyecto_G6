@@ -83,6 +83,17 @@ def render_markdown(report: dict) -> str:
         )
     lines += [
         "",
+        "## Comparación con la referencia",
+        "",
+        "Mismo universo, k y muestra/espacio de silueta; mismo presupuesto de remuestras para ARI.",
+        "",
+        "| Método | Silueta | ARI medio |",
+        "| --- | ---: | ---: |",
+        *[f"| {method} | {report['comparison'][method]['silhouette']:.4f} | {report['comparison'][method]['mean_stability_ari']:.4f} |"
+          for method in ("kmeans", "activity_quantiles")],
+        "",
+        "k se eligió por silueta de KMeans: esta comparación es exploratoria, no una prueba externa.",
+        "",
         "## Limitaciones",
         "",
         "- Las cuentas que reciben una sola vez (la mayoría del dataset) quedan "
@@ -143,6 +154,7 @@ def main() -> None:
         "source": str(input_path.relative_to(ROOT)),
         "min_transactions": config.get("min_transactions", 10),
         "total_accounts": result["total_accounts"],
+        "comparison": result["comparison"],
         "metrics": {
             "chosen_k": result["chosen_k"],
             "silhouette": result["silhouette"],

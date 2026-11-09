@@ -154,6 +154,13 @@ class PreparationTests(unittest.TestCase):
             self.assertTrue(registry[name].unavailable_reason)
         self.assertIn("10000", registry["graph-comparison"].arguments)
         self.assertEqual(registry["model-monitoring"].dependencies, ("regression",))
+        complete = {s.name: s for s in stages_for(scope="full")}
+        for name in ("associations", "regression", "graph-comparison"):
+            self.assertIsNone(complete[name].unavailable_reason)
+            self.assertFalse(complete[name].optional)
+        self.assertEqual(complete["forecast-comparison"].json_versions,
+                         {"artifacts/reports/forecast_holt_winters.json": 2})
+        self.assertIn("regression", complete["academic-evidence"].dependencies)
 
     def test_demo_configuration_redirects_markdown_without_changing_source(self):
         (self.root / "configs").mkdir()

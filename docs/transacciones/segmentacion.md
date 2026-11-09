@@ -36,6 +36,17 @@ Reporte generado por `scripts/segment_transactions.py`.
 | 0 | 73,315 | 12.18 | 3,155,516 |
 | 1 | 73,314 | 24.70 | 7,349,599 |
 
+## Comparación con la referencia
+
+Mismo universo, k y muestra/espacio de silueta; mismo presupuesto de remuestras para ARI.
+
+| Método | Silueta | ARI medio |
+| --- | ---: | ---: |
+| kmeans | 0.2305 | 0.7280 |
+| activity_quantiles | 0.1207 | 0.9931 |
+
+k se eligió por silueta de KMeans: esta comparación es exploratoria, no una prueba externa.
+
 ## Limitaciones
 
 - Las cuentas que reciben una sola vez (la mayoría del dataset) quedan fuera de la segmentación; el resultado describe solo cuentas activas.

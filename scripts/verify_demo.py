@@ -1,4 +1,4 @@
-"""Ensaya los seis módulos con artefactos reales, HTTP local y sus páginas."""
+"""Verifica perfiles current/full con artefactos reales, HTTP y páginas."""
 
 import argparse
 import json
@@ -8,19 +8,24 @@ import sys
 from datetime import datetime, timezone
 
 import requests
+import math
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
+from bankshield.analytics_contract import provenance
 NARRATIVE = "My credit report contains an account that does not belong to me. I disputed the incorrect information with the credit bureau but it has not been removed."
 CREDIT = {"person_age": 30, "person_income": 55000.0, "person_home_ownership": "RENT",
           "person_emp_length": 4.0, "loan_intent": "PERSONAL", "loan_amnt": 10000.0,
           "cb_person_default_on_file": "N", "cb_person_cred_hist_length": 5}
 
 
-def verify(url, output, pages=True):
+def verify(url, output, pages=True, profile="full", include_model_monitoring=False):
     report = {"timestamp_utc": datetime.now(timezone.utc).isoformat(), "api_url": url,
-              "transport": "real_loopback_http", "checks": {}, "examples": {}}
+              "schema_version": 1, "profile": profile,
+              "transport": "real_loopback_http", "checks": {}, "examples": {},
+              "optional": {"model_performance_monitoring": "required" if include_model_monitoring else "skipped_optional"},
+              **provenance([Path(__file__), ROOT / "api/main.py"])}
     def check(name, condition):
         report["checks"][name] = bool(condition)
         if not condition:
@@ -32,7 +37,39 @@ def verify(url, output, pages=True):
         return result.json()
     try:
         health = request("/")
-        check("six_modules", set(health["modules"]) == {"fraud", "credit", "graphs", "forecast", "segments", "complaints"})
+        expected_modules = {"fraud", "credit", "graphs", "forecast", "segments", "complaints"}
+        if profile == "full":
+            expected_modules.add("regression")
+        check("expected_modules", expected_modules.issubset(health["modules"]))
+        if profile == "full":
+            check("expected_capabilities", {"association_mining", "graph_comparison", "numeric_regression"}.issubset(health.get("capabilities", [])))
+            regression = request("/api/regression/model")
+            amount = request("/api/regression/predict", {"type": "TRANSFER", "oldbalanceOrg": 500.0})
+            check("regression_finite_nonnegative", math.isfinite(amount["prediction"]) and amount["prediction"] >= 0)
+            check("regression_model_identity", amount["model_id"] == regression["model_id"])
+            examples = request("/api/regression/examples?limit=20&offset=0")
+            check("regression_example_identity", examples["model_id"] == regression["model_id"] and all(row["model_id"] == regression["model_id"] for row in examples["rows"]))
+            check("regression_nonempty_test_examples", bool(examples["rows"]))
+            request("/api/regression/predict", {"type": "TRANSFER", "oldbalanceOrg": -1.0}, 422)
+            request("/api/regression/predict", {"type": "TRANSFER", "oldbalanceOrg": 500.0, "amount": 10.0}, 422)
+            request("/api/regression/examples?limit=0", status=422)
+            report["examples"]["regression"] = amount
+            associations = request("/api/fraud/associations?partition=test&limit=20&offset=0")
+            validation = request("/api/fraud/associations?partition=validation&limit=20&offset=0")
+            check("associations_same_analysis", associations["analysis_id"] == validation["analysis_id"])
+            check("associations_validation_selection", associations["selection_partition"] == "validation")
+            request("/api/fraud/associations?partition=invalid", status=422)
+            request("/api/fraud/associations?offset=100000")
+            report["examples"]["association_analysis_id"] = associations["analysis_id"]
+            graph_comparison = request("/api/graphs/evaluation?limit=10000")
+            check("graph_same_budget", all(item["network_indicators"]["selected_accounts"] == item["volume_reference"]["selected_accounts"] == item["k"] for item in graph_comparison["comparisons"]))
+            check("graph_bounded_universe", graph_comparison["universe_size"] >= max(item["k"] for item in graph_comparison["comparisons"]))
+            request("/api/graphs/evaluation?limit=11000", status=503)
+            report["examples"]["graph_analysis_id"] = graph_comparison["analysis_id"]
+        if include_model_monitoring:
+            runs = request("/api/monitoring/runs")
+            check("model_monitoring_has_real_run", bool(runs["runs"]))
+            request("/api/monitoring/runs/" + runs["runs"][0]["run_id"])
         fraud_model = request("/api/fraud/model")
         request("/api/fraud/patterns")
         fraud_inputs = [{"type": "TRANSFER", "amount": 1000.0, "oldbalanceOrg": 500.0},
@@ -80,22 +117,33 @@ def verify(url, output, pages=True):
             from streamlit.testing.v1 import AppTest
             os.environ["BANKSHIELD_API_URL"] = url
             os.environ["BANKSHIELD_GRAPH_SAMPLE"] = "10000"
-            for page_name in ("01_fraude.py", "02_credito.py", "03_redes.py", "04_pronosticos.py", "05_reclamos.py", "06_segmentos.py"):
+            page_names = ["01_fraude.py", "02_credito.py", "03_redes.py", "04_pronosticos.py", "05_reclamos.py", "06_segmentos.py"]
+            if profile == "full":
+                page_names.append("07_regresion.py")
+            home = AppTest.from_file(str(ROOT / "dashboard/app.py"), default_timeout=120).run()
+            check("homepage_initializes", not home.exception)
+            for page_name in page_names:
                 page = AppTest.from_file(str(ROOT / "dashboard/pages" / page_name), default_timeout=120).run()
                 check(f"page_{page_name}_initializes", not page.exception and not page.error)
+                def click(label):
+                    next(button for button in page.button if button.label == label).click().run()
                 if page_name == "01_fraude.py":
-                    page.button[0].click().run()
-                    page.button[1].click().run()
-                    page.button[2].click().run()
+                    for label in ("Evaluar transacción", "Consultar métricas y versión", "Consultar patrones históricos"):
+                        click(label)
+                    if profile == "full":
+                        click("Consultar asociaciones descubiertas")
                 elif page_name == "02_credito.py":
-                    page.button[0].click().run()
-                    page.button[1].click().run()
+                    click("Evaluar solicitud")
+                    click("Consultar métricas y versión")
                 elif page_name == "04_pronosticos.py":
-                    page.button[0].click().run()
-                    page.button[1].click().run()
+                    click("Generar proyección")
+                    click("Consultar monitoreo")
                 elif page_name == "05_reclamos.py":
-                    for i in range(4):
-                        page.button[i].click().run()
+                    for label in ("Clasificar reclamo", "Consultar tendencias", "Consultar evaluación", "Consultar ejemplos de prueba"):
+                        click(label)
+                elif page_name == "07_regresion.py":
+                    for label in ("Estimar monto", "Consultar evaluación", "Consultar ejemplos"):
+                        click(label)
                 check(f"page_{page_name}_interactions", not page.exception and not page.error)
         report["status"] = "passed"
     except Exception as exc:
@@ -103,6 +151,7 @@ def verify(url, output, pages=True):
         report["error"] = str(exc)
         raise
     finally:
+        report["finished_at_utc"] = datetime.now(timezone.utc).isoformat()
         output.parent.mkdir(parents=True, exist_ok=True)
         output.write_text(json.dumps(report, indent=2, ensure_ascii=False, allow_nan=False), encoding="utf-8")
     print(f"Demo verificada: {len(report['checks'])} comprobaciones. Evidencia: {output}")
@@ -113,5 +162,7 @@ if __name__ == "__main__":
     parser.add_argument("--api-url", default="http://127.0.0.1:8000")
     parser.add_argument("--output", type=Path, default=ROOT / "artifacts/reports/demo/delivery-check.json")
     parser.add_argument("--skip-pages", action="store_true")
+    parser.add_argument("--profile", choices=("current", "full"), default="full")
+    parser.add_argument("--include-model-monitoring", action="store_true", help="Exigir la ampliación P2 de historial de desempeño")
     args = parser.parse_args()
-    verify(args.api_url.rstrip("/"), args.output, not args.skip_pages)
+    verify(args.api_url.rstrip("/"), args.output, not args.skip_pages, args.profile, args.include_model_monitoring)

@@ -1,5 +1,7 @@
 # Encargo de Angel — integración, aceptación NLP y evidencia final
 
+> **Cierre técnico del 9 de noviembre, rama `cierre-semana-13`:** ANG-01 registra siete módulos y capacidades, navegación y verificador full con errores/identidades. ANG-03 tiene [matriz con encargados](../matriz-entregables.md), [KPIs](../kpis-negocio.md), [diccionario](../diccionario-datos.md), [comparación](../evaluacion-comparativa.md) y [guion](../guion-tercera-presentacion.md). ANG-02 mantiene lectura humana de NLP y procedencia histórica pendientes. La implementación de la rama común no firma como Angel ni como sus revisores. Resultados de ejecución: [cierre](../cierre-semana13.md).
+
 Estado inicial: pendiente. Leer [contratos y prioridades](../pendientes-cierre-2026-10-20.md). Reclamos ya tiene servicio/API/página y artefactos locales: preservar esa implementación. Cada dueño entrega su capacidad y sus pruebas; Angel integra navegación, contratos centrales y demostración.
 
 ## ANG-01 — integración central y verificación (P1)

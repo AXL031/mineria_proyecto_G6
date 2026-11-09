@@ -1,5 +1,7 @@
 # Encargo de Cueva — asociaciones y aceptación transaccional
 
+> **Cierre técnico del 9 de noviembre, rama `cierre-semana-13`:** CUE-01 implementado con Apriori acotado, validación D1, pruebas, API y sección del panel. La corrida completa seleccionó 18 reglas entre 60 candidatos; [reporte reproducible](../fraude/asociaciones-descubiertas.md). Implementación de cierre realizada desde la rama común; no se atribuye como revisión humana de Cueva/Sevan/Taco. CUE-02 conserva sus pendientes de fuente y aceptación. Estado integrado: [matriz](../matriz-entregables.md) y [cierre](../cierre-semana13.md).
+
 Estado inicial: pendiente. Leer [contratos y prioridades](../pendientes-cierre-2026-10-20.md) y [TAC-01](taco.md). El clasificador, sus cortes históricos, umbral y `/api/fraud/patterns` ya existen y deben seguir funcionando.
 
 ## CUE-01 — descubrimiento automático de asociaciones (P0)

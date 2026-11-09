@@ -6,14 +6,26 @@ import os
 from pathlib import Path
 from typing import Literal
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, ConfigDict, Field
 
 from bankshield.services.fraud import FraudScorer
+from bankshield.services.associations import read_associations
 
 router = APIRouter(prefix="/fraud", tags=["Fraude"])
 logger = logging.getLogger(__name__)
 DEFAULT_MODEL = Path(__file__).resolve().parents[2] / "artifacts/models/fraud/model.joblib"
+DEFAULT_ASSOCIATIONS = Path(__file__).resolve().parents[2] / "artifacts/models/associations/rules.json"
+
+
+@router.get("/associations")
+def discovered_associations(partition: Literal["train", "validation", "test", "stress"] = "test",
+                            limit: int = Query(20, ge=1, le=100), offset: int = Query(0, ge=0)):
+    try:
+        return read_associations(os.environ.get("BANKSHIELD_ASSOCIATIONS_REPORT", str(DEFAULT_ASSOCIATIONS)),
+                                 partition, limit, offset)
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        raise HTTPException(503, "Asociaciones ausentes o incompatibles; ejecutar mine_associations.py.") from exc
 
 
 class FraudRequest(BaseModel):

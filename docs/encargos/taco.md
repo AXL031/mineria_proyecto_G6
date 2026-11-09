@@ -1,5 +1,7 @@
 # Encargo de Taco — datos analíticos y cierre de segmentos
 
+> **Ampliación técnica del 9 de noviembre en `cierre-semana-13`:** comparación cuantitativa de MiniBatchKMeans y cuantiles, con mismo universo/k/muestra de silueta y presupuesto de remuestras. [Síntesis](../evaluacion-comparativa.md); la referencia tiene mayor estabilidad y KMeans mayor silueta. No cambia la exclusión de `isFraud` del ajuste ni acredita aceptación humana. D1 se reconstruye con las mismas huellas. Véase [cierre](../cierre-semana13.md).
+
 Estado inicial: pendiente. Leer primero [contratos y prioridades](../pendientes-cierre-2026-10-20.md). Trabajar sobre los cambios locales existentes sin descartarlos. Este encargo implementa datos y controles; Cueva implementa la minería de reglas y Sevan el modelo de regresión.
 
 ## Estado al 21 de octubre de 2026
