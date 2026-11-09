@@ -17,6 +17,19 @@ pronósticos: es una tabla derivada, con su propio contrato.
 .venv-pruebas/Scripts/python.exe scripts/build_analytics_transactions.py --config configs/analytics.json
 ```
 
+La [preparación integral de la demo](../ger-01-reproduccion.md) ya incluye esta
+etapa y sus dependencias:
+
+```powershell
+.venv-pruebas/Scripts/python.exe scripts/prepare_demo.py --stage analytics-d1
+```
+
+Ese recorrido reutiliza Silver solo si su recibo coincide y reconstruye D1
+cuando cambian la entrada, la configuración, el código declarado o el entorno.
+El preparador valida huellas, `schema_version` y los controles publicados, pero
+no reemplaza las pruebas de invariantes de dominio de
+`tests/unit/test_analytical_transactions.py` ni la revisión de particiones.
+
 El comando exige el reporte de calidad Silver completo, sin rechazos y con
 huellas coincidentes. Cualquier desviación detiene la construcción con un
 mensaje accionable y sin publicar un archivo parcial.
@@ -177,7 +190,12 @@ cruzada, como en el resto del proyecto.
 | --- | --- | --- | --- |
 | Contrato, bins y ausencia de fuga | Cueva | Pendiente | Que `train` 1–323 sea la única fuente de ajuste, que `stress` no participe en ninguna selección y que `amount_bin` no se use para predecir `amount`. |
 | Particiones y cortes | Gerardo | Pendiente | Que los cortes 323/378/718/743 y la separación `test` 918,321 + `stress` 296 sean consistentes con el DAG y con los reportes de fraude. |
-| Reproducción en clon limpio | Gerardo–Sevan | Pendiente | Reconstruir Silver → D1 desde otro entorno y comparar las tres huellas. |
+| Flujo de preparación (etapa `analytics-d1`) | Taco | Revisión técnica hecha el 9 de noviembre; firma humana no registrada | Que el DAG declare entradas, configuración, fuentes y salidas, y que el recibo invalide el reuso si cambia cualquiera de ellas. Evidencia en [revisión de Taco a GER-01](../revision-taco-ger-01.md). |
+| Reproducción en clon limpio | Gerardo–Sevan | Parcial | Gerardo informa una reconstrucción aislada local con las tres huellas iguales ([registro](../ger-01-reproduccion.md)); falta otra PC, otra persona y la revisión de versiones/modelos por Sevan. |
+
+La corrida propia del 9 de noviembre sobre `main` (`de6bbe2`) reprodujo el
+dataset `A4C6F55E…234960EA` y el esquema de bins `54685F5B…1AD9386` en 23.4 s,
+con salidas redirigidas y sin tocar los artefactos de la demo.
 
 ## Límites
 

@@ -20,7 +20,7 @@ Ya existen seis módulos con servicio/API/página: fraude, crédito, grafos, pro
 | Taco | TAC-01 datos y discretización compartidos; TAC-02 cierre de segmentos/trazabilidad | [Taco](encargos/taco.md) | Gerardo revisa particiones; Cueva acepta contrato. |
 | Sevan | SEV-01 regresión completa; SEV-02 cierre crediticio; SEV-03 entorno con Gerardo | [Sevan](encargos/sevan.md) | Rhamses revisa API y evaluación; Gerardo valida reproducción. |
 | Rhamses | RHA-01 comparación de grafos; RHA-02 cierre HTTP/navegación con Angel | [Rhamses](encargos/rhamses.md) | Cueva revisa comparación; Angel valida interfaz. |
-| Gerardo | GER-01 reproducción y versiones; GER-02 monitoreo recomendado; GER-03 aceptación temporal | [Gerardo](encargos/gerardo.md) | Taco revisa reproducción; Sevan revisa métricas. |
+| Gerardo | GER-01 reproducción y versiones; GER-02 monitoreo recomendado; GER-03 aceptación temporal | [Gerardo](encargos/gerardo.md) | Taco revisa reproducción: evidencia técnica del 9 de noviembre en [revisión a GER-01](revision-taco-ger-01.md); firma humana pendiente. Sevan revisa métricas. |
 | Angel | ANG-01 integración central y verificación; ANG-02 aceptación NLP; ANG-03 matriz de entregables | [Angel](encargos/angel.md) | Gerardo revisa integración; Rhamses valida navegación. |
 
 El responsable implementa y prueba su entrega completa. El revisor aporta aceptación, no asume silenciosamente su implementación. Un agente puede preparar evidencia técnica; la aceptación humana debe ser confirmada por la persona y quedar pendiente hasta entonces.

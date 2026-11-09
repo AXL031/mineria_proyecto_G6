@@ -41,6 +41,34 @@ Siguen pendientes, por ser tareas humanas: aceptación cruzada del contrato con
 Cueva, revisión de particiones por Gerardo, revisión de navegación con
 Rhamses–Angel y reproducción en un clon/entorno limpio coordinada con Gerardo.
 
+## Estado al 9 de noviembre de 2026
+
+**Sin trabajo de código pendiente en `main`.** Sobre `de6bbe2` se repitieron la
+suite completa (328 pruebas aprobadas), `pip check` y una corrida de D1 en rutas
+temporales: 6,362,620 filas, cero excluidas, nueve controles y las tres huellas
+de TAC-01 (`A4C6F55E…234960EA`, bins `54685F5B…1AD9386`, Silver
+`47C786D9…C2E46C`), en 23.4 s. No se modificaron Silver, mart, Gold de segmentos
+ni reportes versionados.
+
+**Revisión de GER-01 entregada.** El flujo de preparación y reproducción de
+Gerardo quedó revisado según lo asignado en
+[pendientes y contratos](../pendientes-cierre-2026-10-20.md): DAG de 14 etapas,
+contrato verificable de la etapa `analytics-d1`, validaciones de recibo y
+protecciones. Evidencia, hallazgos y límites en
+[revisión de Taco a GER-01](../revision-taco-ger-01.md). La revisión es técnica;
+no firma la corrida de Gerardo ni su reproducción.
+
+**Fuera de esta rama.** CUE-01 y SEV-01 viven en `cierre-semana-13`, que todavía
+no está fusionada. La revisión de datos de CUE-01 (bins sin recalcular, fraude
+solo como consecuente, test y stress sin seleccionar) y la reproducción del
+alcance ampliado corresponden cuando esa rama se integre; no se declaran
+realizadas aquí.
+
+Siguen pendientes por ser tareas humanas: aceptación cruzada del contrato y de
+segmentación con Cueva, confirmación de fecha de descarga y atribución de
+PaySim, revisión de particiones D1 por Gerardo, navegación con Rhamses–Angel y
+reproducción en un clon o PC distintos.
+
 
 ## TAC-01 — tabla compartida para asociaciones y regresión (P0)
 
