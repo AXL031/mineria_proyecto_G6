@@ -9,11 +9,14 @@ presentarse como tales en cualquier interfaz.
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
 from typing import Any
 
 import networkx as nx
 import pandas as pd
 
+from bankshield.evaluation.graph import SCHEMA_VERSION as COMPARISON_SCHEMA_VERSION
 from bankshield.features.graph import (
     compute_node_metrics,
     extract_subgraph,
@@ -193,3 +196,85 @@ def query_top_accounts(
         })
 
     return results
+
+
+# ---------------------------------------------------------------------------
+# Comparación de alertas de red (reporte preparado)
+# ---------------------------------------------------------------------------
+
+COMPARISON_REQUIRED_KEYS = (
+    "schema_version", "analysis_id", "scope", "sample", "universe",
+    "comparisons", "limitations",
+)
+
+
+class ComparisonReportError(Exception):
+    """El reporte de comparación no puede servirse para la consulta pedida.
+
+    ``code`` distingue el motivo: ``report_missing``, ``report_invalid``,
+    ``incompatible_version`` o ``sample_mismatch``.
+    """
+
+    def __init__(self, code: str, message: str):
+        super().__init__(message)
+        self.code = code
+        self.message = message
+
+
+def load_comparison_report(path: Path) -> dict[str, Any]:
+    """Carga el reporte preparado sin construir ni recalcular el grafo."""
+    path = Path(path)
+    if not path.is_file():
+        raise ComparisonReportError(
+            "report_missing",
+            "No existe el reporte de comparación de grafos. Genérelo con "
+            "scripts/evaluate_graph_alerts.py --comparison-output.",
+        )
+    try:
+        report = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise ComparisonReportError(
+            "report_invalid", f"No se pudo leer el reporte de comparación: {exc}"
+        ) from exc
+    if not isinstance(report, dict):
+        raise ComparisonReportError("report_invalid", "El reporte de comparación es inválido.")
+    return report
+
+
+def comparison_response(report: dict[str, Any], limit: int) -> dict[str, Any]:
+    """Respuesta de la API para la muestra pedida, sin servir otro universo.
+
+    El ``limit`` debe coincidir con el tamaño de muestra *solicitado* que consta
+    en el reporte, no solo con las filas efectivamente leídas.
+    """
+    version = report.get("schema_version")
+    if version != COMPARISON_SCHEMA_VERSION:
+        raise ComparisonReportError(
+            "incompatible_version",
+            f"El reporte tiene la versión de esquema {version!r}; se esperaba "
+            f"{COMPARISON_SCHEMA_VERSION}. Regenere la comparación.",
+        )
+    missing = [key for key in COMPARISON_REQUIRED_KEYS if key not in report]
+    if missing:
+        raise ComparisonReportError(
+            "report_invalid", f"Al reporte le faltan campos: {missing}. Regenere la comparación."
+        )
+    sample = report["sample"]
+    requested = sample.get("requested_limit") if isinstance(sample, dict) else None
+    if requested != limit:
+        raise ComparisonReportError(
+            "sample_mismatch",
+            f"El reporte corresponde a una muestra solicitada de {requested!r} filas, "
+            f"no de {limit:,}. Regenere la comparación para esa muestra.",
+        )
+    return {
+        "status": "success",
+        "schema_version": report["schema_version"],
+        "analysis_id": report["analysis_id"],
+        "simulation_data": True,
+        "scope": report["scope"],
+        "sample": sample,
+        "universe_size": report["universe"].get("size"),
+        "comparisons": report["comparisons"],
+        "limitations": report["limitations"],
+    }

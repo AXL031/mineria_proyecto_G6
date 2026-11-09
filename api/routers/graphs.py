@@ -8,6 +8,7 @@ explícitamente que provienen de simulación.
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 from typing import Any, Optional
 
@@ -27,6 +28,9 @@ from bankshield.features.graph_patterns import (
 )
 from bankshield.ingestion.graph_dataset import read_transaction_edges, summarize_edges
 from bankshield.services.graph import (
+    ComparisonReportError,
+    comparison_response,
+    load_comparison_report,
     query_account,
     query_subgraph,
     query_top_accounts,
@@ -37,6 +41,7 @@ router = APIRouter(prefix="/graphs", tags=["Grafos de Transacciones"])
 ROOT = Path(__file__).resolve().parents[2]
 DATA_PATH = ROOT / "data/bronze/transactions/PS_20174392719_1491204439457_log.csv"
 CONFIG_PATH = ROOT / "configs/graph.json"
+DEFAULT_COMPARISON = ROOT / "artifacts/reports/graph/comparison.json"
 
 # Estado en memoria para reutilización eficiente
 _GRAPH_CACHE: dict[str, Any] = {
@@ -146,3 +151,21 @@ def get_suspicious_patterns(
         "total_detected": len(suspicious_df),
         "results": results,
     }
+
+
+@router.get("/evaluation")
+def get_alert_comparison(limit: int = Query(default=10_000, ge=1_000, le=500_000)):
+    """Comparación preparada de alertas de red frente a una referencia por volumen.
+
+    Carga el reporte generado por ``scripts/evaluate_graph_alerts.py``; no
+    ejecuta el análisis, no carga el grafo ni sobrescribe el reporte. El
+    ``limit`` debe coincidir con la muestra solicitada que consta en el reporte;
+    si difiere se responde 503 sin servir resultados de otro universo.
+    """
+    path = Path(os.environ.get("BANKSHIELD_GRAPH_COMPARISON", str(DEFAULT_COMPARISON)))
+    try:
+        return comparison_response(load_comparison_report(path), limit)
+    except ComparisonReportError as exc:
+        raise HTTPException(
+            status_code=503, detail={"code": exc.code, "message": exc.message}
+        )
