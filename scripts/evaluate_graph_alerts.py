@@ -12,6 +12,16 @@ Uso desde la raíz del proyecto:
     python scripts/evaluate_graph_alerts.py
     python scripts/evaluate_graph_alerts.py --limit 100000
     python scripts/evaluate_graph_alerts.py --markdown artifacts/reports/graph/evaluacion-alertas.md
+
+Comparación justa red vs referencia por volumen (RHA-01).  Usa una única
+muestra, el mismo universo y el mismo número de cuentas para ambos métodos:
+
+    python scripts/evaluate_graph_alerts.py --limit 10000 \\
+        --comparison-output artifacts/reports/graph/comparison.json \\
+        --comparison-markdown docs/grafos/comparacion-alertas.md
+
+Sin ``--limit`` la comparación usa ``comparison.default_sample_limit`` de
+``configs/graph.json`` (10000 filas); el reporte histórico conserva su límite.
 """
 
 import argparse
@@ -25,6 +35,12 @@ sys.path.insert(0, str(ROOT / "src"))
 import numpy as np
 import pandas as pd
 
+from bankshield.evaluation.graph import (
+    build_comparison_report,
+    comparison_config,
+    file_sha256,
+    render_comparison_markdown,
+)
 from bankshield.ingestion.graph_dataset import read_transaction_edges, summarize_edges
 from bankshield.features.graph import (
     build_transaction_graph,
@@ -45,6 +61,37 @@ def _load_config() -> dict:
     if config_path.exists():
         return json.loads(config_path.read_text(encoding="utf-8"))
     return {}
+
+
+DEFAULT_COMPARISON_OUTPUT = ROOT / "artifacts/reports/graph/comparison.json"
+
+
+def _source_info(path: Path) -> dict:
+    """Identifica la fuente con ruta relativa a la raíz, huella y tamaño."""
+    resolved = Path(path).resolve()
+    try:
+        shown = resolved.relative_to(ROOT).as_posix()
+    except ValueError:
+        shown = resolved.name
+    return {
+        "path": shown,
+        "sha256": file_sha256(resolved),
+        "size_bytes": resolved.stat().st_size,
+    }
+
+
+def _write_comparison(report: dict, json_path: Path, markdown_path: Path | None) -> None:
+    """Escribe el JSON y, desde el mismo contenido, el Markdown."""
+    json_path.parent.mkdir(parents=True, exist_ok=True)
+    json_path.write_text(
+        json.dumps(report, indent=2, ensure_ascii=False, allow_nan=False) + "\n",
+        encoding="utf-8",
+    )
+    print(f"JSON de comparación: {json_path}")
+    if markdown_path:
+        markdown_path.parent.mkdir(parents=True, exist_ok=True)
+        markdown_path.write_text(render_comparison_markdown(report), encoding="utf-8")
+        print(f"Markdown de comparación: {markdown_path}")
 
 
 def _evaluate_pattern_vs_fraud(
@@ -390,10 +437,28 @@ def main() -> None:
         "--limit", type=int,
         help="Máximo de filas a leer",
     )
+    parser.add_argument(
+        "--comparison-output", type=Path,
+        help="Ruta del JSON de la comparación red vs referencia por volumen "
+             "(por defecto artifacts/reports/graph/comparison.json si se pide el "
+             "Markdown de comparación)",
+    )
+    parser.add_argument(
+        "--comparison-markdown", type=Path,
+        help="Ruta del Markdown de la comparación, generado desde el mismo JSON",
+    )
     args = parser.parse_args()
 
     config = _load_config()
-    limit = args.limit or config.get("sample_limit")
+    comparison_cfg = None
+    if args.comparison_output or args.comparison_markdown:
+        comparison_cfg = comparison_config(config)
+    if args.limit is not None:
+        limit = args.limit
+    elif comparison_cfg:
+        limit = comparison_cfg["default_sample_limit"]
+    else:
+        limit = config.get("sample_limit")
 
     # 1. Ingesta
     print("=" * 60)
@@ -509,6 +574,31 @@ def main() -> None:
     if args.markdown:
         _write_markdown(report, args.markdown)
         print(f"Markdown: {args.markdown}")
+
+    # 7. Comparación red vs referencia por volumen (misma muestra y grafo)
+    if comparison_cfg:
+        print("\n" + "=" * 60)
+        print("PASO 7: Comparación red vs referencia por volumen")
+        print("=" * 60)
+        comparison = build_comparison_report(
+            edges,
+            G,
+            node_metrics,
+            config=comparison_cfg,
+            source=_source_info(args.input),
+            requested_limit=limit,
+        )
+        for item in comparison["comparisons"]:
+            net, ref = item["network_indicators"], item["volume_reference"]
+            print(
+                f"  k={item['k']}: cobertura red {net['fraud_coverage']['value']} "
+                f"vs volumen {ref['fraud_coverage']['value']}"
+            )
+        _write_comparison(
+            comparison,
+            args.comparison_output or DEFAULT_COMPARISON_OUTPUT,
+            args.comparison_markdown,
+        )
 
     print("\n[OK] Evaluación de alertas completada.")
 
