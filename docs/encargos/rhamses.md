@@ -1,6 +1,6 @@
 # Encargo de Rhamses — comparación de grafos y contratos HTTP
 
-Estado inicial: pendiente. Leer [contratos y prioridades](../pendientes-cierre-2026-10-20.md). La red, indicadores, patrones, API, consultas acotadas y página HTTP ya existen. No reconstruir estos módulos ni volver a introducir caché que ignore el límite de muestra.
+Estado: RHA-01 implementado en la rama `rhamses` y pendiente de revisión (Cueva la evaluación, Angel la interfaz); RHA-02 pendiente. Leer [contratos y prioridades](../pendientes-cierre-2026-10-20.md). La red, indicadores, patrones, API, consultas acotadas y página HTTP ya existen. No reconstruir estos módulos ni volver a introducir caché que ignore el límite de muestra.
 
 ## RHA-01 — comparación justa de alertas de red (P1)
 
@@ -54,6 +54,19 @@ Comando objetivo, una vez ampliado el script:
 ```
 
 **Aceptación:** reporte real, rankings independientes de etiquetas, igualdad de universo/k, métricas auditables y consulta API/panel sin confundir muestras. Cueva revisa la evaluación; Angel revisa la interfaz. Entregar a Gerardo CLI/salidas y a Angel casos de integración.
+
+### Evidencia de implementación RHA-01 (8 de noviembre de 2026)
+
+Implementado por Rhamses en la rama `rhamses`; la aceptación humana de Cueva y de Angel sigue pendiente.
+
+- **Evaluador:** `src/bankshield/evaluation/graph.py` (universo, rankings, presupuestos, métricas y Markdown). Los rankings no usan `fraud_count`, `isFraud` ni `isFlaggedFraud`; `combine_suspicion_indicators` solo aporta `pattern_count` y su `fraud_count` descriptivo se descarta. Los empates de PageRank y volumen se comparan redondeados (12 y 6 decimales) para que el desempate sea por `account_id` y no por ruido de punto flotante.
+- **Configuración:** bloque `comparison` de `configs/graph.json` (muestra de demo 10000, presupuestos 10/50/100 y percentiles 95 fijados antes de evaluar).
+- **Script:** `scripts/evaluate_graph_alerts.py` acepta `--comparison-output` y `--comparison-markdown`; reutiliza la única muestra, el grafo y las métricas ya calculados y conserva flags y reporte históricos. Sin `--limit` la comparación usa 10000 filas.
+- **HTTP y página:** `GET /api/graphs/evaluation?limit=...` (variable `BANKSHIELD_GRAPH_COMPARISON`) sirve el reporte preparado sin cargar el grafo; 503 con `code` `report_missing`, `report_invalid`, `incompatible_version` o `sample_mismatch`. La página `03_redes.py` tiene la pestaña «Comparación Red vs Volumen» con aviso específico por cada caso.
+- **Pruebas:** `tests/unit/test_graph_comparison.py` (fixture calculado a mano), `tests/unit/test_api_graphs.py` y `tests/unit/test_graph_dashboard.py` ampliados.
+- **Corridas reales** sobre `data/bronze/transactions/PS_20174392719_1491204439457_log.csv` (SHA-256 en cada reporte): primeras 10000 filas → `artifacts/reports/graph/comparison.json` y [comparación](../grafos/comparacion-alertas.md); primeras 50000 filas → `comparison-50000.json` y [comparación](../grafos/comparacion-alertas-50000.md). Para servir la segunda: `BANKSHIELD_GRAPH_COMPARISON=artifacts/reports/graph/comparison-50000.json`. Los Markdown se generan desde el JSON; no editar cifras a mano. Las cifras de la referencia por volumen se verificaron aparte con pandas sobre las mismas 10000 filas.
+- **Entorno de la corrida:** Python 3.10.12, pandas 2.3.3, numpy 2.2.6, networkx 3.4.2 (no el entorno Windows Python 3.12 del proyecto). Pendiente repetirla en `.venv-pruebas` y registrarla en el segundo entorno. Se ejecutó con `--output` fuera del repositorio para no sobrescribir `alert_evaluation.json` (50000 filas).
+- **Pendiente:** revisión de Cueva (evaluación) y de Angel (interfaz); no se declara RHA-01 aceptado hasta entonces.
 
 ## RHA-02 — aceptación HTTP y navegación (P1)
 
