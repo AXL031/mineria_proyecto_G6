@@ -12,6 +12,12 @@ Guía visual del panel de Streamlit de BankShield. Se adaptó un design system p
 
 Toda página que llama a `configure_page` recibe el diseño sin cambiar su lógica.
 
+## Navegación y barra superior
+
+- `dashboard/app.py` define el menú con `st.navigation`: Inicio y las secciones Riesgo y fraude, Transacciones y Texto. Cada página tiene título legible e icono Material, y conserva su ruta (`/fraude`, `/credito`, `/redes`…). La portada vive en `dashboard/inicio.py` y el logo en `dashboard/assets/bankshield-logo.svg`.
+- Para agregar una página: crear el script en `dashboard/pages/` y registrarlo en `PAGES` de `dashboard/app.py`. La prueba `tests/unit/test_ui.py` falla si una página queda fuera del menú.
+- `toolbarMode = "minimal"` oculta «Deploy» y las opciones de desarrollador. El indicador de ejecución se muestra como la barra degradada de carga.
+
 ## Variables
 
 ```css
@@ -57,6 +63,6 @@ Los elementos nativos de Streamlit también se estilizan:
 
 | Página | Estado |
 | --- | --- |
-| Portada (`dashboard/app.py`) | Rediseñada con cabecera hero, aviso y tarjetas de módulo. |
+| Portada (`dashboard/inicio.py`) | Rediseñada con cabecera hero, aviso y tarjetas de módulo. |
 | 03 Redes | Rediseñada: cabecera hero, iconos Material y paleta de marca en el subgrafo. |
 | 01, 02, 04, 05, 06, 07 | Reciben el diseño desde la capa compartida (títulos, métricas, avisos, tablas, botones). Sus responsables pueden adoptar `page_header` y los iconos Material cuando lo decidan. |
