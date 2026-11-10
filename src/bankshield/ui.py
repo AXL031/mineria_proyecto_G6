@@ -57,9 +57,20 @@ def icon(name: str, size: int = 20, label: str | None = None) -> str:
     )
 
 
-def configure_page(*, page_title: str, page_icon: str = "🛡", **kwargs) -> None:
+def inject_design() -> None:
+    """Inyecta el design system; lo llama el enrutador antes de cada página.
+
+    Al cambiar de página Streamlit borra los elementos anteriores. Si el CSS
+    también viene del enrutador, se emite primero en cada ejecución y el menú
+    y la barra no pierden el estilo mientras la página nueva carga. La página
+    lo vuelve a inyectar para funcionar sola (pruebas o ejecución directa).
+    """
+    st.markdown(design_css(st.context.theme.type == "dark"), unsafe_allow_html=True)
+
+
+def configure_page(*, page_title: str, page_icon: str = "\U0001F6E1", **kwargs) -> None:
     """Configura la página e inyecta el design system Material AI."""
-    key = page_icon.replace("️", "").replace("︎", "")
+    key = page_icon.replace("\ufe0f", "").replace("\ufe0e", "")
     st.set_page_config(page_title=page_title, page_icon=PAGE_ICONS.get(key, key), **kwargs)
     st.markdown(design_css(st.context.theme.type == "dark"), unsafe_allow_html=True)
 
@@ -231,6 +242,23 @@ button:focus-visible, [role='tab']:focus-visible, a:focus-visible {{
   border-radius: var(--radius-sm); transition: background-color 0.3s ease-in-out;
 }}
 [data-testid='stMainMenu'] button:hover {{ background: rgba(66, 133, 244, var(--tint)); }}
+
+/* Esqueleto de carga al cambiar de página: el área principal nunca queda en
+   blanco mientras la página nueva aún no ha dibujado su contenido. */
+[data-testid='stMainBlockContainer']:not(:has([data-testid='stHeading'], .bs-hero, [data-testid='stMarkdownContainer'] p))::after {{
+  content: ''; display: block; height: 420px; border-radius: var(--radius-md);
+  background:
+    linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.55) 50%, transparent 100%) 0 0 / 40% 100% no-repeat,
+    linear-gradient(var(--stroke), var(--stroke)) 0 0 / 45% 2.25rem no-repeat,
+    linear-gradient(var(--stroke), var(--stroke)) 0 3.25rem / 70% 1rem no-repeat,
+    linear-gradient(var(--surface-alt), var(--surface-alt)) 0 5.5rem / 100% 6rem no-repeat,
+    linear-gradient(var(--surface-alt), var(--surface-alt)) 0 13rem / 49% 9rem no-repeat,
+    linear-gradient(var(--surface-alt), var(--surface-alt)) 100% 13rem / 49% 9rem no-repeat;
+  animation: bs-skeleton 1.3s ease-in-out infinite;
+}}
+@keyframes bs-skeleton {{ from {{ background-position: -40% 0, 0 0, 0 3.25rem, 0 5.5rem, 0 13rem, 100% 13rem; }}
+                          to {{ background-position: 140% 0, 0 0, 0 3.25rem, 0 5.5rem, 0 13rem, 100% 13rem; }} }}
+[data-testid='stMainBlockContainer'] {{ animation: bs-enter 300ms var(--ease) both; }}
 
 /* Carga de IA: barra degradada en lugar de spinner circular */
 .ai-loading-animation {{

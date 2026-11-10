@@ -8,9 +8,12 @@ este archivo solo define el menú y conserva las rutas existentes.
 from pathlib import Path
 
 import streamlit as st
+from bankshield.ui import inject_design
 
 HERE = Path(__file__).resolve().parent
 
+# El estilo se emite antes de cada página para que no se pierda al navegar.
+inject_design()
 st.logo(str(HERE / "assets/bankshield-logo.svg"), size="large")
 
 PAGES = {
