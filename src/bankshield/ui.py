@@ -203,6 +203,33 @@ button:focus-visible, [role='tab']:focus-visible, a:focus-visible {{
 }}
 [data-testid='stSidebarNav'] a[aria-current='page'] span {{ color: var(--brand-blue); font-weight: 500; }}
 
+/* Navegación por secciones (st.navigation) */
+[data-testid='stSidebarHeader'] {{ padding-bottom: 0.5rem; }}
+[data-testid='stSidebarHeader'] img {{ height: 2.25rem; max-width: 100%; }}
+[data-testid='stNavSectionHeader'] {{
+  color: var(--muted); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; margin: 1rem 0 0.25rem; padding-left: 0.5rem;
+}}
+[data-testid='stSidebarNavLink'] {{ padding: 0.45rem 0.6rem; margin: 1px 0; }}
+[data-testid='stSidebarNavLink'] span {{ font-size: 0.95rem; }}
+[data-testid='stSidebarNavLink'] [data-testid='stIconMaterial'] {{ color: var(--muted); }}
+[data-testid='stSidebarNavLink'][aria-current='page'] [data-testid='stIconMaterial'] {{ color: var(--brand-blue); }}
+[data-testid='stSidebarNavSeparator'] {{ border-color: var(--stroke); }}
+
+/* Barra superior: indicador de ejecución como barra de carga, sin "Stop" */
+[data-testid='stToolbar'] {{ right: 1rem; }}
+[data-testid='stStatusWidget'] {{ visibility: hidden; position: relative; min-width: 140px; }}
+[data-testid='stStatusWidget']::after {{
+  content: ''; visibility: visible; position: absolute; right: 0; top: 50%;
+  width: 120px; height: 4px; margin-top: -2px; border-radius: 4px;
+  background-image: var(--gradient-ai); background-size: 300% 100%;
+  animation: bs-shimmer 1.6s linear infinite;
+}}
+[data-testid='stMainMenu'] button, [data-testid='stToolbarActionButton'] button {{
+  border-radius: var(--radius-sm); transition: background-color 0.3s ease-in-out;
+}}
+[data-testid='stMainMenu'] button:hover {{ background: rgba(66, 133, 244, var(--tint)); }}
+
 /* Carga de IA: barra degradada en lugar de spinner circular */
 .ai-loading-animation {{
   height: 4px; border-radius: 4px; background-image: var(--gradient-ai);

@@ -27,3 +27,7 @@ textColor = "#E8EAED"
 linkColor = "#8AB4F8"
 borderColor = "#3C4043"
 dataframeBorderColor = "#3C4043"
+
+[client]
+# Oculta "Deploy" y las opciones de desarrollador; conserva el menú de ajustes.
+toolbarMode = "minimal"
