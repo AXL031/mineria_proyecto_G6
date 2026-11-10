@@ -100,6 +100,18 @@ class DesignSystemTests(unittest.TestCase):
         config = (ROOT / ".streamlit/config.toml").read_text(encoding="utf-8")
         self.assertIn('toolbarMode = "minimal"', config)
 
+    def test_router_injects_styles_before_each_page(self):
+        router = (ROOT / "dashboard/app.py").read_text(encoding="utf-8")
+        self.assertLess(router.index("inject_design()"), router.index("st.navigation("))
+        with patch.object(ui.st, "markdown") as markdown:
+            ui.inject_design()
+        self.assertIn("--brand-blue", markdown.call_args.args[0])
+
+    def test_css_shows_skeleton_instead_of_blank_page(self):
+        css = ui.design_css()
+        self.assertIn("bs-skeleton", css)
+        self.assertIn("stMainBlockContainer", css)
+
 
 if __name__ == "__main__":
     unittest.main()
