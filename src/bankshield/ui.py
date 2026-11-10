@@ -95,10 +95,14 @@ html, body, [data-testid='stAppViewContainer'], [data-testid='stSidebar'] {{
   font-family: var(--font-sans); color: var(--text);
 }}
 [data-testid='stAppViewContainer'] .block-container {{ max-width: 1280px; padding: 2.5rem 1.5rem 4rem; }}
-[data-testid='stHeader'] {{ background: transparent; }}
-[data-testid='stHeader']::after {{
-  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 3px;
-  background-image: var(--gradient-ai); background-size: 200% 100%;
+/* Barra superior fija: opaca, con la franja de marca en el borde superior
+   para que el contenido pase por debajo al hacer scroll sin cruzarse. */
+[data-testid='stHeader'] {{
+  background: var(--surface); border-bottom: 1px solid var(--stroke);
+}}
+[data-testid='stHeader']::before {{
+  content: ''; position: absolute; left: 0; right: 0; top: 0; height: 3px;
+  background-image: var(--gradient-ai); background-size: 200% 100%; pointer-events: none;
 }}
 code, pre {{ font-family: var(--font-mono); }}
 p, li {{ line-height: 1.6; }}
