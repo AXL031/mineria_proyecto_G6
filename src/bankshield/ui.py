@@ -95,13 +95,11 @@ html, body, [data-testid='stAppViewContainer'], [data-testid='stSidebar'] {{
   font-family: var(--font-sans); color: var(--text);
 }}
 [data-testid='stAppViewContainer'] .block-container {{ max-width: 1280px; padding: 2.5rem 1.5rem 4rem; }}
-/* Barra superior fija: opaca, con la franja de marca en el borde superior
-   para que el contenido pase por debajo al hacer scroll sin cruzarse. */
-[data-testid='stHeader'] {{
-  background: var(--surface); border-bottom: 1px solid var(--stroke);
-}}
-[data-testid='stHeader']::before {{
-  content: ''; position: absolute; left: 0; right: 0; top: 0; height: 3px;
+/* La barra superior queda transparente (solo el menú) y la franja de marca
+   va al inicio del contenido: se desplaza con la página y no tapa nada. */
+[data-testid='stHeader'] {{ background: transparent; }}
+[data-testid='stMain']::before {{
+  content: ''; display: block; flex: none; height: 3px; width: 100%;
   background-image: var(--gradient-ai); background-size: 200% 100%; pointer-events: none;
 }}
 code, pre {{ font-family: var(--font-mono); }}
