@@ -1,0 +1,33 @@
+# Tema "Estilo Material AI" de BankShield (docs/diseno-ui.md).
+# Se aplica al iniciar Streamlit desde la raíz del proyecto (scripts/start_demo.ps1).
+
+[theme]
+font = "Roboto, Arial, sans-serif"
+headingFont = "Roboto, Arial, sans-serif"
+codeFont = "'JetBrains Mono', Consolas, monospace"
+headingFontWeights = [700, 600]
+baseRadius = "8px"
+showWidgetBorder = true
+chartCategoricalColors = ["#4285F4", "#34A853", "#FBBC05", "#EA4335", "#00BCD4", "#3C4043"]
+
+[theme.light]
+primaryColor = "#4285F4"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F8F9FA"
+textColor = "#3C4043"
+linkColor = "#1A73E8"
+borderColor = "#E3E6EA"
+dataframeBorderColor = "#E3E6EA"
+
+[theme.dark]
+primaryColor = "#8AB4F8"
+backgroundColor = "#1F2023"
+secondaryBackgroundColor = "#2A2B2F"
+textColor = "#E8EAED"
+linkColor = "#8AB4F8"
+borderColor = "#3C4043"
+dataframeBorderColor = "#3C4043"
+
+[client]
+# Oculta "Deploy" y las opciones de desarrollador; conserva el menú de ajustes.
+toolbarMode = "minimal"

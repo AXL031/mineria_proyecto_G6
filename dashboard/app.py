@@ -1,100 +1,38 @@
-"""Portal Principal de BankShield Analytics."""
+"""Punto de entrada del panel: navegación por secciones con títulos e iconos.
+
+``scripts/start_demo.ps1`` ejecuta ``streamlit run dashboard/app.py``. Cada
+página sigue siendo un script independiente que llama a ``configure_page``;
+este archivo solo define el menú y conserva las rutas existentes.
+"""
+
+from pathlib import Path
 
 import streamlit as st
-from bankshield.ui import configure_page
+from bankshield.ui import inject_design
 
-configure_page(
-    page_title="BankShield Analytics",
-    page_icon="🛡",
-    layout="wide",
-    initial_sidebar_state="expanded",
-)
+HERE = Path(__file__).resolve().parent
 
-# Estilos personalizados para apariencia bancaria y profesional
-st.markdown(
-    """
-    <style>
-    .main-title {
-        font-size: 2.4rem;
-        font-weight: 700;
-        color: inherit;
-        margin-bottom: 0.2rem;
-    }
-    .subtitle {
-        font-size: 1.1rem;
-        color: inherit;
-        opacity: 0.8;
-        margin-bottom: 1.5rem;
-    }
-    .card {
-        background-color: #F8FAFC;
-        border: 1px solid #E2E8F0;
-        border-radius: 8px;
-        padding: 1.2rem;
-        margin-bottom: 1rem;
-    }
-    .compliance-box {
-        background-color: #FEF3C7;
-        border-left: 4px solid #F59E0B;
-        padding: 0.8rem 1rem;
-        border-radius: 4px;
-        color: #92400E;
-        font-size: 0.9rem;
-        margin-bottom: 1.5rem;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+# El estilo se emite antes de cada página para que no se pierda al navegar.
+inject_design()
+st.logo(str(HERE / "assets/bankshield-logo.svg"), size="large")
 
-st.markdown('<div class="main-title">🛡 BankShield Analytics</div>', unsafe_allow_html=True)
-st.markdown(
-    '<div class="subtitle">Plataforma académica integral de minería de datos y analítica financiera</div>',
-    unsafe_allow_html=True,
-)
+PAGES = {
+    "": [
+        st.Page("inicio.py", title="Inicio", icon=":material/home:", default=True),
+    ],
+    "Riesgo y fraude": [
+        st.Page("pages/01_fraude.py", title="Detección de fraude", icon=":material/shield:", url_path="fraude"),
+        st.Page("pages/02_credito.py", title="Riesgo crediticio", icon=":material/credit_card:", url_path="credito"),
+        st.Page("pages/07_regresion.py", title="Regresión del monto", icon=":material/stacked_line_chart:", url_path="regresion"),
+    ],
+    "Transacciones": [
+        st.Page("pages/03_redes.py", title="Redes de transacciones", icon=":material/hub:", url_path="redes"),
+        st.Page("pages/04_pronosticos.py", title="Pronósticos", icon=":material/trending_up:", url_path="pronosticos"),
+        st.Page("pages/06_segmentos.py", title="Segmentos de cuentas", icon=":material/category:", url_path="segmentos"),
+    ],
+    "Texto": [
+        st.Page("pages/05_reclamos.py", title="Reclamos y NLP", icon=":material/forum:", url_path="reclamos"),
+    ],
+}
 
-st.markdown(
-    """
-    <div class="compliance-box">
-        ⚠ <strong>Aviso Académico / Compliance:</strong> Los módulos presentados operan sobre datasets
-        públicos y simulados (PaySim). Las predicciones y métricas son de carácter exploratorio y de apoyo a la decisión.
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
-
-col1, col2 = st.columns(2)
-
-with col1:
-    st.markdown("### 📌 Módulos de la Plataforma")
-    st.markdown(
-        """
-        - 🌐 **Redes y Grafos de Transacciones** (*Disponible*): Topología de relaciones `nameOrig → nameDest`,
-          patrones atípicos y visualización interactiva de subgrafos.
-        - 🕵 **Detección de Fraude Supervisado** (*Disponible mediante API*): Formulario de predicción, umbral y métricas del modelo cargado.
-        - 💳 **Riesgo Crediticio y Explicabilidad** (*Disponible*): Scoring y calibración de probabilidad de impago.
-        - 🧩 **Segmentos de Cuentas** (*Disponible mediante API*): Agrupamiento de cuentas destino reincidentes sin usar la etiqueta de fraude.
-        - 🗣 **Reclamos y NLP** (*Disponible mediante API*): Producto sugerido por narrativa, tendencias, evaluación y ejemplos de errores de CFPB.
-        - 📈 **Pronósticos de Flujo** (*Disponible*): Proyección Naive de volumen o monto y monitoreo histórico de cambios.
-        """
-    )
-
-with col2:
-    st.markdown("### 🧭 Cómo Navegar")
-    st.markdown(
-        """
-        Utiliza el menú lateral para acceder a **Fraude**, **Crédito**, **Redes**, **Pronósticos**, **Reclamos** y **Segmentos**.
-        En Pronósticos puedes proyectar cantidad o monto y consultar el cambio histórico del tramo final.
-        En Fraude puedes evaluar una operación y consultar las métricas del modelo mediante la API.
-        En Segmentos puedes revisar los perfiles, la línea base y las cuentas de cada grupo.
-        En Redes y Grafos encontrarás:
-        
-        1. **Métricas Topológicas:** KPIs globales de conectividad y volumen operado.
-        2. **Explorador Interactivo de Subgrafos:** Búsqueda por cuenta y renderizado con física en tiempo real.
-        3. **Detección de Patrones de Alerta:** Monitoreo de anomalías tipo abanico (*fan-out*), concentración (*fan-in*) y circularidad.
-        4. **Ranking de Centralidad:** Identificación de nodos clave mediante PageRank.
-        """
-    )
-
-st.divider()
-st.caption("BankShield Analytics v0.1.0 — Proyecto Grupal de Minería de Datos (G6)")
+st.navigation(PAGES, position="sidebar").run()

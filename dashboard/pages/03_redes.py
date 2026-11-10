@@ -11,7 +11,7 @@ import pandas as pd
 from pyvis.network import Network
 import requests
 import streamlit as st
-from bankshield.ui import configure_page, status_notice
+from bankshield.ui import chips, configure_page, page_header, status_notice
 import streamlit.components.v1 as components
 
 API_URL = os.environ.get("BANKSHIELD_API_URL", "http://127.0.0.1:8000").rstrip("/")
@@ -23,50 +23,17 @@ configure_page(
     layout="wide",
 )
 
-# Estilos CSS especializados
-st.markdown(
-    """
-    <style>
-    .module-header {
-        font-size: 2.1rem;
-        font-weight: 700;
-        color: inherit;
-        margin-bottom: 0.2rem;
-    }
-    .module-sub {
-        font-size: 1rem;
-        color: inherit;
-        opacity: 0.8;
-        margin-bottom: 1.2rem;
-    }
-    .badge-sim {
-        background-color: #E0E7FF;
-        color: #3730A3;
-        font-weight: 600;
-        padding: 0.25rem 0.6rem;
-        border-radius: 9999px;
-        font-size: 0.8rem;
-        display: inline-block;
-        margin-bottom: 1rem;
-    }
-    .kpi-card {
-        background: white;
-        padding: 1rem;
-        border-radius: 8px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        border: 1px solid #E2E8F0;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
+page_header(
+    "Análisis topológico y redes de transacciones",
+    "Monitoreo de aristas de pago (nameOrig → nameDest), centralidad, detección de patrones "
+    "de dispersión y concentración, y comparación justa de alertas frente al volumen.",
+    eyebrow="Redes y grafos",
+    highlight="redes de transacciones",
+    badges=(
+        ("info", "Datos simulados — esquema PaySim"),
+        ("network", "Consultas acotadas por muestra", "green"),
+    ),
 )
-
-st.markdown('<div class="module-header">🌐 Análisis Topológico y Redes de Transacciones</div>', unsafe_allow_html=True)
-st.markdown(
-    '<div class="module-sub">Monitoreo de aristas de pago (nameOrig → nameDest), centralidad de intermediación y detección de patrones de dispersión/concentración.</div>',
-    unsafe_allow_html=True,
-)
-st.markdown('<span class="badge-sim">ℹ Datos Simulados — Esquema PaySim</span>', unsafe_allow_html=True)
 
 
 # ---------------------------------------------------------------
@@ -163,7 +130,7 @@ def _format_metric(metric: dict | None) -> str:
 
 # Barra lateral de configuración y filtros
 with st.sidebar:
-    st.header("⚙ Parámetros de Análisis")
+    st.header(":material/tune: Parámetros de análisis")
     sample_size = st.select_slider(
         "Muestra de transacciones iniciales",
         options=[10_000, 25_000, 50_000, 100_000],
@@ -185,7 +152,7 @@ edge_summary = api_summary["edges_summary"]
 # -------------------------------------------------------------
 # SECCIÓN 1: KPIs GLOBALES DE LA RED
 # -------------------------------------------------------------
-st.markdown("### 📊 Indicadores Globales de la Red")
+st.subheader(":material/monitoring: Indicadores globales de la red")
 col1, col2, col3, col4, col5 = st.columns(5)
 
 col1.metric("Nodos Únicos", f"{summary['nodos']:,}")
@@ -199,11 +166,11 @@ col5.metric("Aristas con Fraude", f"{summary['pares_con_fraude']:,}", delta=f"{e
 # -------------------------------------------------------------
 with st.container(key="graph-tabs"):
     tab_subgraph, tab_patterns, tab_ranking, tab_compare, tab_theory = st.tabs([
-        "🔍 Explorador Interactivo de Subgrafos",
-        ":orange[⚠] Detección de Patrones Atípicos",
-        "🏆 Ranking de Centralidad (PageRank)",
-        "⚖ Comparación Red vs Volumen",
-        "📖 Metodología y Contrato",
+        ":material/travel_explore: Explorador de subgrafos",
+        ":material/warning: Patrones atípicos",
+        ":material/leaderboard: Ranking de centralidad",
+        ":material/balance: Comparación red vs volumen",
+        ":material/menu_book: Metodología y contrato",
     ])
 
 # -------------------------------------------------------------
@@ -258,7 +225,7 @@ with tab_subgraph:
             mcol4.metric("Flujo Neto", f"${acc_info['net_flow']:,.2f}")
 
             # Generar grafo Pyvis interactivo
-            net = Network(height="520px", width="100%", directed=True, bgcolor="#ffffff", font_color="#1e293b", cdn_resources="in_line")
+            net = Network(height="520px", width="100%", directed=True, bgcolor="#ffffff", font_color="#3C4043", cdn_resources="in_line")
             net.force_atlas_2based(gravity=-60, central_gravity=0.01, spring_length=120)
 
             # Nodos
@@ -268,13 +235,13 @@ with tab_subgraph:
                 acc_type = n.get("account_type", "cliente")
 
                 if is_center:
-                    color = "#8B5CF6"  # Morado: selección, no nivel de riesgo
+                    color = "#FBBC05"  # Amarillo: selección, no nivel de riesgo
                     size = 28
                 elif acc_type == "comercio":
-                    color = "#14B8A6"  # Turquesa para comercios
+                    color = "#34A853"  # Verde para comercios
                     size = 18
                 else:
-                    color = "#3B82F6"  # Azul para clientes
+                    color = "#4285F4"  # Azul para clientes
                     size = 18
 
                 label = f"{node_id}\n({acc_type})"
@@ -286,7 +253,7 @@ with tab_subgraph:
                 u, v = e["source"], e["target"]
                 amt = e.get("total_amount", 0.0)
                 frauds = e.get("fraud_count", 0)
-                edge_color = "#DC2626" if frauds > 0 else "#94A3B8"
+                edge_color = "#EA4335" if frauds > 0 else "#9AA0A6"
                 title = f"Monto: ${amt:,.2f}<br>Transacciones: {e.get('weight')}<br>Fraudes: {frauds}"
                 net.add_edge(u, v, title=title, value=max(1, int(e.get("weight", 1))), color=edge_color)
 
@@ -295,10 +262,10 @@ with tab_subgraph:
             # y que sesiones simultáneas sobrescriban el mismo subgrafo.
             html_content = net.generate_html()
             components.html(html_content, height=550)
-            st.caption("Morado: cuenta seleccionada · Azul: clientes · Turquesa: comercios · Rojo en conexiones: fraude etiquetado en la muestra.")
+            st.caption("Amarillo: cuenta seleccionada · Azul: clientes · Verde: comercios · Rojo en conexiones: fraude etiquetado en la muestra.")
 
             # Tablas con detalle de transacciones
-            with st.expander("📄 Ver detalle tabular de conexiones"):
+            with st.expander(":material/table_view: Ver detalle tabular de conexiones"):
                 c_out, c_in = st.columns(2)
                 with c_out:
                     st.markdown("**Destinos (Envíos)**")
@@ -420,7 +387,7 @@ with tab_compare:
             f"**Universo:** {comparison.get('universe_size', 0):,} cuentas · "
             f"**Análisis:** `{comparison.get('analysis_id', '')}`"
         )
-        st.markdown('<span class="badge-sim">ℹ Datos Simulados — Evaluación retrospectiva</span>', unsafe_allow_html=True)
+        st.markdown(chips([("info", "Datos simulados — evaluación retrospectiva")]), unsafe_allow_html=True)
 
         rows = []
         for item in comparison["comparisons"]:
