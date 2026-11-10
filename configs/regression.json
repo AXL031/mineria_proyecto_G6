@@ -1,0 +1,12 @@
+{
+  "input": "data/gold/analytics/transactions.parquet",
+  "dataset_report": "artifacts/reports/analytics/dataset.json",
+  "output": "artifacts/models/regression",
+  "random_state": 42,
+  "max_train_rows": 200000,
+  "tie_tolerance": 1e-9,
+  "ridge_alphas": [1.0, 10.0],
+  "boosting": {"max_iter": 100, "max_leaf_nodes": 15, "learning_rate": 0.1, "min_samples_leaf": 20},
+  "examples_rows": 200,
+  "chunk_rows": 500000
+}
