@@ -73,7 +73,7 @@ class DesignSystemTests(unittest.TestCase):
         self.assertIsNone(EMOJI.search(html))
 
     def test_portal_and_graph_page_have_no_emoji_text(self):
-        for path in ("dashboard/app.py", "dashboard/pages/03_redes.py"):
+        for path in ("dashboard/app.py", "dashboard/inicio.py", "dashboard/pages/03_redes.py"):
             text = (ROOT / path).read_text(encoding="utf-8")
             text = re.sub(r'page_icon="[^"]*"', "", text)
             self.assertIsNone(EMOJI.search(text), path)
@@ -83,6 +83,22 @@ class DesignSystemTests(unittest.TestCase):
         self.assertIn('primaryColor = "#4285F4"', config)
         self.assertIn('textColor = "#3C4043"', config)
         self.assertIn("[theme.dark]", config)
+
+    def test_navigation_lists_every_page_with_title_icon_and_route(self):
+        router = (ROOT / "dashboard/app.py").read_text(encoding="utf-8")
+        pages = re.findall(r'st\.Page\("([^"]+)", title="([^"]+)", icon=":material/[a-z_]+:"', router)
+        paths = {path for path, _ in pages}
+        expected = {"inicio.py"} | {f"pages/{p.name}" for p in (ROOT / "dashboard/pages").glob("*.py")}
+        self.assertEqual(paths, expected)
+        for path in paths:
+            self.assertTrue((ROOT / "dashboard" / path).is_file(), path)
+        for route in ("fraude", "credito", "redes", "pronosticos", "reclamos", "segmentos", "regresion"):
+            self.assertIn(f'url_path="{route}"', router)
+        self.assertTrue((ROOT / "dashboard/assets/bankshield-logo.svg").is_file())
+
+    def test_streamlit_toolbar_hides_deploy(self):
+        config = (ROOT / ".streamlit/config.toml").read_text(encoding="utf-8")
+        self.assertIn('toolbarMode = "minimal"', config)
 
 
 if __name__ == "__main__":
