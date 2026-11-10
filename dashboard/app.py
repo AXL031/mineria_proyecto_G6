@@ -1,7 +1,7 @@
 """Portal Principal de BankShield Analytics."""
 
 import streamlit as st
-from bankshield.ui import configure_page
+from bankshield.ui import configure_page, module_cards, page_header, status_notice
 
 configure_page(
     page_title="BankShield Analytics",
@@ -10,91 +10,62 @@ configure_page(
     initial_sidebar_state="expanded",
 )
 
-# Estilos personalizados para apariencia bancaria y profesional
-st.markdown(
-    """
-    <style>
-    .main-title {
-        font-size: 2.4rem;
-        font-weight: 700;
-        color: inherit;
-        margin-bottom: 0.2rem;
-    }
-    .subtitle {
-        font-size: 1.1rem;
-        color: inherit;
-        opacity: 0.8;
-        margin-bottom: 1.5rem;
-    }
-    .card {
-        background-color: #F8FAFC;
-        border: 1px solid #E2E8F0;
-        border-radius: 8px;
-        padding: 1.2rem;
-        margin-bottom: 1rem;
-    }
-    .compliance-box {
-        background-color: #FEF3C7;
-        border-left: 4px solid #F59E0B;
-        padding: 0.8rem 1rem;
-        border-radius: 4px;
-        color: #92400E;
-        font-size: 0.9rem;
-        margin-bottom: 1.5rem;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
+page_header(
+    "BankShield Analytics",
+    "Plataforma académica de minería de datos y analítica financiera: fraude, riesgo, "
+    "redes, pronósticos, reclamos, segmentos y regresión sobre datos públicos y simulados.",
+    eyebrow="Proyecto grupal de Minería de Datos · G6",
+    highlight="Analytics",
+    badges=(
+        ("database", "PaySim · CFPB · Riesgo crediticio"),
+        ("network", "API REST + panel"),
+        ("info", "Resultados exploratorios", "yellow"),
+    ),
 )
 
-st.markdown('<div class="main-title">🛡 BankShield Analytics</div>', unsafe_allow_html=True)
-st.markdown(
-    '<div class="subtitle">Plataforma académica integral de minería de datos y analítica financiera</div>',
-    unsafe_allow_html=True,
+status_notice(
+    "warning",
+    "Aviso académico",
+    "Los módulos operan sobre datasets públicos y simulados (PaySim). Las predicciones y "
+    "métricas son exploratorias y de apoyo a la decisión; no describen clientes reales.",
 )
 
-st.markdown(
-    """
-    <div class="compliance-box">
-        ⚠ <strong>Aviso Académico / Compliance:</strong> Los módulos presentados operan sobre datasets
-        públicos y simulados (PaySim). Las predicciones y métricas son de carácter exploratorio y de apoyo a la decisión.
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
+st.subheader(":material/apps: Módulos de la plataforma")
+module_cards([
+    {"icon": "shield", "tone": "red", "title": "Detección de fraude",
+     "text": "Evalúa una operación con el modelo supervisado, su umbral y sus métricas."},
+    {"icon": "credit-card", "tone": "blue", "title": "Riesgo crediticio",
+     "text": "Probabilidad calibrada de impago y factores que explican cada solicitud."},
+    {"icon": "network", "tone": "green", "title": "Redes de transacciones",
+     "text": "Topología nameOrig → nameDest, patrones atípicos, subgrafos y comparación red vs volumen."},
+    {"icon": "trending-up", "tone": "yellow", "title": "Pronósticos de flujo",
+     "text": "Proyección del volumen o monto por hora y monitoreo del cambio histórico."},
+    {"icon": "message", "tone": "cyan", "title": "Reclamos y NLP",
+     "text": "Producto sugerido por narrativa, tendencias y ejemplos de errores de CFPB."},
+    {"icon": "layers", "tone": "green", "title": "Segmentos de cuentas",
+     "text": "Agrupamiento de cuentas destino reincidentes sin usar la etiqueta de fraude."},
+    {"icon": "line-chart", "tone": "blue", "title": "Regresión del monto",
+     "text": "Estimación del monto transaccional por tipo de operación y saldo previo."},
+])
 
-col1, col2 = st.columns(2)
-
-with col1:
-    st.markdown("### 📌 Módulos de la Plataforma")
+st.subheader(":material/explore: Cómo navegar")
+col_steps, col_tip = st.columns([3, 2], gap="large")
+with col_steps:
     st.markdown(
         """
-        - 🌐 **Redes y Grafos de Transacciones** (*Disponible*): Topología de relaciones `nameOrig → nameDest`,
-          patrones atípicos y visualización interactiva de subgrafos.
-        - 🕵 **Detección de Fraude Supervisado** (*Disponible mediante API*): Formulario de predicción, umbral y métricas del modelo cargado.
-        - 💳 **Riesgo Crediticio y Explicabilidad** (*Disponible*): Scoring y calibración de probabilidad de impago.
-        - 🧩 **Segmentos de Cuentas** (*Disponible mediante API*): Agrupamiento de cuentas destino reincidentes sin usar la etiqueta de fraude.
-        - 🗣 **Reclamos y NLP** (*Disponible mediante API*): Producto sugerido por narrativa, tendencias, evaluación y ejemplos de errores de CFPB.
-        - 📈 **Pronósticos de Flujo** (*Disponible*): Proyección Naive de volumen o monto y monitoreo histórico de cambios.
+        1. **Elige un módulo** en el menú lateral; cada página consume la API de BankShield.
+        2. **Ajusta los parámetros** de la página (muestra, umbrales, formulario) y consulta los resultados.
+        3. **Revisa los avisos** de cada módulo: indican el alcance y los límites de los datos.
+        4. **Contrasta** las métricas con la documentación en `docs/` antes de interpretarlas.
         """
     )
-
-with col2:
-    st.markdown("### 🧭 Cómo Navegar")
-    st.markdown(
-        """
-        Utiliza el menú lateral para acceder a **Fraude**, **Crédito**, **Redes**, **Pronósticos**, **Reclamos** y **Segmentos**.
-        En Pronósticos puedes proyectar cantidad o monto y consultar el cambio histórico del tramo final.
-        En Fraude puedes evaluar una operación y consultar las métricas del modelo mediante la API.
-        En Segmentos puedes revisar los perfiles, la línea base y las cuentas de cada grupo.
-        En Redes y Grafos encontrarás:
-        
-        1. **Métricas Topológicas:** KPIs globales de conectividad y volumen operado.
-        2. **Explorador Interactivo de Subgrafos:** Búsqueda por cuenta y renderizado con física en tiempo real.
-        3. **Detección de Patrones de Alerta:** Monitoreo de anomalías tipo abanico (*fan-out*), concentración (*fan-in*) y circularidad.
-        4. **Ranking de Centralidad:** Identificación de nodos clave mediante PageRank.
-        """
-    )
+with col_tip:
+    with st.container(border=True):
+        st.markdown("**:material/hub: Redes y grafos**")
+        st.markdown(
+            "Métricas topológicas, explorador interactivo de subgrafos, patrones de abanico y "
+            "concentración, ranking por PageRank y comparación justa red vs referencia por volumen."
+        )
 
 st.divider()
 st.caption("BankShield Analytics v0.1.0 — Proyecto Grupal de Minería de Datos (G6)")
