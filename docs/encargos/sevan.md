@@ -1,6 +1,6 @@
 # Encargo de Sevan — regresión numérica y cierre crediticio
 
-Estado inicial: pendiente. Leer [contratos y prioridades](../pendientes-cierre-2026-10-20.md) y [D1/Taco](taco.md). El modelo de crédito, calibración, explicaciones, API y página ya existen; la regresión numérica será una capacidad nueva y separada de la regresión logística.
+Estado (10 de noviembre de 2026): SEV-01 implementado y probado localmente (ver [resultados](../regresion/resultados-modelo.md)); pendientes la revisión de Rhamses, la reproducción de Gerardo y el registro del router por Angel. SEV-02 y SEV-03 requieren confirmaciones humanas y siguen abiertos. Leer [contratos y prioridades](../pendientes-cierre-2026-10-20.md) y [D1/Taco](taco.md). El modelo de crédito, calibración, explicaciones, API y página ya existen; la regresión numérica será una capacidad nueva y separada de la regresión logística.
 
 ## SEV-01 — estimación del monto transaccional (P0)
 
